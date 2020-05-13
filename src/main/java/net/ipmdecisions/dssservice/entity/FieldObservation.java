@@ -19,8 +19,8 @@
 
 package net.ipmdecisions.dssservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import java.time.Instant;
-import org.locationtech.jts.geom.Geometry;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaExamples;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaInject;
@@ -38,7 +38,9 @@ import javax.validation.constraints.NotNull;
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 @JsonSchemaInject(strings = {
-    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/DSSService/rest/schema/fieldobservation")
+    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/DSSService/rest/schema/fieldobservation"),
+    @JsonSchemaString(path = "location/title", value="The location of the observation."),
+    @JsonSchemaString(path = "properties/location/$ref", value="https://github.com/H2020-IPM-Decisions/formats/schemas/geojson.json")
     }
 )
 @JsonSchemaTitle("Field observation")
@@ -46,9 +48,98 @@ import javax.validation.constraints.NotNull;
 @JsonSchemaDescription("Version 0.1. The schema describes the field observation format for the IPM Decisions platform. See an example here: TODO")
 public class FieldObservation {
     
-    @JsonSchemaTitle("")
-    private Geometry location;
     @NotNull
+    @JsonSchemaTitle("Location  of the observation. In GeoJson format.")
+    @JsonSchemaInject(strings = {
+        @JsonSchemaString(path = "$ref", value="https://github.com/H2020-IPM-Decisions/formats/schemas/geojson.json")
+        }
+    )
+    private Object location;
+    @NotNull
+    @JsonSchemaTitle("Time (yyyy-MM-dd'T'HH:mm:ssXXX)")
+    @JsonPropertyDescription("The timestamp of the field observation. Format: \"yyyy-MM-dd'T'HH:mm:ssXXX\", e.g. 2020-04-09T18:00:00+02:00")
     private Instant time;
-    private String pestEPPOCode, cropEPPOCode, quantification;
+    @NotNull
+    @JsonSchemaTitle("Pest")
+    @JsonPropertyDescription("The EPPO code for the observed pest. See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes")
+    private String pestEPPOCode;
+    @NotNull
+    @JsonSchemaTitle("Pest")
+    @JsonPropertyDescription("The EPPO code for the crop in which the pest was observed. See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes")
+    private String cropEPPOCode;
+    //@JsonSchemaTitle("Quantification")
+    //@JsonPropertyDescription("Json formatted quantification data for the observation. ")
+    //private String quantification;
+
+    
+
+    /**
+     * @return the time
+     */
+    public Instant getTime() {
+        return time;
+    }
+
+    /**
+     * @param time the time to set
+     */
+    public void setTime(Instant time) {
+        this.time = time;
+    }
+
+    /**
+     * @return the pestEPPOCode
+     */
+    public String getPestEPPOCode() {
+        return pestEPPOCode;
+    }
+
+    /**
+     * @param pestEPPOCode the pestEPPOCode to set
+     */
+    public void setPestEPPOCode(String pestEPPOCode) {
+        this.pestEPPOCode = pestEPPOCode;
+    }
+
+    /**
+     * @return the cropEPPOCode
+     */
+    public String getCropEPPOCode() {
+        return cropEPPOCode;
+    }
+
+    /**
+     * @param cropEPPOCode the cropEPPOCode to set
+     */
+    public void setCropEPPOCode(String cropEPPOCode) {
+        this.cropEPPOCode = cropEPPOCode;
+    }
+
+    /**
+     * @return the quantification
+     *
+    public String getQuantification() {
+        return quantification;
+    }*/
+
+    /**
+     * @param quantification the quantification to set
+     *
+    public void setQuantification(String quantification) {
+        this.quantification = quantification;
+    }*/
+
+    /**
+     * @return the location
+     */
+    public Object getLocation() {
+        return location;
+    }
+
+    /**
+     * @param location the location to set
+     */
+    public void setLocation(Object location) {
+        this.location = location;
+    }
 }
