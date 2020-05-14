@@ -34,8 +34,6 @@ import javax.validation.constraints.NotNull;
  */
 @JsonSchemaInject(strings = {
     @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/dss/rest/schema/fieldobservation"),
-    @JsonSchemaString(path = "location/title", value="The location of the observation."),
-    @JsonSchemaString(path = "properties/location/$ref", value="https://github.com/H2020-IPM-Decisions/formats/schemas/geojson.json")
     }
 )
 @JsonSchemaTitle("Field observation")
@@ -46,7 +44,7 @@ public class FieldObservation {
     @NotNull
     @JsonSchemaTitle("Location  of the observation. In GeoJson format.")
     @JsonSchemaInject(strings = {
-        @JsonSchemaString(path = "$ref", value="https://github.com/H2020-IPM-Decisions/formats/schemas/geojson.json")
+        @JsonSchemaString(path = "$ref", value="https://ipmdecisions.nibio.no/schemas/geojson.json")
         }
     )
     private Object location;
