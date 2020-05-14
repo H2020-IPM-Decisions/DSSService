@@ -29,16 +29,11 @@ import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 import javax.validation.constraints.NotNull;
 
 /**
- * "fieldObservations": {
-             "$ref": "https://ipmdecisions.nibio.no/DSSService/rest/schema/fieldobservations"
-          },
-          "fieldObsQuantification":{
-          },
  * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 @JsonSchemaInject(strings = {
-    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/DSSService/rest/schema/fieldobservation"),
+    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/dss/rest/schema/fieldobservation"),
     @JsonSchemaString(path = "location/title", value="The location of the observation."),
     @JsonSchemaString(path = "properties/location/$ref", value="https://github.com/H2020-IPM-Decisions/formats/schemas/geojson.json")
     }
