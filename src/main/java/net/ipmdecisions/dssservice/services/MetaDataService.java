@@ -45,6 +45,7 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.spi.HttpRequest;
 
 /**
+ * Provides schemas and validation thereof
  * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
@@ -87,23 +88,27 @@ public class MetaDataService {
         schemaGen = new JsonSchemaGenerator(objectMapper,config);
     }
 
-    
+    /**
+     * 
+     * @return The generic schema for field observations
+     */
     @GET
     @Path("schema/fieldobservation")
     @GZIP
     @Produces("application/json;charset=UTF-8")
-    public Response getWeatherDataSchema()
+    public Response getFieldObservationSchema()
     {
         JsonNode schema = schemaGen.generateJsonSchema(FieldObservation.class);
         return Response.ok().entity(schema).build();
     }
-    
+    /*
+    This takes some more work due to the polymorphism of the FieldObservation Object
     @POST
     @Path("schema/fieldobservation/validate")
     @GZIP
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response validateWeatherData(JsonNode weatherData)
+    public Response validateFieldObservationData(JsonNode fieldObservationData)
     {
         try
         {
@@ -111,7 +116,7 @@ public class MetaDataService {
             SchemaUtils sUtils = new SchemaUtils();
             // If we don't create a string from the schema, it will always pass with a well formed but non conforming JSON document
             // Don't ask me why!!!
-            boolean isValid = sUtils.isJsonValid(schema.toString(), weatherData); 
+            boolean isValid = sUtils.isJsonValid(schema.toString(), fieldObservationData); 
             return Response.ok().entity(Map.of("isValid", isValid)).build();
         }
         catch(ProcessingException | IOException ex)
@@ -119,4 +124,5 @@ public class MetaDataService {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
     }
+*/
 }
