@@ -71,6 +71,7 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given crop
      * @param cropCode EPPO code for the crop https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @pathExample /rest/list/crop/SOLTU
      * @return a list of models that are applicable to the given crop
      */
     @GET
@@ -106,6 +107,7 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given pest
      * @param pestCode EPPO code for the pest https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @pathExample /rest/list/pest/PSILRO
      * @return a list of models that are applicable to the given pest
      */
     @GET
