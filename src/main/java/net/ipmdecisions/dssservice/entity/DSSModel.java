@@ -32,12 +32,96 @@ import java.util.List;
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 public class DSSModel {
-    private String name, id, version, type_of_decision, type_of_output, description_URL, description, citation, keywords, output;
+    private String name, id, version, type_of_decision, type_of_output, description_URL, description, citation, keywords;
     private List<String> pests, crops;
     private List<Author> authors;
     private Execution execution;
     private Input input;
     private Valid_Spatial valid_spatial;
+    private Output output;
+    
+    /**
+     * Describes the output returned by the DSS model. The output must conform
+     * to the Json schema TODO Create this and set ref here.
+     */
+    static class Output {
+        private String warning_status_interpretation;
+        private Parameter[] parameters;
+        
+        static class Parameter {
+            private String id, title, description;
+
+            /**
+             * @return the id
+             */
+            public String getId() {
+                return id;
+            }
+
+            /**
+             * @param id the id to set
+             */
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            /**
+             * @return the title
+             */
+            public String getTitle() {
+                return title;
+            }
+
+            /**
+             * @param title the title to set
+             */
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+            /**
+             * @return the description
+             */
+            public String getDescription() {
+                return description;
+            }
+
+            /**
+             * @param description the description to set
+             */
+            public void setDescription(String description) {
+                this.description = description;
+            }
+        }
+
+        /**
+         * @return the warning_status_interpretation
+         */
+        public String getWarning_status_interpretation() {
+            return warning_status_interpretation;
+        }
+
+        /**
+         * @param warning_status_interpretation the warning_status_interpretation to set
+         */
+        public void setWarning_status_interpretation(String warning_status_interpretation) {
+            this.warning_status_interpretation = warning_status_interpretation;
+        }
+
+        /**
+         * @return the parameters
+         */
+        public Parameter[] getParameters() {
+            return parameters;
+        }
+
+        /**
+         * @param parameters the parameters to set
+         */
+        public void setParameters(Parameter[] parameters) {
+            this.parameters = parameters;
+        }
+    }
     
     /**
      * Where is the model considered valid to run? This can be specified 
@@ -529,14 +613,14 @@ public class DSSModel {
     /**
      * @return TODO: Must be changed/Defined!!!
      */
-    public String getOutput() {
+    public Output getOutput() {
         return output;
     }
 
     /**
      * @param output the output to set
      */
-    public void setOutput(String output) {
+    public void setOutput(Output output) {
         this.output = output;
     }
 
