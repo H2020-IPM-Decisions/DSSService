@@ -37,6 +37,49 @@ public class DSSModel {
     private List<Author> authors;
     private Execution execution;
     private Input input;
+    private Valid_Spatial valid_spatial;
+    
+    /**
+     * Where is the model considered valid to run? This can be specified 
+     * either by a list of countries (using ISO-3166-1 Three-letter country codes 
+     * https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) OR by specifying
+     * a custom polygon using GeoJSON https://geojson.org/
+     * 
+     * Or both!
+     * 
+     */
+    static class Valid_Spatial {
+        private String[] countries;
+        private String geoJSON;
+
+        /**
+         * @return the countries
+         */
+        public String[] getCountries() {
+            return countries;
+        }
+
+        /**
+         * @param countries the countries to set
+         */
+        public void setCountries(String[] countries) {
+            this.countries = countries;
+        }
+
+        /**
+         * @return the geoJSON
+         */
+        public String getGeoJSON() {
+            return geoJSON;
+        }
+
+        /**
+         * @param geoJSON the geoJSON to set
+         */
+        public void setGeoJSON(String geoJSON) {
+            this.geoJSON = geoJSON;
+        }
+    }
     
     /**
      * Represents a person responsible for the prediction model
@@ -495,5 +538,24 @@ public class DSSModel {
      */
     public void setOutput(String output) {
         this.output = output;
+    }
+
+    /**
+     * Where is the model considered valid to run? This can be specified 
+     * either by a list of countries (using ISO-3166-1 Three-letter country codes 
+     * https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) OR by specifying
+     * a custom polygon using GeoJSON https://geojson.org/
+     *
+     * @return the valid_spatial
+     */
+    public Valid_Spatial getValid_spatial() {
+        return valid_spatial;
+    }
+
+    /**
+     * @param valid_spatial the valid_spatial to set
+     */
+    public void setValid_spatial(Valid_Spatial valid_spatial) {
+        this.valid_spatial = valid_spatial;
     }
 }
