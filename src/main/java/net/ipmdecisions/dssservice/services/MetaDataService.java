@@ -21,15 +21,19 @@ package net.ipmdecisions.dssservice.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonschema.core.exceptions.InvalidSchemaException;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.kjetland.jackson.jsonSchema.JsonSchemaConfig;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 import java.io.IOException;
+import java.net.URL;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -40,6 +44,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.ipmdecisions.dssservice.entity.FieldObservation;
+import net.ipmdecisions.dssservice.entity.ModelOutput;
 import net.ipmdecisions.dssservice.util.SchemaUtils;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.spi.HttpRequest;
@@ -72,8 +77,8 @@ public class MetaDataService {
         JsonSchemaConfig config = JsonSchemaConfig.create(
             JsonSchemaConfig.vanillaJsonSchemaDraft4().autoGenerateTitleForProperties(), 
             Optional.empty(), 
-            JsonSchemaConfig.vanillaJsonSchemaDraft4().useOneOfForOption(), 
-            JsonSchemaConfig.vanillaJsonSchemaDraft4().useOneOfForNullables(), 
+            JsonSchemaConfig.nullableJsonSchemaDraft4().useOneOfForOption(), 
+            JsonSchemaConfig.nullableJsonSchemaDraft4().useOneOfForNullables(), 
             JsonSchemaConfig.vanillaJsonSchemaDraft4().usePropertyOrdering(), 
             JsonSchemaConfig.vanillaJsonSchemaDraft4().hidePolymorphismTypeProperty(), 
             JsonSchemaConfig.vanillaJsonSchemaDraft4().disableWarnings(), 
@@ -101,6 +106,43 @@ public class MetaDataService {
         JsonNode schema = schemaGen.generateJsonSchema(FieldObservation.class);
         return Response.ok().entity(schema).build();
     }
+    
+    @GET
+    @Path("schema/modeloutput")
+    @GZIP
+    @Produces("application/json;charset=UTF-8")
+    public Response getModelOutputSchema()
+    {
+        JsonNode schema = schemaGen.generateJsonSchema(ModelOutput.class);
+        return Response.ok().entity(schema).build();
+    }
+    
+    /**
+     * Validate model output against this schema: https://ipmdecisions.nibio.no/schemas/dss_model_output.json
+     * @param modelOutputData
+     * @return 
+     */
+    @POST
+    @Path("schema/modeloutput/validate")
+    @GZIP
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateModelOutputData(JsonNode modelOutputData)
+    {
+        try 
+        {
+            SchemaUtils sUtils = new SchemaUtils();
+            boolean isValid; 
+            URL schemaURL = new URL("https://ipmdecisions.nibio.no/schemas/dss_model_output.json");
+            isValid = sUtils.isJsonValid(schemaURL, modelOutputData);
+            return Response.ok().entity(Map.of("isValid", isValid)).build();
+        } catch (IOException | ProcessingException  ex) 
+        {
+            ex.printStackTrace();
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
     /*
     This takes some more work due to the polymorphism of the FieldObservation Object
     @POST

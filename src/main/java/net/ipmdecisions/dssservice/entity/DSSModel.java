@@ -46,13 +46,14 @@ public class DSSModel {
      */
     static class Output {
         private String warning_status_interpretation;
-        private Parameter[] parameters;
+        private ResultParameter[] result_parameters;
         
-        static class Parameter {
+        static class ResultParameter {
             private String id, title, description;
 
             /**
-             * @return the id
+             * @return The Id, which is combined with the DSS id and model id as 
+             * name space to create a unique ID. For example no.nibio.vips.PSILARTEMP.TMDD5C
              */
             public String getId() {
                 return id;
@@ -66,7 +67,7 @@ public class DSSModel {
             }
 
             /**
-             * @return the title
+             * @return The parameter title, e.g. "Accumulated day degrees" or "Calculated RISK value"
              */
             public String getTitle() {
                 return title;
@@ -80,7 +81,7 @@ public class DSSModel {
             }
 
             /**
-             * @return the description
+             * @return Optionally, a description of the parameter
              */
             public String getDescription() {
                 return description;
@@ -95,7 +96,8 @@ public class DSSModel {
         }
 
         /**
-         * @return the warning_status_interpretation
+         * @return A thorough description of how to interpret the GREEN/YELLOW/RED
+         * warning status
          */
         public String getWarning_status_interpretation() {
             return warning_status_interpretation;
@@ -109,17 +111,17 @@ public class DSSModel {
         }
 
         /**
-         * @return the parameters
+         * @return The result result_parameters returned by the DSS model
          */
-        public Parameter[] getParameters() {
-            return parameters;
+        public ResultParameter[] getResult_parameters() {
+            return result_parameters;
         }
 
         /**
-         * @param parameters the parameters to set
+         * @param result_parameters the result_parameters to set
          */
-        public void setParameters(Parameter[] parameters) {
-            this.parameters = parameters;
+        public void setResult_parameters(ResultParameter[] result_parameters) {
+            this.result_parameters = result_parameters;
         }
     }
     
@@ -285,11 +287,11 @@ public class DSSModel {
 
         /**
          * @return Json schema (https://json-schema.org/) that describes the model's 
-         * input parameters. The platform can 
-         * use it to build and validate forms for the client
-         * in addition to see if data such as weather data are part of the input.
-         * Must be used together with the input property, that further describes
-         * commonly defined types of input data such as weather data and field observations
+ input result_parameters. The platform can 
+ use it to build and validate forms for the client
+ in addition to see if data such as weather data are part of the input.
+ Must be used together with the input property, that further describes
+ commonly defined types of input data such as weather data and field observations
          */
         public String getInput_schema() {
             return input_schema;
@@ -312,7 +314,7 @@ public class DSSModel {
         private FieldObservation field_observation;
 
         /**
-         * @return Specification of the weather parameters required by the model
+         * @return Specification of the weather result_parameters required by the model
          */
         public List<WeatherInput> getWeather() {
             return weather;
@@ -364,7 +366,7 @@ public class DSSModel {
     }
     
     /**
-     * Description of the weather parameters needed by the model
+     * Description of the weather result_parameters needed by the model
      */
     static class WeatherInput {
         private int parameter_code;

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2020 NIBIO <http://www.nibio.no/>. 
  * 
- * This file is part of IPMDecisionsWeatherService.
+ * This file is part of IPMDecisionsDSSService.
  * IPMDecisionsWeatherService is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * IPMDecisionsWeatherService is distributed in the hope that it will be useful,
+ * IPMDecisionsDSSService is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with IPMDecisionsWeatherService.  If not, see <http://www.gnu.org/licenses/>.
+ * along with IPMDecisionsDSSService.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
 
@@ -29,9 +29,11 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 
@@ -95,5 +97,22 @@ public class SchemaUtils {
             JsonParser jp = f.createParser(inputStream);
             JsonNode all = jp.readValueAsTree();
             return all;
+    }
+    
+    public String getSchemaAsString(String url)
+    {
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String schema = "";
+            String line;
+            while((line = in.readLine()) != null)
+            {
+                schema += line;
+            }
+            return schema;
+        } catch (IOException  ex) {
+            return ex.getMessage();
+        }
     }
 }
