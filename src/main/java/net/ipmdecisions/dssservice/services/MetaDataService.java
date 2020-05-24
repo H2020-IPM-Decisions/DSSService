@@ -21,7 +21,6 @@ package net.ipmdecisions.dssservice.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonschema.core.exceptions.InvalidSchemaException;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.kjetland.jackson.jsonSchema.JsonSchemaConfig;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
@@ -32,8 +31,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -107,6 +104,11 @@ public class MetaDataService {
         return Response.ok().entity(schema).build();
     }
     
+    
+    /**
+     * 
+     * @return The Json Schema for the platform's standard for DSS model output
+     */
     @GET
     @Path("schema/modeloutput")
     @GZIP
@@ -120,7 +122,8 @@ public class MetaDataService {
     /**
      * Validate model output against this schema: https://ipmdecisions.nibio.no/schemas/dss_model_output.json
      * @param modelOutputData
-     * @return 
+     * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false"}</code> otherwise
+     * @responseExample application/json {"isValid":"true"}
      */
     @POST
     @Path("schema/modeloutput/validate")

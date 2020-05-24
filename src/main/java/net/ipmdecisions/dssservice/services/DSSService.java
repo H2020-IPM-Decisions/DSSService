@@ -23,6 +23,7 @@ package net.ipmdecisions.dssservice.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -53,7 +55,7 @@ public class DSSService {
      * @return a list of all DSSs and models available in the platform
      */
     @GET
-    @Path("list")
+    @Path("dss")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
     public Response listDSSs()
@@ -71,11 +73,11 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given crop
      * @param cropCode EPPO code for the crop https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
-     * @pathExample /rest/list/crop/SOLTU
+     * @pathExample /rest/dss/crop/SOLTU
      * @return a list of models that are applicable to the given crop
      */
     @GET
-    @Path("list/crop/{cropCode}")
+    @Path("dss/crop/{cropCode}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
     public Response listModelsForCrops(@PathParam("cropCode") String cropCode)
@@ -107,11 +109,11 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given pest
      * @param pestCode EPPO code for the pest https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
-     * @pathExample /rest/list/pest/PSILRO
+     * @pathExample /rest/dss/pest/PSILRO
      * @return a list of models that are applicable to the given pest
      */
     @GET
-    @Path("list/pest/{pestCode}")
+    @Path("dss/pest/{pestCode}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
     public Response listModelsForPests(@PathParam("pestCode") String pestCode)
@@ -136,6 +138,128 @@ public class DSSService {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }
+    
+    /**
+     * 
+     * @return A list of EPPO codes (https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes) for all pests that the DSS models in the platform
+     * deals with in some way. 
+     * @responseExample application/json ["PSILRO","PHYTIN","SEPTAP"]
+     */
+    @GET
+    @Path("pest")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(String[].class)
+    public Response getAllPests()
+    {
+        try
+        {
+            List<String> retVal = new ArrayList<>();
+            for(DSS dss: this.getDSSListObj())
+            {
+                dss.getModels().forEach((model) -> {
+                    retVal.addAll(model.getPests());
+                });
+            }
+            return Response.ok().entity(retVal).build();
+        }catch(IOException ex){
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+       
+    }
+    
+    /**
+     * @return A list of EPPO codes (https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes) for all crops that the DSS models in the platform
+     *  
+     * @responseExample application/json ["DAUCS","SOLTU","APUGD"]
+     */
+    @GET
+    @Path("crop")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(String[].class)
+    public Response getAllCrops()
+    {
+        try
+        {
+            List<String> retVal = new ArrayList<>();
+            for(DSS dss: this.getDSSListObj())
+            {
+                dss.getModels().forEach((model) -> {
+                    retVal.addAll(model.getCrops());
+                });
+            }
+            return Response.ok().entity(retVal).build();
+        }catch(IOException ex){
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
+    /**
+     * Get all information about a specific DSS
+     * @param DSSId the id of the DSS
+     * @return the requested DSS
+     * @pathExample /rest/model/no.nibio.vips
+     */
+    @GET
+    @Path("dss/{DSSId}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS.class)
+    public Response getDSS(@PathParam("DSSId") String DSSId)
+    {
+        try {
+            Optional<DSS> matchingDSS = this.getDSSListObj().stream().filter(dss->dss.getId().equals(DSSId)).findFirst();
+            if(matchingDSS.isPresent())
+            {
+                return Response.ok().entity(matchingDSS.get()).build();
+            }
+            else
+            {
+                return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS with id " + DSSId)).build();
+            }
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+        
+    }
+    
+    /**
+     * Get all information about a specific DSS model
+     * 
+     * @param DSSId The id of the DSS containing the model
+     * @param ModelId The id of the DSS model requested
+     * @return The requested DSS model
+     * @pathExample /rest/model/no.nibio.vips/PSILARTEMP
+     */
+    @GET
+    @Path("model/{DSSId}/{ModelId}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSSModel.class)
+    public Response getDSSModel(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId)
+    {
+        try {
+            Optional<DSS> matchingDSS = this.getDSSListObj().stream().filter(dss->dss.getId().equals(DSSId)).findFirst();
+            if(matchingDSS.isPresent())
+            {
+                DSS actualDSS = matchingDSS.get();
+                Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model->model.getId().equals(ModelId)).findFirst();
+                if(matchingDSSModel.isPresent())
+                {
+                    return Response.ok().entity(matchingDSSModel.get()).build();
+                }
+                else
+                {
+                    return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS Model with id " + ModelId + " in DSS with id " + DSSId)).build();
+                }
+            }
+            else
+            {
+                return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS with id " + DSSId)).build();
+            }
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+        
+    }
+    
     
     private File[] getFilesWithExtension(String path, String extension) throws IOException
     {

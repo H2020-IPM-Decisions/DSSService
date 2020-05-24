@@ -19,6 +19,7 @@
 
 package net.ipmdecisions.dssservice.entity;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
 
 /**
@@ -44,6 +45,7 @@ public class DSS {
         /**
          * @return the name of the Organization. E.g. ADAS, NIBIO
          */
+        @DocumentationExample("NIBIO")
         public String getName() {
             return name;
         }
@@ -58,6 +60,7 @@ public class DSS {
         /**
          * @return the country of the Organization
          */
+        @DocumentationExample("Norway")
         public String getCountry() {
             return country;
         }
@@ -72,6 +75,7 @@ public class DSS {
         /**
          * @return the address
          */
+        @DocumentationExample("Postboks 115")
         public String getAddress() {
             return address;
         }
@@ -86,6 +90,7 @@ public class DSS {
         /**
          * @return the postal_code
          */
+        @DocumentationExample("1431")
         public String getPostal_code() {
             return postal_code;
         }
@@ -100,6 +105,7 @@ public class DSS {
         /**
          * @return the city
          */
+        @DocumentationExample("Ås")
         public String getCity() {
             return city;
         }
@@ -115,6 +121,7 @@ public class DSS {
          * @return the email. Preferably the email to a person
          * or department responsible for the DSS
          */
+        @DocumentationExample("acme@foobar.com")
         public String getEmail() {
             return email;
         }
@@ -145,6 +152,7 @@ public class DSS {
     /**
      * @return A unique ID for the DSS. Preferably a reverse domain. E.g. no.nibio.vips
      */
+    @DocumentationExample("no.nibio.vips")
     public String getId() {
         return id;
     }
@@ -161,6 +169,7 @@ public class DSS {
      * usage of the DSS over time, and the definitions of the models may also 
      * change.
      */
+    @DocumentationExample("2.0")
     public String getVersion() {
         return version;
     }
@@ -175,6 +184,7 @@ public class DSS {
     /**
      * @return  E.g. VIPS, Crop Protection Online
      */
+    @DocumentationExample("VIPS")
     public String getName() {
         return name;
     }
@@ -189,6 +199,7 @@ public class DSS {
     /**
      * @return A URL to the DSS. E.g. https://www.vips-landbruk.no/ or https://plantevaernonline.dlbr.dk/
      */
+    @DocumentationExample("https://www.vips-landbruk.no/")
     public String getUrl() {
         return url;
     }
@@ -203,6 +214,7 @@ public class DSS {
     /**
      * @return A list of languages that the DSS supports
      */
+    @DocumentationExample(value="Norwegian",value2="English")
     public List<String> getLanguages() {
         return languages;
     }

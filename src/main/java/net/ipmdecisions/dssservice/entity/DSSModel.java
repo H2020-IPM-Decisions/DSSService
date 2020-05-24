@@ -19,6 +19,7 @@
 
 package net.ipmdecisions.dssservice.entity;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
 
 /**
@@ -42,12 +43,16 @@ public class DSSModel {
     
     /**
      * Describes the output returned by the DSS model. The output must conform
-     * to the Json schema TODO Create this and set ref here.
+     * to the Json schema https://ipmdecisions.nibio.no/schemas/dss_model_output.json
      */
     static class Output {
         private String warning_status_interpretation;
         private ResultParameter[] result_parameters;
         
+        /**
+         * A result or intermediary from a DSS model. These are distinct for 
+         * each DSS model
+         */
         static class ResultParameter {
             private String id, title, description;
 
@@ -55,6 +60,7 @@ public class DSSModel {
              * @return The Id, which is combined with the DSS id and model id as 
              * name space to create a unique ID. For example no.nibio.vips.PSILARTEMP.TMDD5C
              */
+            @DocumentationExample("TMDD5C")
             public String getId() {
                 return id;
             }
@@ -69,6 +75,7 @@ public class DSSModel {
             /**
              * @return The parameter title, e.g. "Accumulated day degrees" or "Calculated RISK value"
              */
+            @DocumentationExample("Accumulated day degrees")
             public String getTitle() {
                 return title;
             }
@@ -83,6 +90,7 @@ public class DSSModel {
             /**
              * @return Optionally, a description of the parameter
              */
+            @DocumentationExample("A thorough description of the parameter goes here.")
             public String getDescription() {
                 return description;
             }
@@ -98,6 +106,7 @@ public class DSSModel {
         /**
          * @return A thorough description of how to interpret the GREEN/YELLOW/RED
          * warning status
+         * @documentationExample Green warning indicates that the flight period has not yet begun. Yellow warning indicates that the flight period is beginning and that flies can be coming into the field. Red warning indicates peak flight period. Grey warning indicates that the flight period of the 1st generation is over. Be aware that in areas with field covers (plastic, single or double non-woven covers, etc.) with early crops the preceding season (either on the current field or neighboring fields), the flight period can start earlier due to higher soil temperature under the covers.
          */
         public String getWarning_status_interpretation() {
             return warning_status_interpretation;
@@ -111,7 +120,7 @@ public class DSSModel {
         }
 
         /**
-         * @return The result result_parameters returned by the DSS model
+         * @return The result_parameters returned by the DSS model
          */
         public ResultParameter[] getResult_parameters() {
             return result_parameters;
@@ -139,8 +148,11 @@ public class DSSModel {
         private String geoJSON;
 
         /**
-         * @return the countries
+         * 
+         * @return a list of countries (using ISO-3166-1 Three-letter country codes 
+         * https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes)
          */
+        @DocumentationExample(value = "NOR", value2="SWE")
         public String[] getCountries() {
             return countries;
         }
@@ -171,14 +183,12 @@ public class DSSModel {
      * Represents a person responsible for the prediction model
      */
     static class Author {
-        public Author(){
-            
-        }
         private String name, email, organization;
 
         /**
          * @return The name of the author
          */
+        @DocumentationExample("Berit Nordskog")
         public String getName() {
             return name;
         }
@@ -193,6 +203,7 @@ public class DSSModel {
         /**
          * @return The author's email
          */
+        @DocumentationExample("acme@foobar.com")
         public String getEmail() {
             return email;
         }
@@ -207,6 +218,7 @@ public class DSSModel {
         /**
          * @return The Organization of the author (may differ from the DSSs organization)
          */
+        @DocumentationExample("NIBIO")
         public String getOrganization() {
             return organization;
         }
@@ -229,6 +241,7 @@ public class DSSModel {
          * @return The type of execution. As of now, the only valid value is
          * ONTHEFLY, meaning that it can be run directly from the platform
          */
+        @DocumentationExample("ONTHEFLY")
         public String getType() {
             return type;
         }
@@ -243,6 +256,7 @@ public class DSSModel {
         /**
          * @return The URL (to a web service) for the platform to execute the model
          */
+        @DocumentationExample("http://ipmdecisions.nibio.no/vipscore/models/PSILARTEMP/run/ipmd")
         public String getEndpoint() {
             return endpoint;
         }
@@ -256,8 +270,9 @@ public class DSSModel {
 
         /**
          * @return The HTTP method that the platform should use to access the endpoint.
-         * Values are [GET, POST]
+         * Values are [get, post]
          */
+        @DocumentationExample("post")
         public String getForm_method() {
             return form_method;
         }
@@ -274,6 +289,7 @@ public class DSSModel {
          * Defined by IANA: https://www.iana.org/assignments/media-types/media-types.xhtml . 
          * Example: application/json
          */
+        @DocumentationExample("application/json")
         public String getContent_type() {
             return content_type;
         }
@@ -287,12 +303,33 @@ public class DSSModel {
 
         /**
          * @return Json schema (https://json-schema.org/) that describes the model's 
- input result_parameters. The platform can 
- use it to build and validate forms for the client
- in addition to see if data such as weather data are part of the input.
- Must be used together with the input property, that further describes
- commonly defined types of input data such as weather data and field observations
+        input result_parameters. The platform can 
+        use it to build and validate forms for the client
+        in addition to see if data such as weather data are part of the input.
+        Must be used together with the input property, that further describes
+        commonly defined types of input data such as weather data and field observations
+        * @jsonExampleOverride {
+        "type":"object",
+        "properties": {
+          "modelId": {"type": "string", "pattern":"^PSILARTEMP$", "title": "Model Id", "default":"PSILARTEMP", "description":"Must be PSILARTEMP"},
+          "configParameters": {
+            "title":"Configuration parameters",
+            "type": "object",
+            "properties": {
+              "timeZone": {"type": "string", "title": "Time zone (e.g. Europe/Oslo)", "default":"Europe/Oslo"},
+              "timeStart": {"type":"string","format": "date", "title": "Start date of calculation (YYYY-MM-DD)"},
+              "timeEnd": {"type":"string","format": "date", "title": "End date of calculation (YYYY-MM-DD)"}
+            },
+            "required": ["timeZone","timeStart","timeEnd"]
+          },
+          "weatherData": {
+            "$ref": "https://ipmdecisions.nibio.no/weather/rest/schema/weatherdata"
+          }
+        },
+        "required": ["modelId","configParameters"]
+      }
          */
+        
         public String getInput_schema() {
             return input_schema;
         }
@@ -353,6 +390,7 @@ public class DSSModel {
          * @return EPPO code for the observation's species. 
          * See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
          */
+        @DocumentationExample(value="SEPTAP")
         public List<String> getSpecies() {
             return species;
         }
@@ -375,6 +413,7 @@ public class DSSModel {
         /**
          * @return The parameter, as defined here: https://ipmdecisions.nibio.no/weather/rest/parameter/list
          */
+        @DocumentationExample(value="1002", value2="2001")
         public int getParameter_code() {
             return parameter_code;
         }
@@ -392,6 +431,7 @@ public class DSSModel {
          * hourly == 3600 and daily = 86400
          * 
          */
+        @DocumentationExample(value="3600", value2="3600")
         public int getInterval() {
             return interval;
         }
@@ -407,6 +447,7 @@ public class DSSModel {
     /**
      * @return The name of the model. E.g. "DOWNCAST" or "Nærstad's model"
      */
+    @DocumentationExample("Carrot rust fly temperature model")
     public String getName() {
         return name;
     }
@@ -423,6 +464,7 @@ public class DSSModel {
      * The DSS ID + Version + Model Id + Version is used to keep track of the 
      * usage of the DSS as it changes over time
      */
+    @DocumentationExample("PSILARTEMP")
     public String getId() {
         return id;
     }
@@ -439,6 +481,7 @@ public class DSSModel {
      * The DSS ID + Version + Model Id + Version is used to keep track of the 
      * usage of the DSS as it changes over time
      */
+    @DocumentationExample("1.0")
     public String getVersion() {
         return version;
     }
@@ -454,6 +497,7 @@ public class DSSModel {
      * @return The type of decision this model supports. E.g. "Short-term tactical"
      * TODO: get all the different categories here
      */
+    @DocumentationExample("Short-term tactical")
     public String getType_of_decision() {
         return type_of_decision;
     }
@@ -470,6 +514,7 @@ public class DSSModel {
      * advice for how to spray or treat otherwise? TODO: Needs more systematic
      * categorization OR to be free form text
      */
+    @DocumentationExample("Risk indication")
     public String getType_of_output() {
         return type_of_output;
     }
@@ -485,6 +530,7 @@ public class DSSModel {
      * @return A URL to the DSS's own description of the model (or other type 
      * of publication)
      */
+    @DocumentationExample("https://www.vips-landbruk.no/forecasts/models/PSILARTEMP/")
     public String getDescription_URL() {
         return description_URL;
     }
@@ -498,6 +544,7 @@ public class DSSModel {
 
     /**
      * @return A description of the model
+     * @jsonExampleOverride "The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumulated degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. "
      */
     public String getDescription() {
         return description;
@@ -571,6 +618,7 @@ public class DSSModel {
      * @return EPPO codes (https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes) 
      * for the pests that this model deals with.
      */
+    @DocumentationExample("PSILRO")
     public List<String> getPests() {
         return pests;
     }
@@ -586,6 +634,7 @@ public class DSSModel {
      * @return EPPO codes (https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes) 
      * for the crops that this model deals with.
      */
+    @DocumentationExample("DAUCS")
     public List<String> getCrops() {
         return crops;
     }
@@ -601,6 +650,7 @@ public class DSSModel {
      * @return Keywords to associate with this model. AKA hashtags (#)
      * E.g. #regression #dacuscarota #norway
      */
+    @DocumentationExample("#regression #dacuscarota #norway")
     public String getKeywords() {
         return keywords;
     }
@@ -613,7 +663,7 @@ public class DSSModel {
     }
 
     /**
-     * @return TODO: Must be changed/Defined!!!
+     * @return The output from the DSS model
      */
     public Output getOutput() {
         return output;
