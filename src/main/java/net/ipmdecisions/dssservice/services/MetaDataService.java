@@ -91,6 +91,60 @@ public class MetaDataService {
     }
 
     /**
+     * This returns the generic schema for field observations, containing the common
+     * properties for field observations. These are location (GeoJson), time 
+     * (ISO-8859 datetime), EPPO Code for the pest and crop. In addition, quantification
+     * information must be provided. This is specified in a custom schema, which
+     * must be a part of the input_schema property in the DSS model metadata. So 
+     * in the configParameters property of the input_schema for a model, we may find:
+     * <pre>
+        "fieldObservations": {
+            "title": "Field observations",
+            "type": "array",
+            "items": {
+                "$ref": "https://ipmdecisions.nibio.no/dss/rest/schema/fieldobservation"
+            }
+        },
+        "fieldObservationQuantifications": {
+            "title": "Field observation quantifications",
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/fieldObs_SEPTAP"
+                }
+              ]
+            }
+        }
+     * </pre>
+     * 
+     * Both fieldObservations and fieldObservationQuantifications are arrays, so
+     * for each fieldObservation object you must have a corresponding 
+     * quantification object. So fieldObservations[0] corresponds to 
+     * fieldObservationQuantifications[0] and so on.
+     * 
+     * The actual contents of the field observation quantification object is
+     * structured by an entry in the definitions section of the input_schema. So
+     * in our specific example, you will find:
+     * 
+     * <pre>
+     *  "definitions": {
+          "fieldObs_SEPTAP": {
+            "title": "Septoria apiicola quantification", 
+            "properties": {
+              "observed":{
+                "title":"observed", 
+                "type":"boolean"
+              }
+            }
+        }
+     * </pre>
+     * 
+     * Which is, admittedly, a very simple quantification. For the form builder, 
+     * the EPPO code for the pest is specified in the fieldObs_SEPTAP (after the 
+     * underscore). This should be sufficient for the form to build the correct
+     * quantification fields when the user selects the pest (if observations
+     * of more than one pest species are required/possible)
      * 
      * @return The generic schema for field observations
      */

@@ -381,7 +381,8 @@ public class DSSModel {
     }
     
     /**
-     * Description of a field observation required by the model
+     * List of species for which a field observation required by the model. Not 
+     * to be confused with the fieldObservation property in an input_schema
      */
     static class FieldObservation{
         private List<String> species;
