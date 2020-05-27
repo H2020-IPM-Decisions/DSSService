@@ -23,7 +23,6 @@ package net.ipmdecisions.dssservice.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.webcohesion.enunciate.metadata.DocumentationExample;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import java.io.File;
 import java.io.IOException;
@@ -48,8 +47,7 @@ import net.ipmdecisions.dssservice.entity.DSSModel;
  */
 @Path("rest")
 public class DSSService {
-    
-   
+
     /**
      * List all DSSs and models available in the platform
      * @return a list of all DSSs and models available in the platform
