@@ -40,7 +40,7 @@ public class DSS {
      * A data class for identifying the Organization behind/responsible for the DSS
      */
     static class Organization {
-        private String name, country, address, postal_code, city, email;
+        private String name, country, address, postal_code, city, email, url;
 
         /**
          * @return the name of the Organization. E.g. ADAS, NIBIO
@@ -131,6 +131,20 @@ public class DSS {
          */
         public void setEmail(String email) {
             this.email = email;
+        }
+
+        /**
+         * @return the url
+         */
+        public String getUrl() {
+            return url;
+        }
+
+        /**
+         * @param url the url to set
+         */
+        public void setUrl(String url) {
+            this.url = url;
         }
         
     }
