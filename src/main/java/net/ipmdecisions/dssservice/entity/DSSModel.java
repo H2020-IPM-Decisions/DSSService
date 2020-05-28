@@ -141,9 +141,12 @@ public class DSSModel {
      * a custom polygon using GeoJSON https://geojson.org/
      * 
      * Or both!
+     * Check out: https://github.com/datasets/geo-countries / https://datahub.io/core/geo-countries 
+     * 
+     * 
      * 
      */
-    static class Valid_Spatial {
+    public static class Valid_Spatial {
         private String[] countries;
         private String geoJSON;
 
