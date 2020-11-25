@@ -33,7 +33,7 @@ import javax.validation.constraints.NotNull;
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 @JsonSchemaInject(strings = {
-    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/dss/rest/schema/fieldobservation"),
+    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation"),
     }
 )
 @JsonSchemaTitle("Field observation")

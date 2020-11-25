@@ -33,7 +33,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @JsonSchemaInject(strings = {
-    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/dss/rest/schema/modeloutput"),
+    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput"),
     }
 )
 @JsonSchemaTitle("Model output")
