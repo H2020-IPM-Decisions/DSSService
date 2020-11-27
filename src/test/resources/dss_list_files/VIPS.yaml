@@ -59,7 +59,7 @@ models:
      interval: 86400 # Sampling interval in seconds (3600 * 24 = 86400)
   execution: 
     type: ONTHEFLY
-    endpoint: https://ipmdecisions.nibio.no/vipscore/models/PSILARTEMP/run/ipmd
+    endpoint: https://coremanager.vips.nibio.no/models/models/PSILARTEMP/run/ipmd
     form_method: post # Could be get or post
     content_type: application/json # Regular forms: application/x-www-form-urlencoded , Regular forms with files (<input type="file">): multipart/form-data
     # The input template should adhere to the JSON Schema standard: https://json-schema.org/
@@ -79,7 +79,7 @@ models:
             "required": ["timeZone","timeStart","timeEnd"]
           },
           "weatherData": {
-            "$ref": "https://ipmdecisions.nibio.no/weather/rest/schema/weatherdata"
+            "$ref": "https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata"
           }
         },
         "required": ["modelId","configParameters"]
@@ -128,7 +128,7 @@ models:
      interval: 3600 # The least detail accepted (higher frequencies can aggregate to lower)
   execution:
     type: ONTHEFLY
-    endpoint: https://ipmdecisions.nibio.no/vipscore/models/NAERSTADMO/run/ipmd
+    endpoint: https://coremanager.vips.nibio.no/models/NAERSTADMO/run/ipmd
     form_method: post # Could be get or post
     content_type: application/json # Regular forms: application/x-www-form-urlencoded , Regular forms with files (<input type="file">): multipart/form-data
 # The input template should adhere to the JSON Schema standard: https://json-schema.org/
@@ -148,7 +148,7 @@ models:
             "required": ["timeZone","timeStart","timeEnd"]
           },
           "weatherData": {
-            "$ref": "https://ipmdecisions.nibio.no/weather/rest/schema/weatherdata"
+            "$ref": "https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata"
           }
         },
         "required": ["modelId","configParameters"]
@@ -199,7 +199,7 @@ models:
     - SEPTAP # EPPO Code
   execution:
     type: ONTHEFLY # [ONTHEFLY, BATCH, TICKET]
-    endpoint: https://ipmdecisions.nibio.no/vipscore/models/SEPAPIICOL/run/ipmd
+    endpoint: https://coremanager.vips.nibio.no/models/SEPAPIICOL/run/ipmd
     form_method: post # Could be get or post
     content_type: application/json # Regular forms: application/x-www-form-urlencoded , Regular forms with files (<input type="file">): multipart/form-data
 # The input template should adhere to the JSON Schema standard: https://json-schema.org/
@@ -237,7 +237,7 @@ models:
             "required": ["timeZone","startDateGrowth","endDateCalculation"]
           },
           "weatherData": {
-            "$ref": "https://ipmdecisions.nibio.no/weather/rest/schema/weatherdata"
+            "$ref": "https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata"
           }
         },
         "required": ["modelId","configParameters"],

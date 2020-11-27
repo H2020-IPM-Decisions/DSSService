@@ -43,7 +43,7 @@ public class DSSModel {
     
     /**
      * Describes the output returned by the DSS model. The output must conform
-     * to the Json schema https://ipmdecisions.nibio.no/schemas/dss_model_output.json
+     * to the Json schema https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput
      */
     static class Output {
         private String warning_status_interpretation;
@@ -259,7 +259,7 @@ public class DSSModel {
         /**
          * @return The URL (to a web service) for the platform to execute the model
          */
-        @DocumentationExample("http://ipmdecisions.nibio.no/vipscore/models/PSILARTEMP/run/ipmd")
+        @DocumentationExample("https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd")
         public String getEndpoint() {
             return endpoint;
         }
@@ -326,7 +326,7 @@ public class DSSModel {
             "required": ["timeZone","timeStart","timeEnd"]
           },
           "weatherData": {
-            "$ref": "https://ipmdecisions.nibio.no/weather/rest/schema/weatherdata"
+            "$ref": "https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata"
           }
         },
         "required": ["modelId","configParameters"]
@@ -415,7 +415,7 @@ public class DSSModel {
         private int interval;
 
         /**
-         * @return The parameter, as defined here: https://ipmdecisions.nibio.no/weather/rest/parameter/list
+         * @return The parameter, as defined here: https://ipmdecisions.nibio.no/api/wx/rest/parameter
          */
         @DocumentationExample(value="1002", value2="2001")
         public int getParameter_code() {

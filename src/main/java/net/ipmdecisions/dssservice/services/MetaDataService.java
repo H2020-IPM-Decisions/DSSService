@@ -102,7 +102,7 @@ public class MetaDataService {
             "title": "Field observations",
             "type": "array",
             "items": {
-                "$ref": "https://ipmdecisions.nibio.no/dss/rest/schema/fieldobservation"
+                "$ref": "https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation"
             }
         },
         "fieldObservationQuantifications": {
@@ -174,7 +174,7 @@ public class MetaDataService {
     }
     
     /**
-     * Validate model output against this schema: https://ipmdecisions.nibio.no/schemas/dss_model_output.json
+     * Validate model output against this schema: https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput
      * @param modelOutputData
      * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false"}</code> otherwise
      * @responseExample application/json {"isValid":"true"}
@@ -190,7 +190,7 @@ public class MetaDataService {
         {
             SchemaUtils sUtils = new SchemaUtils();
             boolean isValid; 
-            URL schemaURL = new URL("https://ipmdecisions.nibio.no/schemas/dss_model_output.json");
+            URL schemaURL = new URL("https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput");
             isValid = sUtils.isJsonValid(schemaURL, modelOutputData);
             return Response.ok().entity(Map.of("isValid", isValid)).build();
         } catch (IOException | ProcessingException  ex) 
