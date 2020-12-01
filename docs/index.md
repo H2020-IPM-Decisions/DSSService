@@ -246,11 +246,12 @@ Looking at the VIPS's observation based carrot rust fly model (PSILAROBSE), we h
         }
       }
 ```
-The field observations definition is a bit complicated, because it consists of some common, standard parts, but also stuff that differs. What's common is:
-* A time component - when was the observation made?
-* A location component - where was the observation made?
+The field observations definition is a bit complicated, because it consists of some common, standard parts, but also parts that vary between pests. Common parts are:
+* Time - when was the observation made?
+* Location - where was the observation made?
 * What has been observed?
 * In which crop was it observed?
+
 Here's the [schema for the common parts](https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation):
 ```
 {
@@ -292,7 +293,7 @@ Here's the [schema for the common parts](https://ipmdecisions.nibio.no/api/dss/r
 ```
 Please note that the pests and crops are referred by [EPPO codes](https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes)
 
-In addition to this, most field observations carry some kind of quantification information: Number of leaves infected, number of eggs per area or in traps, etc. Since this is different for most pests, and also is expressed differently in different models, we have to include a wild card in the system. So we have added the property "fieldObservationQuantifications". These are given as an array, so that they correspond item-by-item with the array of fieldObservations. Each quantification has its own schema definition, given in the "definition" section. 
+In addition to this, most field observations carry some kind of quantification information: Number of leaves infected, number of eggs per plant, trap countings, etc. Since this is different for most pests, and also is expressed differently in different models, we have to include a wild card in the system. So we have added the property "fieldObservationQuantifications". These quantifications are given as an array, so that they correspond item-by-item with the array of fieldObservations. Each quantification has its own schema definition, given in the "definition" section. 
 
 Pasting the schema into the [online version of json-editor](https://json-editor.github.io/json-editor/) allows us to create a request like the one below:
 ```

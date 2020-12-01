@@ -18,5 +18,7 @@ from the models in a uniform way. The data structure is described in a Json sche
 such data - is part of the MetaDataService
 
 ## 3. A standard for field observations sent as input data to DSS models
-Field observations of pests and diseases are required as inputs in some DSS models. The common properties of such data is
-described in a Json schema. This is part of the MetaDataService
+Field observations of pests and diseases are required as inputs in some DSS models. The common properties of such data is described in a Json schema. This is part of the MetaDataService
+
+## Documentation
+API documentation is auto generated with [Enunciate](https://enunciate.webcohesion.com/), and should be available from a deployed version at the url `[HOST]/[APP_PREFIX]/apidocs`. If you are in fact at that place, keep on reading. In the source code, there is also more documentation in the `/docs` folder, which can be read on [GitHub](https://github.com/H2020-IPM-Decisions/DSSService/blob/develop/docs/index.md)
