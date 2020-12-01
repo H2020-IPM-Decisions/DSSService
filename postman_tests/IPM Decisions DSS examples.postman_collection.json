@@ -1,0 +1,76 @@
+{
+	"info": {
+		"_postman_id": "8132d62c-fa68-4f44-904f-e863ab031889",
+		"name": "IPM Decisions DSS examples",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "VIPS run model PSILARTEMP (Carrot rust fly temp model)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"modelId\": \"PSILARTEMP\",\n  \"configParameters\": {\n    \"timeZone\": \"Europe/Oslo\",\n    \"timeStart\": \"2020-05-01\",\n    \"timeEnd\": \"2020-05-03\"\n  },\n  \"weatherData\": {\n    \"timeStart\": \"2020-04-30T22:00:00Z\",\n    \"timeEnd\": \"2020-05-02T22:00:00Z\",\n    \"interval\": 86400,\n    \"weatherParameters\": [\n        1002\n    ],\n    \"locationWeatherData\": [\n        {\n            \"longitude\": 10.781989,\n            \"latitude\": 59.660468,\n            \"altitude\": 94.0,\n            \"data\": [\n                [\n                    5.7\n                ],\n                [\n                    8.2\n                ],\n                [\n                    8.5\n                ]\n            ],\n            \"length\": 3,\n            \"width\": 1\n        }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd",
+					"protocol": "https",
+					"host": [
+						"coremanager",
+						"vips",
+						"nibio",
+						"no"
+					],
+					"path": [
+						"models",
+						"PSILARTEMP",
+						"run",
+						"ipmd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "VIPS run model PSILAROBS (Carrot rust fly observation model)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"modelId\": \"SEPAPIICOL\",\n  \"configParameters\": {\n    \"timeZone\": \"Europe/Oslo\",\n    \"startDateCalculation\": \"2020-05-01\",\n    \"endDateCalculation\": \"2020-05-10\",\n    \"fieldObservations\": [\n      {\n        \"location\": {\n          \"type\": \"Point\",\n          \"coordinates\": [\n            \"11.025635\",\n            \"59.715791\"\n          ]\n        },\n        \"time\": \"2020-05-05T12:00:00Z\",\n        \"pestEPPOCode\": \"SEPTAP\",\n        \"cropEPPOCode\": \"APUGD\"\n      }\n    ],\n    \"fieldObservationQuantifications\": [\n      {\n        \"trapCountCropEdge\": 22,\n        \"trapCountCropInside\": 2\n      }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://coremanager.vips.nibio.no/models/PSILAROBSE/run/ipmd",
+					"protocol": "https",
+					"host": [
+						"coremanager",
+						"vips",
+						"nibio",
+						"no"
+					],
+					"path": [
+						"models",
+						"PSILAROBSE",
+						"run",
+						"ipmd"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

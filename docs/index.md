@@ -197,3 +197,216 @@ What is returned, is a set of result objects. It conforms to [the modeloutput sc
     ]
 }
 ```
+## Create a DSS model request with field observations
+Looking at the VIPS's observation based carrot rust fly model (PSILAROBSE), we have this input_schema:
+```
+      {
+        "type":"object",
+        "properties": {
+          "modelId": {"type": "string", "pattern":"^PSILAROBSE$", "title": "Model Id", "default":"PSILAROBSE", "description":"Must be PSILAROBSE"},
+          "configParameters": {
+            "title":"Configuration parameters",
+            "type": "object",
+            "properties": {
+              "timeZone": {"type": "string", "title": "Time zone (e.g. Europe/Oslo)", "default":"Europe/Oslo"},
+              "startDateCalculation": {"type":"string","format": "date", "title": "Start date of calculation (YYYY-MM-DD)"},
+              "endDateCalculation": {"type":"string","format": "date", "title": "End date of calculation (YYYY-MM-DD)"},
+              "fieldObservations": {
+                "title": "Field observations",
+                "type": "array",
+                "items": {
+                  "$ref": "https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation"
+                }
+              },
+              "fieldObservationQuantifications": {
+                "title": "Field observation quantifications",
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/fieldObs_PSILRO"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": ["timeZone","startDateCalculation","endDateCalculation"]
+          }
+        },
+        "required": ["modelId","configParameters"],
+        "definitions": {
+          "fieldObs_PSILRO": {
+            "title": "Psila rosae quantification", 
+            "properties": {
+              "trapCountCropEdge":{"title":"Insect trap count at the edge of the field","type":"integer"},
+              "trapCountCropInside":{"title":"Insect trap count inside the field","type":"integer"}
+            },
+            "required": ["trapCountCropEdge","trapCountCropInside"]
+          }
+        }
+      }
+```
+The field observations definition is a bit complicated, because it consists of some common, standard parts, but also stuff that differs. What's common is:
+* A time component - when was the observation made?
+* A location component - where was the observation made?
+* What has been observed?
+* In which crop was it observed?
+Here's the [schema for the common parts](https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation):
+```
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Field observation",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Version 0.1. The schema describes the field observation format for the IPM Decisions platform. See an example here: TODO",
+  "$id": "https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation",
+  "properties": {
+    "location": {
+      "title": "Location  of the observation. In GeoJson format.",
+      "$ref": "https://ipmdecisions.nibio.no/schemas/geojson.json"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The timestamp of the field observation. Format: \"yyyy-MM-dd'T'HH:mm:ssXXX\", e.g. 2020-04-09T18:00:00+02:00",
+      "title": "Time (yyyy-MM-dd'T'HH:mm:ssXXX)"
+    },
+    "pestEPPOCode": {
+      "type": "string",
+      "description": "The EPPO code for the observed pest. See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes",
+      "title": "Pest"
+    },
+    "cropEPPOCode": {
+      "type": "string",
+      "description": "The EPPO code for the crop in which the pest was observed. See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes",
+      "title": "Pest"
+    }
+  },
+  "required": [
+    "location",
+    "time",
+    "pestEPPOCode",
+    "cropEPPOCode"
+  ]
+}
+```
+Please note that the pests and crops are referred by [EPPO codes](https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes)
+
+In addition to this, most field observations carry some kind of quantification information: Number of leaves infected, number of eggs per area or in traps, etc. Since this is different for most pests, and also is expressed differently in different models, we have to include a wild card in the system. So we have added the property "fieldObservationQuantifications". These are given as an array, so that they correspond item-by-item with the array of fieldObservations. Each quantification has its own schema definition, given in the "definition" section. 
+
+Pasting the schema into the [online version of json-editor](https://json-editor.github.io/json-editor/) allows us to create a request like the one below:
+```
+{
+  "modelId": "SEPAPIICOL",
+  "configParameters": {
+    "timeZone": "Europe/Oslo",
+    "startDateCalculation": "2020-05-01",
+    "endDateCalculation": "2020-05-10",
+    "fieldObservations": [
+      {
+        "location": {
+          "type": "Point",
+          "coordinates": [
+            "11.025635",
+            "59.715791"
+          ]
+        },
+        "time": "2020-05-05T12:00:00Z",
+        "pestEPPOCode": "SEPTAP",
+        "cropEPPOCode": "APUGD"
+      }
+    ],
+    "fieldObservationQuantifications": [
+      {
+        "trapCountCropEdge": 22,
+        "trapCountCropInside": 2
+      }
+    ]
+  }
+}
+```
+Sending this request to the model endpoint returns the result below. You can test this using Postman, importing the collection at `/postman_tests/IPM Decisions DSS examples.postman_collection.json`
+```
+{
+    "timeStart": "2020-04-30T22:00:00Z",
+    "timeEnd": "2020-05-09T22:00:00Z",
+    "interval": 86400,
+    "resultParameters": [
+        "TRAP_COUNT_CROP_EDGE",
+        "TRAP_COUNT_THRESHOLD",
+        "WARNING_STATUS",
+        "TRAP_COUNT_CROP_INSIDE"
+    ],
+    "locationResult": [
+        {
+            "longitude": null,
+            "latitude": null,
+            "altitude": null,
+            "data": [
+                [
+                    null,
+                    1.0,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    1.0,
+                    null
+                ],
+                [
+                    22.0,
+                    1.0,
+                    4.0,
+                    2.0
+                ],
+                [
+                    null,
+                    1.0,
+                    4.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    4.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    4.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    4.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    4.0,
+                    null
+                ]
+            ],
+            "length": 10,
+            "width": 4
+        }
+    ]
+}
+```
