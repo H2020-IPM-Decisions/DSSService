@@ -105,7 +105,7 @@
                             },
                             "keywords": {
                                 "id": "#/properties/models/items/anyOf/0/properties/keywords",
-                                "type": "string",
+                                "type": ["string","null"],
                                 "title": "The keywords schema",
                                 "description": "An explanation about the purpose of this instance.",
                                 "default": "",
@@ -141,7 +141,7 @@
                                         "DAUCS"
                                     ]
                                 ],
-                                "additionalItems": true,
+                                "additionalItems": false,
                                 "items": {
                                     "id": "#/properties/models/items/anyOf/0/properties/crops/items",
                                     "type" : "string"
@@ -162,7 +162,7 @@
                                         }
                                     ]
                                 ],
-                                "additionalItems": true,
+                                "additionalItems": false,
                                 "items": {
                                     "id": "#/properties/models/items/anyOf/0/properties/authors/items",
                                     "type": "object",
@@ -172,38 +172,18 @@
                                             "properties": {
                                                 "name": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/name",
-                                                    "type": "string",
-                                                    "title": "The name schema",
-                                                    "description": "An explanation about the purpose of this instance.",
-                                                    "default": "",
-                                                    "examples": [
-                                                        "Berit Nordskog"
-                                                    ]
+                                                    "type": "string"
                                                 },
                                                 "email": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/email",
-                                                    "type": "string",
-                                                    "title": "The email schema",
-                                                    "description": "An explanation about the purpose of this instance.",
-                                                    "default": "",
-                                                    "examples": [
-                                                        "berit.nordskog@nibio.no"
-                                                    ]
+                                                    "type": ["string","null"]
                                                 },
                                                 "organization": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/organization",
-                                                    "type": "string",
-                                                    "title": "The organization schema",
-                                                    "description": "An explanation about the purpose of this instance.",
-                                                    "default": "",
-                                                    "examples": [
-                                                        "NIBIO"
-                                                    ]
+                                                    "type": ["string","null"]
                                                 }
                                             },
-                                            "additionalProperties": true
-                                        
-                                    
+                                            "additionalProperties": false
                                 }
                             },
                             "execution": {
@@ -232,55 +212,26 @@
                                     "type": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/type",
                                         "type": "string",
-                                        "title": "The type schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "ONTHEFLY"
-                                        ]
+                                        "title": "The type schema"
                                     },
                                     "endpoint": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/endpoint",
-                                        "type": "string",
-                                        "title": "The endpoint schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd"
-                                        ]
+                                        "type": "string"
                                     },
                                     "form_method": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/form_method",
-                                        "type": "string",
-                                        "title": "The form_method schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "post"
-                                        ]
+                                        "type": "string"
                                     },
                                     "content_type": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/content_type",
-                                        "type": "string",
-                                        "title": "The content_type schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "application/json"
-                                        ]
+                                        "type": "string"
                                     },
                                     "input_schema": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/input_schema",
-                                        "type": "string",
-                                        "title": "The input_schema schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "{\n  \"type\":\"object\",\n  \"properties\": {\n    \"modelId\": {\"type\": \"string\", \"pattern\":\"^PSILARTEMP$\", \"title\": \"Model Id\", \"default\":\"PSILARTEMP\", \"description\":\"Must be PSILARTEMP\"},\n    \"configParameters\": {\n      \"title\":\"Configuration parameters\",\n      \"type\": \"object\",\n      \"properties\": {\n        \"timeZone\": {\"type\": \"string\", \"title\": \"Time zone (e.g. Europe/Oslo)\", \"default\":\"Europe/Oslo\"},\n        \"timeStart\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"Start date of calculation (YYYY-MM-DD)\"},\n        \"timeEnd\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"End date of calculation (YYYY-MM-DD)\"}\n      },\n      \"required\": [\"timeZone\",\"timeStart\",\"timeEnd\"]\n    },\n    \"weatherData\": {\n      \"$ref\": \"https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata\"\n    }\n  },\n  \"required\": [\"modelId\",\"configParameters\"]\n}\n"
-                                        ]
+                                        "type": "string"
                                     }
                                 },
-                                "additionalProperties": true
+                                "additionalProperties": false
                             },
                             "input": {
                                 "id": "#/properties/models/items/anyOf/0/properties/input",
@@ -296,14 +247,13 @@
                                                 "interval": 86400
                                             }
                                         ],
-                                        "field_observation": null
+                                        "field_observation": {"species":["PSILRO"]}
                                     }
                                 ],
-                                "required": [],
                                 "properties": {
                                     "weather": {
                                         "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather",
-                                        "type": "array",
+                                        "type": ["array","null"],
                                         "title": "The weather schema",
                                         "description": "An explanation about the purpose of this instance.",
                                         "default": [],
@@ -315,62 +265,35 @@
                                                 }
                                             ]
                                         ],
-                                        "additionalItems": true,
+                                        "additionalItems": false,
                                         "items": {
                                             "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items",
-                                            "anyOf": [
-                                                {
-                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0",
-                                                    "type": "object",
-                                                    "title": "The first anyOf schema",
-                                                    "description": "An explanation about the purpose of this instance.",
-                                                    "default": {},
-                                                    "examples": [
-                                                        {
-                                                            "parameter_code": 1002,
-                                                            "interval": 86400
-                                                        }
-                                                    ],
-                                                    "required": [
-                                                        "parameter_code",
-                                                        "interval"
-                                                    ],
-                                                    "properties": {
-                                                        "parameter_code": {
-                                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/parameter_code",
-                                                            "type": "integer",
-                                                            "title": "The parameter_code schema",
-                                                            "description": "An explanation about the purpose of this instance.",
-                                                            "default": 0,
-                                                            "examples": [
-                                                                1002
-                                                            ]
-                                                        },
-                                                        "interval": {
-                                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/interval",
-                                                            "type": "integer",
-                                                            "title": "The interval schema",
-                                                            "description": "An explanation about the purpose of this instance.",
-                                                            "default": 0,
-                                                            "examples": [
-                                                                86400
-                                                            ]
-                                                        }
-                                                    },
-                                                    "additionalProperties": true
+                                            "type": "object",
+                                            "properties": {
+                                                "parameter_code": {
+                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/parameter_code",
+                                                    "type": "integer"
+                                                },
+                                                "interval": {
+                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/interval",
+                                                    "type": "integer"
                                                 }
-                                            ]
+                                            },
+                                            "additionalProperties": true
                                         }
                                     },
                                     "field_observation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/input/properties/field_observation",
-                                        "type": "null",
-                                        "title": "The field_observation schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": null,
-                                        "examples": [
-                                            null
-                                        ]
+                                        "type": ["object","null"],
+                                        "properties": {
+                                            "species": {
+                                                "type":"array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            
+                                        }
                                     }
                                 },
                                 "additionalProperties": true
@@ -389,51 +312,22 @@
                                         "geoJSON": "{}"
                                     }
                                 ],
-                                "required": [
-                                    "countries",
-                                    "geoJSON"
-                                ],
                                 "properties": {
                                     "countries": {
                                         "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries",
                                         "type": "array",
-                                        "title": "The countries schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": [],
-                                        "examples": [
-                                            [
-                                                "NOR"
-                                            ]
-                                        ],
-                                        "additionalItems": true,
+                                        "additionalItems": false,
                                         "items": {
                                             "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items",
-                                            "anyOf": [
-                                                {
-                                                    "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items/anyOf/0",
-                                                    "type": "string",
-                                                    "title": "The first anyOf schema",
-                                                    "description": "An explanation about the purpose of this instance.",
-                                                    "default": "",
-                                                    "examples": [
-                                                        "NOR"
-                                                    ]
-                                                }
-                                            ]
+                                            "type": "string"
                                         }
                                     },
                                     "geoJSON": {
                                         "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/geoJSON",
-                                        "type": "string",
-                                        "title": "The geoJSON schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "{}"
-                                        ]
+                                        "type": "string"
                                     }
                                 },
-                                "additionalProperties": true
+                                "additionalProperties": false
                             },
                             "output": {
                                 "id": "#/properties/models/items/anyOf/0/properties/output",
@@ -460,86 +354,34 @@
                                 "properties": {
                                     "warning_status_interpretation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",
-                                        "type": "string",
-                                        "title": "The warning_status_interpretation schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": "",
-                                        "examples": [
-                                            "Green warning indicates that the flight period has not yet begun.\nYellow warning indicates that the flight period is beginning and that flies can be coming into the field.\nRed warning indicates peak flight period.\nGrey warning indicates that the flight period of the 1st generation is over.\nBe aware that in areas with field covers (plastic, single or double non-woven covers, etc.) with early crops the preceding season (either on the current field or neighboring fields), the flight period can start earlier due to higher soil temperature under the covers."
-                                        ]
+                                        "type": "string"
                                     },
                                     "result_parameters": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters",
                                         "type": "array",
-                                        "title": "The result_parameters schema",
-                                        "description": "An explanation about the purpose of this instance.",
-                                        "default": [],
-                                        "examples": [
-                                            [
-                                                {
-                                                    "id": "TMDD5C",
-                                                    "title": "Accumulated day degrees",
-                                                    "description": "The accumulated day degrees with a base temperature of 5 degrees celcius"
-                                                }
-                                            ]
-                                        ],
-                                        "additionalItems": true,
+                                        "additionalItems": false,
                                         "items": {
                                             "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items",
-                                            "anyOf": [
-                                                {
-                                                    "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0",
-                                                    "type": "object",
-                                                    "title": "The first anyOf schema",
-                                                    "description": "An explanation about the purpose of this instance.",
-                                                    "default": {},
-                                                    "examples": [
-                                                        {
-                                                            "id": "TMDD5C",
-                                                            "title": "Accumulated day degrees",
-                                                            "description": "The accumulated day degrees with a base temperature of 5 degrees celcius"
-                                                        }
-                                                    ],
-                                                    "required": [
-                                                        "id",
-                                                        "title",
-                                                        "description"
-                                                    ],
-                                                    "properties": {
-                                                        "id": {
-                                                            "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/id",
-                                                            "type": "string",
-                                                            "title": "The id schema",
-                                                            "description": "An explanation about the purpose of this instance.",
-                                                            "default": "",
-                                                            "examples": [
-                                                                "TMDD5C"
-                                                            ]
-                                                        },
-                                                        "title": {
-                                                            "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/title",
-                                                            "type": "string",
-                                                            "title": "The title schema",
-                                                            "description": "An explanation about the purpose of this instance.",
-                                                            "default": "",
-                                                            "examples": [
-                                                                "Accumulated day degrees"
-                                                            ]
-                                                        },
-                                                        "description": {
-                                                            "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/description",
-                                                            "type": "string",
-                                                            "title": "The description schema",
-                                                            "description": "An explanation about the purpose of this instance.",
-                                                            "default": "",
-                                                            "examples": [
-                                                                "The accumulated day degrees with a base temperature of 5 degrees celcius"
-                                                            ]
-                                                        }
-                                                    },
-                                                    "additionalProperties": true
+                                            "required": [
+                                                "id",
+                                                "title",
+                                                "description"
+                                            ],
+                                            "properties": {
+                                                "id": {
+                                                    "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/id",
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/title",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/description",
+                                                    "type": "string"
                                                 }
-                                            ]
+                                            },
+                                            "additionalProperties": true
                                         }
                                     }
                                 },
@@ -606,19 +448,7 @@
             "additionalItems": true,
             "items": {
                 "id": "#/properties/languages/items",
-                "anyOf": [
-                    {
-                        "id": "#/properties/languages/items/anyOf/0",
-                        "type": "string",
-                        "title": "The first anyOf schema",
-                        "description": "An explanation about the purpose of this instance.",
-                        "default": "",
-                        "examples": [
-                            "Norwegian",
-                            "English"
-                        ]
-                    }
-                ]
+                "type": "string"
             }
         },
         "organization": {
