@@ -1,9 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema",
-    "id": "http://example.com/example.json",
+    "id": "https://ipmdecisions.nibio.no/api/dss/rest/schema/dss",
     "type": "object",
-    "title": "The root schema",
-    "description": "The root schema comprises the entire JSON document.",
+    "title": "The DSS schema",
+    "description": "The IPM Decisions DSS metadata. A DSS consists of one or more pest prediction models",
     "required": [
         "models",
         "id",
@@ -15,29 +15,21 @@
     ],
     "properties": {
         "models": {
-            "id": "#/properties/models",
             "type": "array",
-            "title": "The models schema",
-            "description": "An explanation about the purpose of this instance.",
             "additionalItems": false,
             "items": {
                 "type": "object",
                 "properties": {
                             "name": {
-                                "id": "#/properties/models/items/anyOf/0/properties/name",
                                 "type": "string",
-                                "title": "The name schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": "",
                                 "examples": [
                                     "Carrot rust fly temperature model"
                                 ]
                             },
                             "id": {
-                                "id": "#/properties/models/items/anyOf/0/properties/id",
                                 "type": "string",
                                 "title": "The id schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "A unique ID for the model in the namespace of the DSS.",
                                 "default": "",
                                 "examples": [
                                     "PSILARTEMP"
@@ -47,7 +39,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/version",
                                 "type": "string",
                                 "title": "The version schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "Use this for uniquely versioning the model (over time)",
                                 "default": "",
                                 "examples": [
                                     "1.0"
@@ -57,7 +49,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/type_of_decision",
                                 "type": "string",
                                 "title": "The type_of_decision schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "Describing what kind of decision the model gives advice on",
                                 "default": "",
                                 "examples": [
                                     "Short-term tactical"
@@ -67,7 +59,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/type_of_output",
                                 "type": "string",
                                 "title": "The type_of_output schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "What kind of output does the model give",
                                 "default": "",
                                 "examples": [
                                     "Risk indication"
@@ -77,7 +69,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/description_URL",
                                 "type": "string",
                                 "title": "The description_URL schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "A URL to more description about the model",
                                 "default": "",
                                 "examples": [
                                     "https://www.vips-landbruk.no/forecasts/models/PSILARTEMP/"
@@ -87,7 +79,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/description",
                                 "type": "string",
                                 "title": "The description schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "A concise description of the model",
                                 "default": "",
                                 "examples": [
                                     "The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumuleted degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. \nStandard air temperature (temperature measured 2 m above ground) is used in the model. Degree-days are defined for this model as the sum of the difference between a base temperature of 5,0 °C and the mean temperature for all days with a temperature >5,0 °C, in other words (daily mean temperature – 5,0 °C) from 1 March (beginning when the ground has thawed).\n"
@@ -97,7 +89,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/citation",
                                 "type": "null",
                                 "title": "The citation schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "Any literature references for the model",
                                 "default": null,
                                 "examples": [
                                     null
@@ -107,7 +99,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/keywords",
                                 "type": ["string","null"],
                                 "title": "The keywords schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "keywords to make this model searchable",
                                 "default": "",
                                 "examples": [
                                     "foo, bar, mechanistic, regression"
@@ -117,7 +109,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/pests",
                                 "type": "array",
                                 "title": "The pests schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "A list of EPPO codes for the pests predicted by this model",
                                 "default": [],
                                 "examples": [
                                     [
@@ -134,7 +126,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/crops",
                                 "type": "array",
                                 "title": "The crops schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "A list of EPPO codes for the crops in which this model predicts pests",
                                 "default": [],
                                 "examples": [
                                     [
@@ -151,7 +143,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/authors",
                                 "type": "array",
                                 "title": "The authors schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "List of model authors",
                                 "default": [],
                                 "examples": [
                                     [
@@ -190,7 +182,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/execution",
                                 "type": "object",
                                 "title": "The execution schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "Meta data about how to execute the model",
                                 "default": {},
                                 "examples": [
                                     {
@@ -237,7 +229,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/input",
                                 "type": "object",
                                 "title": "The input schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "A Json schema describing the inputs and their formats",
                                 "default": {},
                                 "examples": [
                                     {
@@ -255,7 +247,7 @@
                                         "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather",
                                         "type": ["array","null"],
                                         "title": "The weather schema",
-                                        "description": "An explanation about the purpose of this instance.",
+                                        "description": "A list of weather parameters and their intervals (given in seconds) that are required",
                                         "default": [],
                                         "examples": [
                                             [
@@ -302,7 +294,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/valid_spatial",
                                 "type": "object",
                                 "title": "The valid_spatial schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "Where is this model confirmed to work? Describe either by a list of countries or by (a) polygon(s) in GeoJson format",
                                 "default": {},
                                 "examples": [
                                     {
@@ -333,7 +325,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/output",
                                 "type": "object",
                                 "title": "The output schema",
-                                "description": "An explanation about the purpose of this instance.",
+                                "description": "How to interpret the output from the model",
                                 "default": {},
                                 "examples": [
                                     {
@@ -397,7 +389,7 @@
             "id": "#/properties/id",
             "type": "string",
             "title": "The id schema",
-            "description": "An explanation about the purpose of this instance.",
+            "description": "A unique ID for this DSS",
             "default": "",
             "examples": [
                 "no.nibio.vips"
@@ -407,7 +399,7 @@
             "id": "#/properties/version",
             "type": "string",
             "title": "The version schema",
-            "description": "An explanation about the purpose of this instance.",
+            "description": "The version of the DSS",
             "default": "",
             "examples": [
                 "2.0"
@@ -417,7 +409,7 @@
             "id": "#/properties/name",
             "type": "string",
             "title": "The name schema",
-            "description": "An explanation about the purpose of this instance.",
+            "description": "The name of the DSS",
             "default": "",
             "examples": [
                 "VIPS"
@@ -427,7 +419,7 @@
             "id": "#/properties/url",
             "type": "string",
             "title": "The url schema",
-            "description": "An explanation about the purpose of this instance.",
+            "description": "A URL to the DSS (outside of the IPM Decisions platform)",
             "default": "",
             "examples": [
                 "https://www.vips-landbruk.no/"
@@ -437,7 +429,7 @@
             "id": "#/properties/languages",
             "type": "array",
             "title": "The languages schema",
-            "description": "An explanation about the purpose of this instance.",
+            "description": "A list of languages that the DSS supports",
             "default": [],
             "examples": [
                 [
@@ -455,7 +447,7 @@
             "id": "#/properties/organization",
             "type": "object",
             "title": "The organization schema",
-            "description": "An explanation about the purpose of this instance.",
+            "description": "Information about the (main) organization behind the DSS",
             "default": {},
             "examples": [
                 {
@@ -482,7 +474,7 @@
                     "id": "#/properties/organization/properties/name",
                     "type": "string",
                     "title": "The name schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "description": "The name of the organization",
                     "default": "",
                     "examples": [
                         "NIBIO"
@@ -492,7 +484,7 @@
                     "id": "#/properties/organization/properties/country",
                     "type": "string",
                     "title": "The country schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "description": "The country of the organization's main headquarters",
                     "default": "",
                     "examples": [
                         "Norway"
@@ -502,7 +494,7 @@
                     "id": "#/properties/organization/properties/address",
                     "type": "string",
                     "title": "The address schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "description": "The address of the organization's main headquarters",
                     "default": "",
                     "examples": [
                         "Postboks 115"
@@ -512,7 +504,7 @@
                     "id": "#/properties/organization/properties/postal_code",
                     "type": "string",
                     "title": "The postal_code schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "description": "The postal code of the organization's main headquarters",
                     "default": "",
                     "examples": [
                         "1431"
@@ -522,7 +514,7 @@
                     "id": "#/properties/organization/properties/city",
                     "type": "string",
                     "title": "The city schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "description": "The city of the organization's main headquarters",
                     "default": "",
                     "examples": [
                         "Ås"
@@ -532,7 +524,7 @@
                     "id": "#/properties/organization/properties/email",
                     "type": "string",
                     "title": "The email schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "description": "A contact email for the organization",
                     "default": "",
                     "examples": [
                         "berit.nordskog@nibio.no"
@@ -542,7 +534,7 @@
                     "id": "#/properties/organization/properties/url",
                     "type": "string",
                     "title": "The url schema",
-                    "description": "An explanation about the purpose of this instance.",
+                    "description": "A URL to the organization",
                     "default": "",
                     "examples": [
                         "https://www.nibio.no/"
