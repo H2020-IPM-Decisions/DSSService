@@ -1,10 +1,9 @@
-
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://example.com/example.json",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "id": "http://example.com/example.json",
     "type": "object",
-    "title": "IPM Decisions DSS schema",
-    "description": "The schema describes a pest prediction DSS (Decision Support System) in the IPM Decisions platform. A DSS consists of one or more pest/disease prediction models",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
     "required": [
         "models",
         "id",
@@ -16,40 +15,16 @@
     ],
     "properties": {
         "models": {
-            "$id": "#/properties/models",
+            "id": "#/properties/models",
             "type": "array",
             "title": "The models schema",
-            "description": "The DSS model is a pest or disease prediction model",
-            "additionalItems": true,
+            "description": "An explanation about the purpose of this instance.",
+            "additionalItems": false,
             "items": {
-                "$id": "#/properties/models/items",
-                "anyOf": [
-                    {
-                        "$id": "#/properties/models/items/anyOf/0",
-                        "type": "object",
-                        "title": "The first anyOf schema",
-                        "description": "An explanation about the purpose of this instance.",
-                        "required": [
-                            "name",
-                            "id",
-                            "version",
-                            "type_of_decision",
-                            "type_of_output",
-                            "description_URL",
-                            "description",
-                            "citation",
-                            "keywords",
-                            "pests",
-                            "crops",
-                            "authors",
-                            "execution",
-                            "input",
-                            "valid_spatial",
-                            "output"
-                        ],
-                        "properties": {
+                "type": "object",
+                "properties": {
                             "name": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/name",
+                                "id": "#/properties/models/items/anyOf/0/properties/name",
                                 "type": "string",
                                 "title": "The name schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -59,7 +34,7 @@
                                 ]
                             },
                             "id": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/id",
+                                "id": "#/properties/models/items/anyOf/0/properties/id",
                                 "type": "string",
                                 "title": "The id schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -69,7 +44,7 @@
                                 ]
                             },
                             "version": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/version",
+                                "id": "#/properties/models/items/anyOf/0/properties/version",
                                 "type": "string",
                                 "title": "The version schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -79,7 +54,7 @@
                                 ]
                             },
                             "type_of_decision": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/type_of_decision",
+                                "id": "#/properties/models/items/anyOf/0/properties/type_of_decision",
                                 "type": "string",
                                 "title": "The type_of_decision schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -89,7 +64,7 @@
                                 ]
                             },
                             "type_of_output": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/type_of_output",
+                                "id": "#/properties/models/items/anyOf/0/properties/type_of_output",
                                 "type": "string",
                                 "title": "The type_of_output schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -99,7 +74,7 @@
                                 ]
                             },
                             "description_URL": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/description_URL",
+                                "id": "#/properties/models/items/anyOf/0/properties/description_URL",
                                 "type": "string",
                                 "title": "The description_URL schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -109,7 +84,7 @@
                                 ]
                             },
                             "description": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/description",
+                                "id": "#/properties/models/items/anyOf/0/properties/description",
                                 "type": "string",
                                 "title": "The description schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -119,7 +94,7 @@
                                 ]
                             },
                             "citation": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/citation",
+                                "id": "#/properties/models/items/anyOf/0/properties/citation",
                                 "type": "null",
                                 "title": "The citation schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -129,7 +104,7 @@
                                 ]
                             },
                             "keywords": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/keywords",
+                                "id": "#/properties/models/items/anyOf/0/properties/keywords",
                                 "type": "string",
                                 "title": "The keywords schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -139,7 +114,7 @@
                                 ]
                             },
                             "pests": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/pests",
+                                "id": "#/properties/models/items/anyOf/0/properties/pests",
                                 "type": "array",
                                 "title": "The pests schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -149,25 +124,14 @@
                                         "PSILRO"
                                     ]
                                 ],
-                                "additionalItems": true,
+                                "additionalItems": false,
                                 "items": {
-                                    "$id": "#/properties/models/items/anyOf/0/properties/pests/items",
-                                    "anyOf": [
-                                        {
-                                            "$id": "#/properties/models/items/anyOf/0/properties/pests/items/anyOf/0",
-                                            "type": "string",
-                                            "title": "The first anyOf schema",
-                                            "description": "An explanation about the purpose of this instance.",
-                                            "default": "",
-                                            "examples": [
-                                                "PSILRO"
-                                            ]
-                                        }
-                                    ]
+                                    "id": "#/properties/models/items/anyOf/0/properties/pests/items",
+                                    "type" : "string"
                                 }
                             },
                             "crops": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/crops",
+                                "id": "#/properties/models/items/anyOf/0/properties/crops",
                                 "type": "array",
                                 "title": "The crops schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -179,23 +143,12 @@
                                 ],
                                 "additionalItems": true,
                                 "items": {
-                                    "$id": "#/properties/models/items/anyOf/0/properties/crops/items",
-                                    "anyOf": [
-                                        {
-                                            "$id": "#/properties/models/items/anyOf/0/properties/crops/items/anyOf/0",
-                                            "type": "string",
-                                            "title": "The first anyOf schema",
-                                            "description": "An explanation about the purpose of this instance.",
-                                            "default": "",
-                                            "examples": [
-                                                "DAUCS"
-                                            ]
-                                        }
-                                    ]
+                                    "id": "#/properties/models/items/anyOf/0/properties/crops/items",
+                                    "type" : "string"
                                 }
                             },
                             "authors": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/authors",
+                                "id": "#/properties/models/items/anyOf/0/properties/authors",
                                 "type": "array",
                                 "title": "The authors schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -211,29 +164,14 @@
                                 ],
                                 "additionalItems": true,
                                 "items": {
-                                    "$id": "#/properties/models/items/anyOf/0/properties/authors/items",
-                                    "anyOf": [
-                                        {
-                                            "$id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0",
-                                            "type": "object",
-                                            "title": "The first anyOf schema",
-                                            "description": "An explanation about the purpose of this instance.",
-                                            "default": {},
-                                            "examples": [
-                                                {
-                                                    "name": "Berit Nordskog",
-                                                    "email": "berit.nordskog@nibio.no",
-                                                    "organization": "NIBIO"
-                                                }
-                                            ],
+                                    "id": "#/properties/models/items/anyOf/0/properties/authors/items",
+                                    "type": "object",
                                             "required": [
-                                                "name",
-                                                "email",
-                                                "organization"
+                                                "name"
                                             ],
                                             "properties": {
                                                 "name": {
-                                                    "$id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/name",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/name",
                                                     "type": "string",
                                                     "title": "The name schema",
                                                     "description": "An explanation about the purpose of this instance.",
@@ -243,7 +181,7 @@
                                                     ]
                                                 },
                                                 "email": {
-                                                    "$id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/email",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/email",
                                                     "type": "string",
                                                     "title": "The email schema",
                                                     "description": "An explanation about the purpose of this instance.",
@@ -253,7 +191,7 @@
                                                     ]
                                                 },
                                                 "organization": {
-                                                    "$id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/organization",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/organization",
                                                     "type": "string",
                                                     "title": "The organization schema",
                                                     "description": "An explanation about the purpose of this instance.",
@@ -264,12 +202,12 @@
                                                 }
                                             },
                                             "additionalProperties": true
-                                        }
-                                    ]
+                                        
+                                    
                                 }
                             },
                             "execution": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/execution",
+                                "id": "#/properties/models/items/anyOf/0/properties/execution",
                                 "type": "object",
                                 "title": "The execution schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -292,7 +230,7 @@
                                 ],
                                 "properties": {
                                     "type": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/execution/properties/type",
+                                        "id": "#/properties/models/items/anyOf/0/properties/execution/properties/type",
                                         "type": "string",
                                         "title": "The type schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -302,7 +240,7 @@
                                         ]
                                     },
                                     "endpoint": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/execution/properties/endpoint",
+                                        "id": "#/properties/models/items/anyOf/0/properties/execution/properties/endpoint",
                                         "type": "string",
                                         "title": "The endpoint schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -312,7 +250,7 @@
                                         ]
                                     },
                                     "form_method": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/execution/properties/form_method",
+                                        "id": "#/properties/models/items/anyOf/0/properties/execution/properties/form_method",
                                         "type": "string",
                                         "title": "The form_method schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -322,7 +260,7 @@
                                         ]
                                     },
                                     "content_type": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/execution/properties/content_type",
+                                        "id": "#/properties/models/items/anyOf/0/properties/execution/properties/content_type",
                                         "type": "string",
                                         "title": "The content_type schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -332,7 +270,7 @@
                                         ]
                                     },
                                     "input_schema": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/execution/properties/input_schema",
+                                        "id": "#/properties/models/items/anyOf/0/properties/execution/properties/input_schema",
                                         "type": "string",
                                         "title": "The input_schema schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -345,7 +283,7 @@
                                 "additionalProperties": true
                             },
                             "input": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/input",
+                                "id": "#/properties/models/items/anyOf/0/properties/input",
                                 "type": "object",
                                 "title": "The input schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -361,13 +299,10 @@
                                         "field_observation": null
                                     }
                                 ],
-                                "required": [
-                                    "weather",
-                                    "field_observation"
-                                ],
+                                "required": [],
                                 "properties": {
                                     "weather": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/input/properties/weather",
+                                        "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather",
                                         "type": "array",
                                         "title": "The weather schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -382,10 +317,10 @@
                                         ],
                                         "additionalItems": true,
                                         "items": {
-                                            "$id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items",
+                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items",
                                             "anyOf": [
                                                 {
-                                                    "$id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0",
                                                     "type": "object",
                                                     "title": "The first anyOf schema",
                                                     "description": "An explanation about the purpose of this instance.",
@@ -402,7 +337,7 @@
                                                     ],
                                                     "properties": {
                                                         "parameter_code": {
-                                                            "$id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/parameter_code",
+                                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/parameter_code",
                                                             "type": "integer",
                                                             "title": "The parameter_code schema",
                                                             "description": "An explanation about the purpose of this instance.",
@@ -412,7 +347,7 @@
                                                             ]
                                                         },
                                                         "interval": {
-                                                            "$id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/interval",
+                                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/interval",
                                                             "type": "integer",
                                                             "title": "The interval schema",
                                                             "description": "An explanation about the purpose of this instance.",
@@ -428,7 +363,7 @@
                                         }
                                     },
                                     "field_observation": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/input/properties/field_observation",
+                                        "id": "#/properties/models/items/anyOf/0/properties/input/properties/field_observation",
                                         "type": "null",
                                         "title": "The field_observation schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -441,7 +376,7 @@
                                 "additionalProperties": true
                             },
                             "valid_spatial": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/valid_spatial",
+                                "id": "#/properties/models/items/anyOf/0/properties/valid_spatial",
                                 "type": "object",
                                 "title": "The valid_spatial schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -460,7 +395,7 @@
                                 ],
                                 "properties": {
                                     "countries": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries",
+                                        "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries",
                                         "type": "array",
                                         "title": "The countries schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -472,10 +407,10 @@
                                         ],
                                         "additionalItems": true,
                                         "items": {
-                                            "$id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items",
+                                            "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items",
                                             "anyOf": [
                                                 {
-                                                    "$id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items/anyOf/0",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items/anyOf/0",
                                                     "type": "string",
                                                     "title": "The first anyOf schema",
                                                     "description": "An explanation about the purpose of this instance.",
@@ -488,7 +423,7 @@
                                         }
                                     },
                                     "geoJSON": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/geoJSON",
+                                        "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/geoJSON",
                                         "type": "string",
                                         "title": "The geoJSON schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -501,7 +436,7 @@
                                 "additionalProperties": true
                             },
                             "output": {
-                                "$id": "#/properties/models/items/anyOf/0/properties/output",
+                                "id": "#/properties/models/items/anyOf/0/properties/output",
                                 "type": "object",
                                 "title": "The output schema",
                                 "description": "An explanation about the purpose of this instance.",
@@ -524,7 +459,7 @@
                                 ],
                                 "properties": {
                                     "warning_status_interpretation": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",
+                                        "id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",
                                         "type": "string",
                                         "title": "The warning_status_interpretation schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -534,7 +469,7 @@
                                         ]
                                     },
                                     "result_parameters": {
-                                        "$id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters",
+                                        "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters",
                                         "type": "array",
                                         "title": "The result_parameters schema",
                                         "description": "An explanation about the purpose of this instance.",
@@ -550,10 +485,10 @@
                                         ],
                                         "additionalItems": true,
                                         "items": {
-                                            "$id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items",
+                                            "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items",
                                             "anyOf": [
                                                 {
-                                                    "$id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0",
                                                     "type": "object",
                                                     "title": "The first anyOf schema",
                                                     "description": "An explanation about the purpose of this instance.",
@@ -572,7 +507,7 @@
                                                     ],
                                                     "properties": {
                                                         "id": {
-                                                            "$id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/id",
+                                                            "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/id",
                                                             "type": "string",
                                                             "title": "The id schema",
                                                             "description": "An explanation about the purpose of this instance.",
@@ -582,7 +517,7 @@
                                                             ]
                                                         },
                                                         "title": {
-                                                            "$id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/title",
+                                                            "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/title",
                                                             "type": "string",
                                                             "title": "The title schema",
                                                             "description": "An explanation about the purpose of this instance.",
@@ -592,7 +527,7 @@
                                                             ]
                                                         },
                                                         "description": {
-                                                            "$id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/description",
+                                                            "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/description",
                                                             "type": "string",
                                                             "title": "The description schema",
                                                             "description": "An explanation about the purpose of this instance.",
@@ -612,12 +547,12 @@
                             }
                         },
                         "additionalProperties": true
-                    }
-                ]
+                    
+                
             }
         },
         "id": {
-            "$id": "#/properties/id",
+            "id": "#/properties/id",
             "type": "string",
             "title": "The id schema",
             "description": "An explanation about the purpose of this instance.",
@@ -627,7 +562,7 @@
             ]
         },
         "version": {
-            "$id": "#/properties/version",
+            "id": "#/properties/version",
             "type": "string",
             "title": "The version schema",
             "description": "An explanation about the purpose of this instance.",
@@ -637,7 +572,7 @@
             ]
         },
         "name": {
-            "$id": "#/properties/name",
+            "id": "#/properties/name",
             "type": "string",
             "title": "The name schema",
             "description": "An explanation about the purpose of this instance.",
@@ -647,7 +582,7 @@
             ]
         },
         "url": {
-            "$id": "#/properties/url",
+            "id": "#/properties/url",
             "type": "string",
             "title": "The url schema",
             "description": "An explanation about the purpose of this instance.",
@@ -657,7 +592,7 @@
             ]
         },
         "languages": {
-            "$id": "#/properties/languages",
+            "id": "#/properties/languages",
             "type": "array",
             "title": "The languages schema",
             "description": "An explanation about the purpose of this instance.",
@@ -670,10 +605,10 @@
             ],
             "additionalItems": true,
             "items": {
-                "$id": "#/properties/languages/items",
+                "id": "#/properties/languages/items",
                 "anyOf": [
                     {
-                        "$id": "#/properties/languages/items/anyOf/0",
+                        "id": "#/properties/languages/items/anyOf/0",
                         "type": "string",
                         "title": "The first anyOf schema",
                         "description": "An explanation about the purpose of this instance.",
@@ -687,7 +622,7 @@
             }
         },
         "organization": {
-            "$id": "#/properties/organization",
+            "id": "#/properties/organization",
             "type": "object",
             "title": "The organization schema",
             "description": "An explanation about the purpose of this instance.",
@@ -714,7 +649,7 @@
             ],
             "properties": {
                 "name": {
-                    "$id": "#/properties/organization/properties/name",
+                    "id": "#/properties/organization/properties/name",
                     "type": "string",
                     "title": "The name schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -724,7 +659,7 @@
                     ]
                 },
                 "country": {
-                    "$id": "#/properties/organization/properties/country",
+                    "id": "#/properties/organization/properties/country",
                     "type": "string",
                     "title": "The country schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -734,7 +669,7 @@
                     ]
                 },
                 "address": {
-                    "$id": "#/properties/organization/properties/address",
+                    "id": "#/properties/organization/properties/address",
                     "type": "string",
                     "title": "The address schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -744,7 +679,7 @@
                     ]
                 },
                 "postal_code": {
-                    "$id": "#/properties/organization/properties/postal_code",
+                    "id": "#/properties/organization/properties/postal_code",
                     "type": "string",
                     "title": "The postal_code schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -754,7 +689,7 @@
                     ]
                 },
                 "city": {
-                    "$id": "#/properties/organization/properties/city",
+                    "id": "#/properties/organization/properties/city",
                     "type": "string",
                     "title": "The city schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -764,7 +699,7 @@
                     ]
                 },
                 "email": {
-                    "$id": "#/properties/organization/properties/email",
+                    "id": "#/properties/organization/properties/email",
                     "type": "string",
                     "title": "The email schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -774,7 +709,7 @@
                     ]
                 },
                 "url": {
-                    "$id": "#/properties/organization/properties/url",
+                    "id": "#/properties/organization/properties/url",
                     "type": "string",
                     "title": "The url schema",
                     "description": "An explanation about the purpose of this instance.",
@@ -784,8 +719,8 @@
                     ]
                 }
             },
-            "additionalProperties": true
+            "additionalProperties": false
         }
     },
-    "additionalProperties": true
+    "additionalProperties": false
 }
