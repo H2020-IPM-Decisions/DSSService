@@ -326,7 +326,7 @@ Pasting the schema into the [online version of json-editor](https://json-editor.
   }
 }
 ```
-Sending this request to the model endpoint returns the result below. You can test this using Postman, importing the collection at `/postman_tests/IPM Decisions DSS examples.postman_collection.json`
+Sending this request to the model endpoint returns the result below. You can test this using Postman, importing the collection at `../postman_tests/IPM Decisions DSS examples.postman_collection.json`
 ```
 {
     "timeStart": "2020-04-30T22:00:00Z",
