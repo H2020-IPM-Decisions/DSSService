@@ -21,6 +21,7 @@ package net.ipmdecisions.dssservice.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.kjetland.jackson.jsonSchema.JsonSchemaConfig;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
@@ -42,6 +43,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.ipmdecisions.dssservice.entity.FieldObservation;
 import net.ipmdecisions.dssservice.entity.ModelOutput;
+import net.ipmdecisions.dssservice.util.SchemaProvider;
 import net.ipmdecisions.dssservice.util.SchemaUtils;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.spi.HttpRequest;
@@ -195,7 +197,51 @@ public class MetaDataService {
             return Response.ok().entity(Map.of("isValid", isValid)).build();
         } catch (IOException | ProcessingException  ex) 
         {
-            ex.printStackTrace();
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
+    /**
+     * Validate DSS YAML description file, using this Json schema: https://ipmdecisions.nibio.no/api/dss/rest/schema/dss
+     * @param modelOutputData
+     * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false"}</code> otherwise
+     * @responseExample application/json {"isValid":"true"}
+     */
+    @POST
+    @Path("schema/dss/yaml/validate")
+    @GZIP
+    @Consumes("application/x-yaml;charset=UTF-8")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateDSSYAMLFile(String DSSYAMLFile)
+    {
+        try
+        {
+            ObjectMapper YAMLReader = new ObjectMapper(new YAMLFactory());
+            JsonNode j = YAMLReader.readTree(DSSYAMLFile);
+            JsonNode schema = SchemaProvider.getDSSSchema();
+            SchemaUtils sUtils = new SchemaUtils();
+            boolean isValid = sUtils.isJsonValid(schema.toString(), j);
+            return Response.ok().entity(Map.of("isValid", isValid)).build();
+        }
+        catch(ProcessingException | IOException ex)
+        {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+        
+    }
+    
+    
+    @GET
+    @Path("schema/dss")
+    @GZIP
+    @Produces("application/json;charset=UTF-8")
+    public Response getDSSSchema()
+    {
+        try
+        {
+            return Response.ok().entity(SchemaProvider.getDSSSchema()).build();
+        }
+        catch(IOException ex) {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }

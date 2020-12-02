@@ -26,6 +26,8 @@ import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.report.LogLevel;
+import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
@@ -63,6 +65,14 @@ public class SchemaUtils {
     public Boolean isJsonValid(JsonSchema schemaNode, JsonNode jsonNode) throws ProcessingException
     {
         ProcessingReport report = schemaNode.validate(jsonNode);
+        for(ProcessingMessage m:report)
+        {
+            if(m.getLogLevel().equals(LogLevel.ERROR))
+            {
+                System.out.println(m.getMessage() + ": " + m.getLogLevel());
+                //System.out.println(m.toString());
+            }
+        }
         return report.isSuccess();
     }
     
