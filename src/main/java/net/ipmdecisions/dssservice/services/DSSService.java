@@ -275,7 +275,82 @@ public class DSSService {
         } catch (IOException ex) {
             return Response.serverError().entity(ex.getMessage()).build();
         }
-
+    }
+    
+    /**
+     * Get the input Json schema for a specific DSS model
+     *
+     * @param DSSId The id of the DSS containing the model
+     * @param ModelId The id of the DSS model requested
+     * @return The input Json schema for the DSS model
+     * @pathExample /rest/model/no.nibio.vips/PSILARTEMP/input_schema
+     * @responseExample application/json {
+  "type": "object",
+  "properties": {
+    "modelId": {
+      "type": "string",
+      "pattern": "^PSILARTEMP$",
+      "title": "Model Id",
+      "default": "PSILARTEMP",
+      "description": "Must be PSILARTEMP"
+    },
+    "configParameters": {
+      "title": "Configuration parameters",
+      "type": "object",
+      "properties": {
+        "timeZone": {
+          "type": "string",
+          "title": "Time zone (e.g. Europe/Oslo)",
+          "default": "Europe/Oslo"
+        },
+        "timeStart": {
+          "type": "string",
+          "format": "date",
+          "title": "Start date of calculation (YYYY-MM-DD)"
+        },
+        "timeEnd": {
+          "type": "string",
+          "format": "date",
+          "title": "End date of calculation (YYYY-MM-DD)"
+        }
+      },
+      "required": [
+        "timeZone",
+        "timeStart",
+        "timeEnd"
+      ]
+    },
+    "weatherData": {
+      "$ref": "https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata"
+    }
+  },
+  "required": [
+    "modelId",
+    "configParameters"
+  ]
+}
+     */
+    @GET
+    @Path("model/{DSSId}/{ModelId}/input_schema")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSSModel.class)
+    public Response getDSSModelInputSchema(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
+        try {
+            Optional<DSS> matchingDSS = this.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            if (matchingDSS.isPresent()) {
+                DSS actualDSS = matchingDSS.get();
+                Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
+                if (matchingDSSModel.isPresent()) {
+                    return Response.ok().entity(matchingDSSModel.get().getExecution().getInput_schema()).build();
+                } else {
+                    return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS Model with id " + ModelId + " in DSS with id " + DSSId)).build();
+                }
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS with id " + DSSId)).build();
+            }
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
     }
 
     /**

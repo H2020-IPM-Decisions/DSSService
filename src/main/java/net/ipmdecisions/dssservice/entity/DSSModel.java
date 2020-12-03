@@ -237,7 +237,7 @@ public class DSSModel {
     /**
      * Meta data about how to run the model
      */
-    static class Execution {
+    public static class Execution {
         private String type, endpoint, form_method, content_type, input_schema;
 
         /**

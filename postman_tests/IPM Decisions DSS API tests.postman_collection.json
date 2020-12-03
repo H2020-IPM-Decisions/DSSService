@@ -304,6 +304,46 @@
 					"response": []
 				},
 				{
+					"name": "Get input_schema (Json schema) for a DSS model",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8ddb7048-d0a9-4801-b23c-50c442c3de8d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and we find the data type of the modelId\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties.modelId.type).to.eql(\"string\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/model/no.nibio.vips/PSILARTEMP/input_schema",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"model",
+								"no.nibio.vips",
+								"PSILARTEMP",
+								"input_schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get one DSS as YAML",
 					"event": [
 						{
