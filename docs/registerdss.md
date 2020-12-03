@@ -1,3 +1,4 @@
+[Back](index.md)
 # 2. Register a DSS in the catalogue
 The [DSS catalogue](https://ipmdecisions.nibio.no/api/dss/rest/dss) contains the information needed by the platform to 
 * List the DSS with its models in the platform
