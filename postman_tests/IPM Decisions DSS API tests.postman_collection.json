@@ -264,6 +264,83 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get one DSS as Json",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "97fef870-cc66-484a-898b-3688d619695b",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and the correct id is present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(\"no.nibio.vips\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/no.nibio.vips",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"no.nibio.vips"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one DSS as YAML",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c1f64a86-fdf2-4c58-a96a-53f4e8d1536e",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body contains the correct ID\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"no.nibio.vips\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/no.nibio.vips/yaml",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"no.nibio.vips",
+								"yaml"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}

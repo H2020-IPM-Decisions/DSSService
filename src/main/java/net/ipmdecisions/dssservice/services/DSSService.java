@@ -43,6 +43,8 @@ import javax.ws.rs.core.Response;
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
 import net.ipmdecisions.dssservice.util.GISUtils;
+import net.ipmdecisions.dssservice.util.SchemaProvider;
+
 import org.locationtech.jts.geom.Geometry;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
@@ -76,6 +78,7 @@ public class DSSService {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }
+    
 
     /**
      * Returns a list of models that are applicable to the given crop
@@ -207,6 +210,32 @@ public class DSSService {
             Optional<DSS> matchingDSS = this.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
                 return Response.ok().entity(matchingDSS.get()).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS with id " + DSSId)).build();
+            }
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+
+    }
+    
+    /**
+     * Get all information about a specific DSS in YAML format
+     *
+     * @param DSSId the id of the DSS
+     * @return the requested DSS
+     * @pathExample /rest/model/no.nibio.vips
+     */
+    @GET
+    @Path("dss/{DSSId}/yaml")
+    @Produces("application/x-yaml;charset=UTF-8")
+    @TypeHint(DSS.class)
+    public Response getDSSAsYAML(@PathParam("DSSId") String DSSId) {
+        try {
+            Optional<DSS> matchingDSS = this.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            if (matchingDSS.isPresent()) {
+            	ObjectMapper YAMLWriter = new ObjectMapper(new YAMLFactory());
+                return Response.ok().entity(YAMLWriter.writeValueAsString(matchingDSS.get())).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS with id " + DSSId)).build();
             }
