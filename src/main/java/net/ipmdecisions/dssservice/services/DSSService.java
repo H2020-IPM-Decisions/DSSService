@@ -54,7 +54,8 @@ import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 /**
- * Web service for listing and querying the DSS Catalogue
+ * Web services for listing and querying the DSS Catalogue.
+ * For a more thorough description of the concepts, please read <a href="https://github.com/H2020-IPM-Decisions/DSSService/blob/develop/docs/index.md" target="new">the user guide</a>
  *
  * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
