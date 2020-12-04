@@ -177,8 +177,12 @@ public class MetaDataService {
     @Produces("application/json;charset=UTF-8")
     public Response getModelOutputSchema()
     {
-    	ObjectMapper m = new ObjectMapper();
-        JsonNode schema = schemaGen.generateJsonSchema(ModelOutput.class);
+        return Response.ok().entity(this.getModelOutputSchemaInternal()).build();
+    }
+    
+    private JsonNode getModelOutputSchemaInternal()
+    {
+    	JsonNode schema = schemaGen.generateJsonSchema(ModelOutput.class);
         // Manually add some properties
         JsonNode warningStatus = schema.findValue("warningStatus");
         for(JsonNode jn:warningStatus.get("oneOf"))
@@ -186,12 +190,11 @@ public class MetaDataService {
         	if(jn.get("type").asText().equals("array"))
         	{
         		ObjectNode items = (ObjectNode) jn.get("items");
-        		items.put("minimum","0");
-        		items.put("maximum","4");
+        		items.put("minimum",0);
+        		items.put("maximum",4);
         	}
         }
-        
-        return Response.ok().entity(schema).build();
+        return schema;
     }
     
     /**
@@ -211,9 +214,8 @@ public class MetaDataService {
         {
             SchemaUtils sUtils = new SchemaUtils();
             boolean isValid; 
-            URL schemaURL = new URL("https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput");
-            isValid = sUtils.isJsonValid(schemaURL, modelOutputData);
-            return Response.ok().entity(Map.of("isValid", isValid)).build();
+            isValid = sUtils.isJsonValid(this.getModelOutputSchemaInternal().toString(), modelOutputData);
+          	return Response.ok().entity(Map.of("isValid", isValid)).build();            
         } catch (IOException | ProcessingException  ex) 
         {
             return Response.serverError().entity(ex.getMessage()).build();
