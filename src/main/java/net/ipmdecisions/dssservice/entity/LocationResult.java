@@ -22,6 +22,9 @@ package net.ipmdecisions.dssservice.entity;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 
 /**
  * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
@@ -42,12 +45,18 @@ public class LocationResult {
     @JsonSchemaTitle("Result data per location")
     @JsonPropertyDescription("The data. In rows, ordered chronologically. Columns ordered as given in resultParameters.")
     private Double[][] data;
+    @JsonSchemaTitle("Warning status")
+    @JsonPropertyDescription("The basis for the 'Traffic light' status of the model prediction. It can have 5 different values: 0 = Status gives no meaning (e.g. outside of season or before biofix), 1 = Cannot give status due to error, e.g. missing data, 2 = No risk of infection, 3 = Medium risk of infection, 4 = High risk of infection. How to interpret these risks is unique to each model, and must be explained in the DSS catalogue metadata property output->warning_status_interpretation.")
+    @Min(0) // This is not taken into account. Have had to manipulate the generated schema in the service
+    @Max(4) // This is not taken into account. Have had to manipulate the generated schema in the service
+    public Integer[] warningStatus;
     
     public LocationResult(Double longitude, Double latitude, Double altitude, int rows, int columns){
         this.longitude = longitude;
         this.latitude = latitude;
         this.altitude = altitude;
         this.data = new Double[rows][columns];
+        this.setWarningStatus(new Integer[rows]);
     }
     
     public LocationResult(){
@@ -56,7 +65,7 @@ public class LocationResult {
     
     /**
      * 
-     * @return The number of rows in the dataset 
+     * @return The number of rows in the data set 
      */
     public Integer getLength()
     {
@@ -164,4 +173,13 @@ public class LocationResult {
     public void setAltitude(Double altitude) {
         this.altitude = altitude;
     }
+
+
+	public Integer[] getWarningStatus() {
+		return warningStatus;
+	}
+
+	public void setWarningStatus(Integer[] warningStatus) {
+		this.warningStatus = warningStatus;
+	}
 }

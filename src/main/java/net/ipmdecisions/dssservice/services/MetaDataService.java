@@ -19,8 +19,10 @@
 
 package net.ipmdecisions.dssservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.kjetland.jackson.jsonSchema.JsonSchemaConfig;
@@ -87,8 +89,12 @@ public class MetaDataService {
             JsonSchemaConfig.vanillaJsonSchemaDraft4().useMultipleEditorSelectViaProperty(), 
             new HashSet<>(), 
             customClassMapping, 
-            new HashMap<>()
+            new HashMap<>(),
+            null,
+            false,
+            null
         );
+        
         schemaGen = new JsonSchemaGenerator(objectMapper,config);
     }
 
@@ -171,7 +177,20 @@ public class MetaDataService {
     @Produces("application/json;charset=UTF-8")
     public Response getModelOutputSchema()
     {
+    	ObjectMapper m = new ObjectMapper();
         JsonNode schema = schemaGen.generateJsonSchema(ModelOutput.class);
+        // Manually add some properties
+        JsonNode warningStatus = schema.findValue("warningStatus");
+        for(JsonNode jn:warningStatus.get("oneOf"))
+        {
+        	if(jn.get("type").asText().equals("array"))
+        	{
+        		ObjectNode items = (ObjectNode) jn.get("items");
+        		items.put("minimum","0");
+        		items.put("maximum","4");
+        	}
+        }
+        
         return Response.ok().entity(schema).build();
     }
     

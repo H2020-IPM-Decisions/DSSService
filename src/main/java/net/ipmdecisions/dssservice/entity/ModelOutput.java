@@ -32,9 +32,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-@JsonSchemaInject(strings = {
-    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput"),
-    }
+@JsonSchemaInject(
+		strings = {
+		    @JsonSchemaString(path = "$id", value="https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput"),
+		    }
 )
 @JsonSchemaTitle("Model output")
 @JsonSchemaExamples("TODO")
@@ -60,8 +61,8 @@ public class ModelOutput {
     private Integer interval; 
     @NotNull
     @Size(min=1)
-    @JsonSchemaTitle("Result parameters")
-    @JsonPropertyDescription("The result parameters. Unique to each model")
+    @JsonSchemaTitle("Result parameter codes")
+    @JsonPropertyDescription("Codes for the result parameters. They are unique to each model, and must be described in the DSS catalogue metadata property output->result_parameters).")
     private String[] resultParameters;
     @JsonSchemaTitle("Result data")
     @JsonPropertyDescription("The result data per location.")
