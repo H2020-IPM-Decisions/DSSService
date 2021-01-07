@@ -47,6 +47,8 @@ import net.ipmdecisions.dssservice.entity.FieldObservation;
 import net.ipmdecisions.dssservice.entity.ModelOutput;
 import net.ipmdecisions.dssservice.util.SchemaProvider;
 import net.ipmdecisions.dssservice.util.SchemaUtils;
+import net.ipmdecisions.dssservice.util.SchemaValidationException;
+
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.spi.HttpRequest;
 
@@ -216,7 +218,7 @@ public class MetaDataService {
             boolean isValid; 
             isValid = sUtils.isJsonValid(this.getModelOutputSchemaInternal().toString(), modelOutputData);
           	return Response.ok().entity(Map.of("isValid", isValid)).build();            
-        } catch (IOException | ProcessingException  ex) 
+        } catch (IOException | ProcessingException | SchemaValidationException  ex) 
         {
             return Response.serverError().entity(ex.getMessage()).build();
         }
@@ -225,7 +227,7 @@ public class MetaDataService {
     /**
      * Validate DSS YAML description file, using this Json schema: https://ipmdecisions.nibio.no/api/dss/rest/schema/dss
      * @param modelOutputData
-     * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false"}</code> otherwise
+     * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false","errorMessage":"Foo Bar Lorem Ipsum"}</code> otherwise
      * @responseExample application/json {"isValid":"true"}
      */
     @POST
@@ -241,8 +243,15 @@ public class MetaDataService {
             JsonNode j = YAMLReader.readTree(DSSYAMLFile);
             JsonNode schema = SchemaProvider.getDSSSchema();
             SchemaUtils sUtils = new SchemaUtils();
-            boolean isValid = sUtils.isJsonValid(schema.toString(), j);
-            return Response.ok().entity(Map.of("isValid", isValid)).build();
+            try
+            {
+            	return Response.ok().entity(Map.of("isValid", sUtils.isJsonValid(schema.toString(), j))).build();
+            }
+            catch(SchemaValidationException ex)
+            {
+            	return Response.ok().entity(Map.of("isValid", false, "errorMessage", ex.getMessage())).build();
+            }
+            
         }
         catch(ProcessingException | IOException ex)
         {

@@ -50,33 +50,42 @@ public class SchemaUtils {
     public static final String JSON_V4_SCHEMA_IDENTIFIER = "http://json-schema.org/draft-04/schema#";
     public static final String JSON_SCHEMA_IDENTIFIER_ELEMENT = "$schema";
     
-    public Boolean isJsonValid(URL schemaURL, JsonNode jsonNode) throws IOException, ProcessingException
+    public Boolean isJsonValid(URL schemaURL, JsonNode jsonNode) throws IOException, ProcessingException, SchemaValidationException
     {
         JsonSchema schemaNode = this.getSchemaNode(JsonLoader.fromURL(schemaURL));
         return this.isJsonValid(schemaNode, jsonNode);
     }
     
-    public Boolean isJsonValid(String schema, JsonNode jsonNode) throws IOException, ProcessingException
+    public Boolean isJsonValid(String schema, JsonNode jsonNode) throws IOException, ProcessingException, SchemaValidationException
     {
         JsonSchema schemaNode = this.getSchemaNode(JsonLoader.fromString(schema));
         return this.isJsonValid(schemaNode, jsonNode);
     }
     
-    public Boolean isJsonValid(JsonSchema schemaNode, JsonNode jsonNode) throws ProcessingException
+    public Boolean isJsonValid(JsonSchema schemaNode, JsonNode jsonNode) throws ProcessingException, SchemaValidationException
     {
         ProcessingReport report = schemaNode.validate(jsonNode);
+        String processingMessage = "";
         for(ProcessingMessage m:report)
         {
             if(m.getLogLevel().equals(LogLevel.ERROR))
             {
+            	processingMessage += m.getLogLevel().toString().toUpperCase() + ": " + m.getMessage();
                 System.out.println(m.getMessage() + ": " + m.getLogLevel());
                 //System.out.println(m.toString());
             }
         }
-        return report.isSuccess();
+        if(report.isSuccess())
+        {
+        	return true;
+        }
+        else
+        {
+        	throw new SchemaValidationException(processingMessage);
+        }
     }
     
-    public Boolean isJsonValid(JsonNode schemaNode, JsonNode jsonNode) throws ProcessingException
+    public Boolean isJsonValid(JsonNode schemaNode, JsonNode jsonNode) throws ProcessingException, SchemaValidationException
     {
         JsonSchema s = this.getSchemaNode(jsonNode);
         return this.isJsonValid(s, jsonNode);
