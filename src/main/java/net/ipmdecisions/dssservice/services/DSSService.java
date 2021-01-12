@@ -100,7 +100,7 @@ public class DSSService {
             for (DSS currentDSS : allDSSs) {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
-                                .filter(model -> model.getCrops().contains(cropCode))
+                                .filter(model -> model.getCrops() != null && model.getCrops().contains(cropCode))
                                 .collect(Collectors.toList());
                 if (qualifyingModels.size() > 0) {
                     currentDSS.setModels(qualifyingModels);
@@ -131,7 +131,42 @@ public class DSSService {
             this.getDSSListObj().forEach((currentDSS) -> {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
-                                .filter(model -> model.getPests().contains(pestCode))
+                                .filter(model -> model.getPests() != null && model.getPests().contains(pestCode))
+                                .collect(Collectors.toList());
+                if (qualifyingModels.size() > 0) {
+                    currentDSS.setModels(qualifyingModels);
+                    retVal.add(currentDSS);
+                }
+            });
+            return Response.ok().entity(retVal).build();
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
+    /**
+     * Returns a list of models that are applicable to the given crop-pest combination
+     *
+     * @param cropCode EPPO code for the crop
+     * @param pestCode EPPO code for the pest
+     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @pathExample /rest/dss/crop/DAUCS/pest/PSILRO
+     * @return a list of models that are applicable to the given crop-pest combination
+     */
+    @GET
+    @Path("dss/crop/{cropCode}/pest/{pestCode}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listModelsForCropPestCombination(
+    		@PathParam("cropCode") String cropCode, 
+    		@PathParam("pestCode") String pestCode
+    		) {
+        try {
+            List<DSS> retVal = new ArrayList<>();
+            this.getDSSListObj().forEach((currentDSS) -> {
+                List<DSSModel> qualifyingModels
+                        = currentDSS.getModels().stream()
+                                .filter(model -> model.getPests() != null && model.getCrops() != null && model.getPests().contains(pestCode) && model.getCrops().contains(cropCode))
                                 .collect(Collectors.toList());
                 if (qualifyingModels.size() > 0) {
                     currentDSS.setModels(qualifyingModels);
