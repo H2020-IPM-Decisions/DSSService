@@ -14,7 +14,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "35436742-5c92-4145-a6e1-2bfab9e5a6f6",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -51,7 +50,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e528ee55-11ac-4352-9795-f8bd33692bd0",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -88,7 +86,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "4795312f-c6dd-48a9-8c14-c957eccadbac",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -125,7 +122,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8e6ef308-40fe-4cf0-8f3f-c94c33748a4d",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -173,7 +169,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e2e1daee-40ff-4e95-bc4b-dc1e8a781dbc",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -227,8 +222,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Catalogue service",
@@ -239,7 +233,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cba7f4c6-08c2-4ea9-b46f-afb0d397a574",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -271,7 +264,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "97fef870-cc66-484a-898b-3688d619695b",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -309,7 +301,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8ddb7048-d0a9-4801-b23c-50c442c3de8d",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -349,7 +340,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c1f64a86-fdf2-4c58-a96a-53f4e8d1536e",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -381,10 +371,86 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get DSS model(s) for a given crop-pest combination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and at least one model is present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[0].models.length).gte(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/crop/DAUCS/pest/PSILRO",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"crop",
+								"DAUCS",
+								"pest",
+								"PSILRO"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get DSS model(s) for a given invalid crop-pest combination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and zero DSSs are present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.eq(0)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/crop/FOO/pest/PSILRO",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"crop",
+								"FOO",
+								"pest",
+								"PSILRO"
+							]
+						}
+					},
+					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
