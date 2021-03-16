@@ -38,7 +38,7 @@ COPY --from=MAVEN_BUILD /target/IPMDecisionsDSSService-ALPHA-SNAPSHOT.war /IPMDe
 COPY --from=MAVEN_BUILD /geo-countries/data/countries.geojson /countries.geojson
 # This requires you to have cloned the formats repository from GitHub: https://github.com/H2020-IPM-Decisions/formats
 RUN mkdir /DSS_lists
-COPY  --from=MAVEN_BUILD /formats/DSS_metadata/VIPS.yaml /DSS_lists/VIPS.yaml
+COPY  --from=MAVEN_BUILD /formats/DSS_metadata/*.yaml /DSS_lists/
 RUN ln -s /IPMDecisionsDSSService-ALPHA-SNAPSHOT.war ${JBOSS_HOME}/standalone/deployments/IPMDecisionsDSSService.war
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
