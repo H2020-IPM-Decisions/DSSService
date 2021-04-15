@@ -194,9 +194,9 @@ public class DSSService {
         try {
             List<String> retVal = new ArrayList<>();
             for (DSS dss : this.getDSSListObj()) {
-                dss.getModels().forEach((model) -> {
-                    retVal.addAll(model.getPests());
-                });
+                dss.getModels().stream()
+                	.filter(model -> model.getPests() != null)
+                	.forEach(model -> retVal.addAll(model.getPests()));
             }
             return Response.ok().entity(retVal).build();
         } catch (IOException ex) {
@@ -220,9 +220,9 @@ public class DSSService {
         try {
             List<String> retVal = new ArrayList<>();
             for (DSS dss : this.getDSSListObj()) {
-                dss.getModels().forEach((model) -> {
-                    retVal.addAll(model.getCrops());
-                });
+                dss.getModels().stream()
+            	.filter(model -> model.getCrops() != null)
+            	.forEach(model -> retVal.addAll(model.getCrops()));
             }
             return Response.ok().entity(retVal).build();
         } catch (IOException ex) {
