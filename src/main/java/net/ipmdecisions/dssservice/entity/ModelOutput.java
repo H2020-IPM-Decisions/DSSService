@@ -67,6 +67,12 @@ public class ModelOutput {
     @JsonSchemaTitle("Result data")
     @JsonPropertyDescription("The result data per location.")
     private List<LocationResult> locationResult;
+    @JsonSchemaTitle("Message")
+    @JsonPropertyDescription("Any message output from the model: Informations, warnings and error messages")
+    private String message;
+    @JsonSchemaTitle("Message type")
+    @JsonPropertyDescription("0 = info, 1 = warning, 2 = error")
+    private Integer messageType;
 
     /**
      * @return the timeStart
@@ -147,4 +153,24 @@ public class ModelOutput {
         }
         this.locationResult.add(locationResult);
     }
+
+
+	public String getMessage() {
+		return message;
+	}
+
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+
+	public Integer getMessageType() {
+		return messageType;
+	}
+
+
+	public void setMessageType(Integer messageType) {
+		this.messageType = messageType;
+	}
 }

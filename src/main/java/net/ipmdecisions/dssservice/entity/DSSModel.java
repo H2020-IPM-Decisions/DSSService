@@ -350,21 +350,22 @@ public class DSSModel {
      * Must be used in conjunction with the model's input_schema
      */
     static class Input {
-        private List<WeatherInput> weather;
+        private List<WeatherParameter> weather_parameters;
         private FieldObservation field_observation;
+        private DSSDate weather_data_period_start, weather_data_period_end;
 
         /**
          * @return Specification of the weather result_parameters required by the model
          */
-        public List<WeatherInput> getWeather() {
-            return weather;
+        public List<WeatherParameter> getWeather_parameters() {
+            return weather_parameters;
         }
 
         /**
-         * @param weather the weather to set
+         * @param weather_parameters the weather to set
          */
-        public void setWeather(List<WeatherInput> weather) {
-            this.weather = weather;
+        public void setWeather_parameters(List<WeatherParameter> weather_parameters) {
+            this.weather_parameters = weather_parameters;
         }
 
         /**
@@ -380,7 +381,46 @@ public class DSSModel {
         public void setField_observation(FieldObservation field_observation) {
             this.field_observation = field_observation;
         }
+
+		public DSSDate getWeather_data_period_start() {
+			return weather_data_period_start;
+		}
+
+		public void setWeather_data_period_start(DSSDate weather_data_period_start) {
+			this.weather_data_period_start = weather_data_period_start;
+		}
+
+		public DSSDate getWeather_data_period_end() {
+			return weather_data_period_end;
+		}
+
+		public void setWeather_data_period_end(DSSDate weather_data_period_end) {
+			this.weather_data_period_end = weather_data_period_end;
+		}
         
+    }
+    
+    static class DSSDate {
+    	private String determined_by, value;
+    	
+    	public String getDetermined_by()
+    	{
+    		return determined_by;
+    	}
+    	public void setDetermined_by(String determined_by)
+    	{
+    		this.determined_by = determined_by;
+    	}
+    	
+    	public String getValue()
+    	{
+    		return value;
+    	}
+    	
+    	public void setValue(String value)
+    	{
+    		this.value = value;
+    	}
     }
     
     /**
@@ -410,7 +450,7 @@ public class DSSModel {
     /**
      * Description of the weather result_parameters needed by the model
      */
-    static class WeatherInput {
+    static class WeatherParameter {
         private int parameter_code;
         private int interval;
 

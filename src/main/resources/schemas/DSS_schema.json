@@ -243,8 +243,8 @@
                                     }
                                 ],
                                 "properties": {
-                                    "weather": {
-                                        "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather",
+                                    "weather_parameters": {
+                                        "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters",
                                         "type": ["array","null"],
                                         "title": "The weather schema",
                                         "description": "A list of weather parameters and their intervals (given in seconds) that are required",
@@ -259,21 +259,51 @@
                                         ],
                                         "additionalItems": false,
                                         "items": {
-                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items",
+                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items",
                                             "type": "object",
                                             "properties": {
                                                 "parameter_code": {
-                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/parameter_code",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items/anyOf/0/properties/parameter_code",
                                                     "type": "integer"
                                                 },
                                                 "interval": {
-                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather/items/anyOf/0/properties/interval",
+                                                    "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items/anyOf/0/properties/interval",
                                                     "type": "integer"
                                                 }
                                             },
                                             "additionalProperties": true
                                         }
                                     },
+                                    "weather_data_period_start": {
+										"type": ["object","null"],
+										"title": "The start date of gathering weather data",
+                                        "description" : "TODO",
+                                        "default": {"determined_by":"FIXED_DATE","value":"XXXX-01-01"},
+                                        "examples": [
+                                            {"determined_by":"FIXED_DATE","value":"XXXX-01-01"},
+                                            {"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeStart"}
+                                        ],
+                                        "properties":{
+                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format XXXX-MM-DD (e.g. \"XXXX-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                            "value":{"type":"string"}
+                                        },
+                                        "required":["determined_by","value"]
+									},
+                                    "weather_data_period_end": {
+										"type": ["object","null"],
+										"title": "The end date of gathering weather data",
+                                        "description" : "TODO",
+                                        "default": {"determined_by":"FIXED_DATE","value":"XXXX-12-31"},
+                                        "examples": [
+                                            {"determined_by":"FIXED_DATE","value":"XXXX-12-31"},
+                                            {"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeEnd"}
+                                        ],
+                                        "properties":{
+                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format XXXX-MM-DD (e.g. \"XXXX-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                            "value":{"type":"string"}
+                                        },
+                                        "required":["determined_by","value"]
+									},
                                     "field_observation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/input/properties/field_observation",
                                         "type": ["object","null"],
