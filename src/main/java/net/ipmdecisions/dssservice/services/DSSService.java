@@ -19,7 +19,10 @@
 package net.ipmdecisions.dssservice.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import java.io.File;
@@ -377,6 +380,113 @@ public class DSSService {
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
                 if (matchingDSSModel.isPresent()) {
                     return Response.ok().entity(matchingDSSModel.get().getExecution().getInput_schema()).build();
+                } else {
+                    return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS Model with id " + ModelId + " in DSS with id " + DSSId)).build();
+                }
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS with id " + DSSId)).build();
+            }
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
+    /**
+     * Provide Json schema only for the parts that should be viewed in the platform's HTML UI form
+     * @param DSSId The id of the DSS containing the model
+     * @param ModelId The id of the DSS model requested
+     * @return The input Json schema for the DSS model
+     * @pathExample /rest/model/no.nibio.vips/PSILARTEMP/input_schema/ui_form
+     * @responseExample application/json {
+  "type": "object",
+  "properties": {
+    
+    "configParameters": {
+      "title": "Configuration parameters",
+      "type": "object",
+      "properties": {
+        "timeZone": {
+          "type": "string",
+          "title": "Time zone (e.g. Europe/Oslo)",
+          "default": "Europe/Oslo"
+        },
+        "timeStart": {
+          "type": "string",
+          "format": "date",
+          "title": "Start date of calculation (YYYY-MM-DD)"
+        },
+        "timeEnd": {
+          "type": "string",
+          "format": "date",
+          "title": "End date of calculation (YYYY-MM-DD)"
+        }
+      },
+      "required": [
+        "timeZone",
+        "timeStart",
+        "timeEnd"
+      ]
+    }
+  },
+  "required": [
+    "configParameters"
+  ]
+}
+     */
+    @GET
+    @Path("model/{DSSId}/{ModelId}/input_schema/ui_form")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSSModel.class)
+    public Response getDSSModelUIFormSchema(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
+        try {
+            Optional<DSS> matchingDSS = this.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            if (matchingDSS.isPresent()) {
+                DSS actualDSS = matchingDSS.get();
+                Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
+                if (matchingDSSModel.isPresent()) {
+                	ObjectMapper om = new ObjectMapper();
+                	JsonNode inputSchema = om.readTree(matchingDSSModel.get().getExecution().getInput_schema());
+                	String[] hideThese = matchingDSSModel.get().getExecution().getInput_schema_hidden_properties();
+                	if(hideThese != null)
+                	{
+	                	for(String hideThis:hideThese)
+	                	{
+	                		//System.out.println("hideThis=" + hideThis);
+	                		String[] hideThisPath = hideThis.split("\\.");
+	                		String pathToHideThisParent = "/properties";
+	                		for(int i=0;i<hideThisPath.length-1;i++)
+	                		{
+	                			pathToHideThisParent += "/" + hideThisPath[i];
+	                			pathToHideThisParent += "/properties";
+	                		}
+	                		
+	                		//System.out.println("pathToHideThisParent=" + pathToHideThisParent);
+	                		ObjectNode parent = (ObjectNode) inputSchema.at(pathToHideThisParent);
+	                		JsonNode removedNode = parent.remove(hideThisPath[hideThisPath.length-1]);
+	                		// For getting the "required" attribute
+	                		
+	                		// Remove any "required" statements for hidden fields
+	                		String pathToHideThisRequired = pathToHideThisParent.substring(0, pathToHideThisParent.lastIndexOf("/properties")) + "/required";
+	                		ArrayNode required = (ArrayNode) inputSchema.at(pathToHideThisRequired);
+	                		if(required != null)
+	                		{
+		                		for(int i=0;i<required.size();i++)
+		                		{
+		                			//System.out.println(required.get(i).asText() + "/" + hideThisPath[hideThisPath.length-1]);
+		                			if(required.get(i).asText().equals(hideThisPath[hideThisPath.length-1]))
+		                			{
+		                				required.remove(i);
+		                				break;
+		                			}
+		                		}
+	                		}
+	                	}
+	                	
+                	}
+                	// Weather data part will always be hidden
+                	((ObjectNode)inputSchema.findParent("weatherData")).remove("weatherData");
+                	
+                    return Response.ok().entity(inputSchema).build();
                 } else {
                     return Response.status(Response.Status.NOT_FOUND).entity(Map.of("errorMessage", "Could not find DSS Model with id " + ModelId + " in DSS with id " + DSSId)).build();
                 }

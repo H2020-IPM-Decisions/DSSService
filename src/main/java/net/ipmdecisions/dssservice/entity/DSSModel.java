@@ -239,7 +239,7 @@ public class DSSModel {
      */
     public static class Execution {
         private String type, endpoint, form_method, content_type, input_schema;
-
+        private String [] input_schema_hidden_properties;
         /**
          * @return The type of execution. As of now, the only valid value is
          * ONTHEFLY, meaning that it can be run directly from the platform
@@ -343,6 +343,14 @@ public class DSSModel {
         public void setInput_schema(String input_schema) {
             this.input_schema = input_schema;
         }
+
+		public String [] getInput_schema_hidden_properties() {
+			return input_schema_hidden_properties;
+		}
+
+		public void setInput_schema_hidden_properties(String [] input_schema_hidden_properties) {
+			this.input_schema_hidden_properties = input_schema_hidden_properties;
+		}
     }
     
     /**
