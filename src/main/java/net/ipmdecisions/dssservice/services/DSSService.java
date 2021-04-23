@@ -484,7 +484,10 @@ public class DSSService {
 	                	
                 	}
                 	// Weather data part will always be hidden
-                	((ObjectNode)inputSchema.findParent("weatherData")).remove("weatherData");
+                	if(inputSchema.findParent("weatherData") != null)
+                	{
+                		((ObjectNode)inputSchema.findParent("weatherData")).remove("weatherData");
+                	}
                 	
                     return Response.ok().entity(inputSchema).build();
                 } else {
