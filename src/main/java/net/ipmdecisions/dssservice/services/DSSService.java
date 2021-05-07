@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -195,7 +196,7 @@ public class DSSService {
     @TypeHint(String[].class)
     public Response getAllPests() {
         try {
-            List<String> retVal = new ArrayList<>();
+            Set<String> retVal = new HashSet<>();
             for (DSS dss : this.getDSSListObj()) {
                 dss.getModels().stream()
                 	.filter(model -> model.getPests() != null)
@@ -221,7 +222,7 @@ public class DSSService {
     @TypeHint(String[].class)
     public Response getAllCrops() {
         try {
-            List<String> retVal = new ArrayList<>();
+        	Set<String> retVal = new HashSet<>();
             for (DSS dss : this.getDSSListObj()) {
                 dss.getModels().stream()
             	.filter(model -> model.getCrops() != null)
