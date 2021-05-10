@@ -4,7 +4,7 @@ So, you have found a model that you want to run. Given the metadata provided, le
 
 Let's use the VIPS/PSILARTEMP (Carrot rust fly temperature) model as an example. The relevant metadata is provided below
 
-```
+``` json
 {
         "name": "Carrot rust fly temperature model",
         "id": "PSILARTEMP",
@@ -53,7 +53,7 @@ Let's use the VIPS/PSILARTEMP (Carrot rust fly temperature) model as an example.
 ```
 Here's the input_schema pretty printed
 
-```
+``` json
 {
 	"type": "object",
 	"properties": {
@@ -97,7 +97,7 @@ In order to run the model, you need to create Json data that conforms to this sc
 
 Here's a sample of conforming Json (The period has been made artificially short for illustration purposes)
 
-```
+``` json
 {
   "modelId": "PSILARTEMP",
   "configParameters": {
@@ -139,58 +139,57 @@ According to the metadata, the client should send this to the model endpoint (wh
 
 What is returned, is a set of result objects. It conforms to [the modeloutput schema](https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput), and in our example it looks like this. The parameters are (or should be ) documented in the model metadata (see above).
 
-```
+``` json
 {
-    "timeStart": "2020-04-30T22:00:00Z",
-    "timeEnd": "2020-05-02T22:00:00Z",
-    "interval": 86400,
-    "resultParameters": [
-        "TMDD5C",
-        "THRESHOLD_1",
-        "THRESHOLD_2",
-        "TMD5C",
-        "WARNING_STATUS",
-        "TMD",
-        "THRESHOLD_3"
-    ],
-    "locationResult": [
-        {
-            "longitude": null,
-            "latitude": null,
-            "altitude": null,
-            "data": [
-                [
-                    0.7,
-                    260.0,
-                    360.0,
-                    0.7,
-                    2.0,
-                    5.7,
-                    560.0
-                ],
-                [
-                    3.9,
-                    260.0,
-                    360.0,
-                    3.2,
-                    2.0,
-                    8.2,
-                    560.0
-                ],
-                [
-                    7.4,
-                    260.0,
-                    360.0,
-                    3.5,
-                    2.0,
-                    8.5,
-                    560.0
-                ]
-            ],
-            "length": 3,
-            "width": 7
-        }
-    ]
+	"timeStart": "2020-04-30T22:00:00Z",
+	"timeEnd": "2020-05-02T22:00:00Z",
+	"interval": 86400,
+	"resultParameters": [
+		"TMDD5C",
+		"THRESHOLD_1",
+		"THRESHOLD_2",
+		"TMD5C",
+		"TMD",
+		"THRESHOLD_3"
+	],
+	"locationResult": [{
+		"longitude": null,
+		"latitude": null,
+		"altitude": null,
+		"data": [
+			[
+				0.7,
+				260.0,
+				360.0,
+				0.7,
+				5.7,
+				560.0
+			],
+			[
+				3.9,
+				260.0,
+				360.0,
+				3.2,
+				8.2,
+				560.0
+			],
+			[
+				7.4,
+				260.0,
+				360.0,
+				3.5,
+				8.5,
+				560.0
+			]
+		],
+		"warningStatus": [
+			2,
+			2,
+			2
+		],
+		"length": 3,
+		"width": 6
+	}]
 }
 ```
 ## Create a DSS model request with field observations
