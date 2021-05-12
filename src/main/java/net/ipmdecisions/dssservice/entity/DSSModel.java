@@ -48,6 +48,7 @@ public class DSSModel {
     static class Output {
         private String warning_status_interpretation;
         private ResultParameter[] result_parameters;
+        private String chart_heading;
         
         /**
          * A result or intermediary from a DSS model. These are distinct for 
@@ -55,7 +56,47 @@ public class DSSModel {
          */
         static class ResultParameter {
             private String id, title, description;
+            private Chart_info chart_info;
 
+            static class Chart_info {
+            	private boolean default_visible;
+            	private String unit, color, chart_type;
+            	
+				public boolean isDefault_visible() {
+					return default_visible;
+				}
+				
+				public void setDefault_visible(boolean default_visible) {
+					this.default_visible = default_visible;
+				}
+				
+				@DocumentationExample("&deg;C")
+				public String getUnit() {
+					return unit;
+				}
+				
+				public void setUnit(String unit) {
+					this.unit = unit;
+				}
+
+				@DocumentationExample("#00ccff")
+				public String getColor() {
+					return color;
+				}
+
+				public void setColor(String color) {
+					this.color = color;
+				}
+
+				public String getChart_type() {
+					return chart_type;
+				}
+
+				public void setChart_type(String chart_type) {
+					this.chart_type = chart_type;
+				}
+            }
+            
             /**
              * @return The Id, which is combined with the DSS id and model id as 
              * name space to create a unique ID. For example no.nibio.vips.PSILARTEMP.TMDD5C
@@ -101,6 +142,14 @@ public class DSSModel {
             public void setDescription(String description) {
                 this.description = description;
             }
+
+			public Chart_info getChart_info() {
+				return chart_info;
+			}
+
+			public void setChart_info(Chart_info chart_info) {
+				this.chart_info = chart_info;
+			}
         }
 
         /**
@@ -132,6 +181,15 @@ public class DSSModel {
         public void setResult_parameters(ResultParameter[] result_parameters) {
             this.result_parameters = result_parameters;
         }
+
+        @DocumentationExample("Day degree chart")
+		public String getChart_heading() {
+			return chart_heading;
+		}
+
+		public void setChart_heading(String chart_heading) {
+			this.chart_heading = chart_heading;
+		}
     }
     
     /**
