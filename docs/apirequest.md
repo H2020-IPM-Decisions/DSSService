@@ -6,50 +6,112 @@ Let's use the VIPS/PSILARTEMP (Carrot rust fly temperature) model as an example.
 
 ``` json
 {
-        "name": "Carrot rust fly temperature model",
-        "id": "PSILARTEMP",
-        "version": "1.0",
-        "type_of_decision": "Short-term tactical",
-        "type_of_output": "Risk indication",
-        "description_URL": "https://www.vips-landbruk.no/forecasts/models/PSILARTEMP/",
-        
-        "pests": [
-          "PSILRO"
-        ],
-        "crops": [
-          "DAUCS"
-        ],
-        "execution": {
-          "type": "ONTHEFLY",
-          "endpoint": "https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd",
-          "form_method": "post",
-          "content_type": "application/json",
-          "input_schema": "{\n  \"type\":\"object\",\n  \"properties\": {\n    \"modelId\": {\"type\": \"string\", \"pattern\":\"^PSILARTEMP$\", \"title\": \"Model Id\", \"default\":\"PSILARTEMP\", \"description\":\"Must be PSILARTEMP\"},\n    \"configParameters\": {\n      \"title\":\"Configuration parameters\",\n      \"type\": \"object\",\n      \"properties\": {\n        \"timeZone\": {\"type\": \"string\", \"title\": \"Time zone (e.g. Europe/Oslo)\", \"default\":\"Europe/Oslo\"},\n        \"timeStart\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"Start date of calculation (YYYY-MM-DD)\"},\n        \"timeEnd\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"End date of calculation (YYYY-MM-DD)\"}\n      },\n      \"required\": [\"timeZone\",\"timeStart\",\"timeEnd\"]\n    },\n    \"weatherData\": {\n      \"$ref\": \"https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata\"\n    }\n  },\n  \"required\": [\"modelId\",\"configParameters\"]\n}\n"
-        },
-        "input": {
-          "weather": [
-            {
-              "parameter_code": 1002,
-              "interval": 86400
+            "name": "Carrot rust fly temperature model",
+            "id": "PSILARTEMP",
+            "version": "1.0",
+            "type_of_decision": "Short-term tactical",
+            "type_of_output": "Risk indication",
+            "description_URL": "https://www.vips-landbruk.no/forecasts/models/PSILARTEMP/",
+            "description": "The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumuleted degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. \nStandard air temperature (temperature measured 2 m above ground) is used in the model. Degree-days are defined for this model as the sum of the difference between a base temperature of 5,0 °C and the mean temperature for all days with a temperature >5,0 °C, in other words (daily mean temperature – 5,0 °C) from 1 March (beginning when the ground has thawed).\n",
+            "citation": null,
+            "keywords": "none",
+            "pests": [
+                "PSILRO"
+            ],
+            "crops": [
+                "DAUCS"
+            ],
+            "authors": [
+                {
+                    "name": "Berit Nordskog",
+                    "email": "berit.nordskog@nibio.no",
+                    "organization": "NIBIO"
+                }
+            ],
+            "execution": {
+                "type": "ONTHEFLY",
+                "endpoint": "https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd",
+                "form_method": "post",
+                "content_type": "application/json",
+                "input_schema": "{\n  \"type\":\"object\",\n  \"properties\": {\n    \"modelId\": {\"type\": \"string\", \"pattern\":\"^PSILARTEMP$\", \"title\": \"Model Id\", \"default\":\"PSILARTEMP\", \"description\":\"Must be PSILARTEMP\"},\n    \"configParameters\": {\n      \"title\":\"Configuration parameters\",\n      \"type\": \"object\",\n      \"properties\": {\n        \"timeZone\": {\"type\": \"string\", \"title\": \"Time zone (e.g. Europe/Oslo)\", \"default\":\"Europe/Oslo\"},\n        \"timeStart\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"Start date of calculation (YYYY-MM-DD)\"},\n        \"timeEnd\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"End date of calculation (YYYY-MM-DD)\"}\n      },\n      \"required\": [\"timeZone\",\"timeStart\",\"timeEnd\"]\n    },\n    \"weatherData\": {\n      \"$ref\": \"https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata\"\n    }\n  },\n  \"required\": [\"modelId\",\"configParameters\"]\n}\n",
+                "input_schema_hidden_properties": [
+                    "modelId"
+                ]
+            },
+            "input": {
+                "weather_parameters": [
+                    {
+                        "parameter_code": 1002,
+                        "interval": 86400
+                    }
+                ],
+                "field_observation": null,
+                "weather_data_period_start": {
+                    "determined_by": "INPUT_SCHEMA_PROPERTY",
+                    "value": "configParameters.timeStart"
+                },
+                "weather_data_period_end": {
+                    "determined_by": "INPUT_SCHEMA_PROPERTY",
+                    "value": "configParameters.timeEnd"
+                }
+            },
+            "valid_spatial": {
+                "countries": [
+                    "NOR"
+                ],
+                "geoJSON": "{}"
+            },
+            "output": {
+                "warning_status_interpretation": "Green warning indicates that the flight period has not yet begun.\nYellow warning indicates that the flight period is beginning and that flies can be coming into the field.\nRed warning indicates peak flight period.\nGrey warning indicates that the flight period of the 1st generation is over.\nBe aware that in areas with field covers (plastic, single or double non-woven covers, etc.) with early crops the preceding season (either on the current field or neighboring fields), the flight period can start earlier due to higher soil temperature under the covers.",
+                "result_parameters": [
+                    {
+                        "id": "TMDD5C",
+                        "title": "Accumulated day degrees",
+                        "description": "The accumulated day degrees with a base temperature of 5 degrees celcius",
+                        "chart_info": {
+                            "default_visible": true,
+                            "unit": "&deg;C",
+                            "color": "#0033cc",
+                            "chart_type": "spline"
+                        }
+                    },
+                    {
+                        "id": "THRESHOLD_1",
+                        "title": "Threshold for start of flight period",
+                        "description": "When the accumulated day degrees exceed this threshold, the flight period is starting up",
+                        "chart_info": {
+                            "default_visible": true,
+                            "unit": "&deg;C",
+                            "color": "#ffff00",
+                            "chart_type": "spline"
+                        }
+                    },
+                    {
+                        "id": "THRESHOLD_2",
+                        "title": "Threshold for peak flight period",
+                        "description": "When the accumulated day degrees exceed this threshold, you enter the peak flight period",
+                        "chart_info": {
+                            "default_visible": true,
+                            "unit": "&deg;C",
+                            "color": "#ff0000",
+                            "chart_type": "spline"
+                        }
+                    },
+                    {
+                        "id": "THRESHOLD_3",
+                        "title": "Threshold for end of 1st generation flight period",
+                        "description": "When the accumulated day degrees exceed this threshold, the 1st generation flight period is over",
+                        "chart_info": {
+                            "default_visible": true,
+                            "unit": "&deg;C",
+                            "color": "#999999",
+                            "chart_type": "spline"
+                        }
+                    }
+                ],
+                "chart_heading": "Accumulated day degrees"
             }
-          ],
-          "field_observation": null
-        },
-        "valid_spatial": {
-          "countries": [
-            "NOR"
-          ],
-          "geoJSON": "{}"
-        },
-          "result_parameters": [
-            {
-              "id": "TMDD5C",
-              "title": "Accumulated day degrees",
-              "description": "The accumulated day degrees with a base temperature of 5 degrees celcius"
-            }
-          ]
         }
-      }
 ```
 Here's the input_schema pretty printed
 

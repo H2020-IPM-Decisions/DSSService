@@ -14,10 +14,13 @@ Internally, the API stores the meta data about the DSS as a [YAML file](https://
 
 Here's an example of a [valid YAML file](https://ipmdecisions.nibio.no/dss/rest/schema/dss/yaml). An annotated excerpt is given below.
 
-```
+``` yaml
+# YAML sample of model meta data to be used by the plaform
+# (c) 2021 Tor-Einar Skog <tor-einar.skog@nibio.no>
+---
 # General info about the DSS
-id: no.nibio.vips # This uniquely identifies the DSS. Each model also has its id which is unique for this DSS
-version: "2.0" # We use this for keeping track of the DSS history
+id: no.nibio.vips
+version: "2.0"
 name: VIPS
 url: https://www.vips-landbruk.no/
 organization: 
@@ -28,7 +31,7 @@ organization:
  city: Ås
  email: berit.nordskog@nibio.no
  url: https://www.nibio.no/
-languages: # Which languages does the DSS support?
+languages:
 - Norwegian
 - English
 # From here on we get model specific
@@ -50,9 +53,9 @@ models:
   - PSILRO # EPPO code for carrot rust fly
   crops:
   - DAUCS # EPPO code for carrot
-  keywords: foo, bar, mechanistic, regression # Enhancing searchability for the model
-  type_of_decision: Short-term tactical # What kind of decision support does the farmer get from this model?
-  type_of_output: Risk indication # What kind of output does the farmer get from this model?
+  keywords: none
+  type_of_decision: Short-term tactical
+  type_of_output: Risk indication
   description_URL: https://www.vips-landbruk.no/forecasts/models/PSILARTEMP/
   description: |
     The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumuleted degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. 
@@ -64,22 +67,27 @@ models:
     # ISO-3166-1 Three-letter country codes https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes
     countries:
       - NOR
-    # Optionally, use a custom polygon in GeoJson format (https://geojson.org/). The default projection is WGS84(EPSG:4326)
+    # Optionally, use a custom polygon
     geoJSON: |-
       {}
   input:
-   weather: 
-   - parameter_code: 1002 # = Mean air temp at 2m (see https://github.com/H2020-IPM-Decisions/formats/blob/master/weather_data/weather_parameters_draft_v2.yaml for complete list)
+   weather_parameters: 
+   - parameter_code: 1002 # = Mean air temp at 2m
      interval: 86400 # Sampling interval in seconds (3600 * 24 = 86400)
+   weather_data_period_start: # DEFAULT is FIXED_DATE=XXXX-01-01
+     determined_by: INPUT_SCHEMA_PROPERTY ## Could be INPUT_SCHEMA_PROPERTY or FIXED_DATE
+     value: configParameters.timeStart ## Could be path.to.property OR e.g. XXXX-01-01
+   weather_data_period_end: # DEFAULT is FIXED_DATE=XXXX-12-31
+     determined_by: INPUT_SCHEMA_PROPERTY ## Could be INPUT_SCHEMA_PROPERTY or FIXED_DATE
+     value: configParameters.timeEnd ## Could be path.to.property OR e.g. XXXX-12-31
   execution: 
     type: ONTHEFLY
-    endpoint: https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd # The web service endpoint to send the request to
+    endpoint: https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd
     form_method: post # Could be get or post
     content_type: application/json # Regular forms: application/x-www-form-urlencoded , Regular forms with files (<input type="file">): multipart/form-data
+    input_schema_hidden_properties:
+      - modelId
     # The input template should adhere to the JSON Schema standard: https://json-schema.org/
-    # The object of this schema is to enable the client (the platform) to generate a valid request. If user input
-    # is needed, there are tools (https://github.com/json-editor/json-editor) available that can auto-generate 
-    # self-validating forms
     input_schema: |
       {
         "type":"object",
@@ -109,11 +117,41 @@ models:
       Red warning indicates peak flight period.
       Grey warning indicates that the flight period of the 1st generation is over.
       Be aware that in areas with field covers (plastic, single or double non-woven covers, etc.) with early crops the preceding season (either on the current field or neighboring fields), the flight period can start earlier due to higher soil temperature under the covers.
+    chart_heading: Accumulated day degrees
     result_parameters:
       # the id is used with the model_id as the namespace
       - id: TMDD5C
         title: Accumulated day degrees
         description: The accumulated day degrees with a base temperature of 5 degrees celcius
+        chart_info:
+          default_visible: true
+          unit: "&deg;C"
+          chart_type: spline # Could be  line, spline, area, areaspline, column and scatter. Ref https://www.highcharts.com/docs/chart-and-series-types/chart-types
+          color: "#0033cc"
+      - id: THRESHOLD_1
+        title: Threshold for start of flight period
+        description: When the accumulated day degrees exceed this threshold, the flight period is starting up
+        chart_info:
+          default_visible: true
+          unit: "&deg;C"
+          chart_type: spline # Could be  line, spline, area, areaspline, column and scatter. Ref https://www.highcharts.com/docs/chart-and-series-types/chart-types
+          color: "#ffff00"
+      - id: THRESHOLD_2
+        title: Threshold for peak flight period
+        description: When the accumulated day degrees exceed this threshold, you enter the peak flight period
+        chart_info:
+          default_visible: true
+          unit: "&deg;C"
+          chart_type: spline # Could be  line, spline, area, areaspline, column and scatter. Ref https://www.highcharts.com/docs/chart-and-series-types/chart-types
+          color: "#ff0000"
+      - id: THRESHOLD_3
+        title: Threshold for end of 1st generation flight period
+        description: When the accumulated day degrees exceed this threshold, the 1st generation flight period is over
+        chart_info:
+          default_visible: true
+          unit: "&deg;C"
+          chart_type: spline # Could be  line, spline, area, areaspline, column and scatter. Ref https://www.highcharts.com/docs/chart-and-series-types/chart-types
+          color: "#999999"
 ```
 
 See [the page on generating api requests](apirequest.md) for details about the input_schema properties. Using the [Json editor](https://json-editor.github.io/json-editor/) and the [Json schema generator](https://www.jsonschema.net/home) can be a great help in creating the schema.
