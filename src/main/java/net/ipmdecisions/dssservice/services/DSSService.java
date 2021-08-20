@@ -118,7 +118,7 @@ public class DSSService {
     }
     
     /**
-     * Returns a list of models that are applicable to the given crops
+     * Returns a list of DSS models that are applicable to the given crops
      *
      * @param cropCodes comma separated EPPO codes for the crops
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
