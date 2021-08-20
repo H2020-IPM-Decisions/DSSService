@@ -319,7 +319,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{dss_url}}/rest/model/no.nibio.vips/PSILAROBSE/input_schema",
+							"raw": "{{dss_url}}/rest/model/no.nibio.vips/PSILARTEMP/input_schema",
 							"host": [
 								"{{dss_url}}"
 							],
@@ -327,7 +327,7 @@
 								"rest",
 								"model",
 								"no.nibio.vips",
-								"PSILAROBSE",
+								"PSILARTEMP",
 								"input_schema"
 							]
 						}
@@ -406,7 +406,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{dss_url}}/rest/model/no.nibio.vips/PSILARTEMP/input_schema/ui_form",
+							"raw": "{{dss_url}}/rest/model/no.nibio.vips/PSILAROBSE/input_schema/ui_form",
 							"host": [
 								"{{dss_url}}"
 							],
@@ -414,7 +414,7 @@
 								"rest",
 								"model",
 								"no.nibio.vips",
-								"PSILARTEMP",
+								"PSILAROBSE",
 								"input_schema",
 								"ui_form"
 							]
@@ -595,6 +595,72 @@
 							"path": [
 								"rest",
 								"crop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get DSS  model(s) for one crop",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/crop/SOLTU",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"crop",
+								"SOLTU"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get DSS  model(s) for multiple crops",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/crops/SOLTU,DAUCS",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"crops",
+								"SOLTU,DAUCS"
 							]
 						}
 					},

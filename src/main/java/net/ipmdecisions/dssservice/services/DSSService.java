@@ -97,7 +97,7 @@ public class DSSService {
     @Path("dss/crop/{cropCode}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
-    public Response listModelsForCrops(@PathParam("cropCode") String cropCode) {
+    public Response listModelsForCrop(@PathParam("cropCode") String cropCode) {
         try {
             List<DSS> retVal = new ArrayList<>();
             List<DSS> allDSSs = this.getDSSListObj();
@@ -105,6 +105,51 @@ public class DSSService {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
                                 .filter(model -> model.getCrops() != null && model.getCrops().contains(cropCode))
+                                .collect(Collectors.toList());
+                if (qualifyingModels.size() > 0) {
+                    currentDSS.setModels(qualifyingModels);
+                    retVal.add(currentDSS);
+                }
+            }
+            return Response.ok().entity(retVal).build();
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
+    /**
+     * Returns a list of models that are applicable to the given crops
+     *
+     * @param cropCodes comma separated EPPO codes for the crops
+     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @pathExample /rest/dss/crops/SOLTU,DAUCS
+     * @return a list of models that are applicable to the given crops
+     */
+    @GET
+    @Path("dss/crops/{cropCodes}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listModelsForCrops(@PathParam("cropCodes") String cropCodesStr) {
+        try {
+        	List<String> cropCodes = Arrays.asList(cropCodesStr.split(","));
+            List<DSS> retVal = new ArrayList<>();
+            List<DSS> allDSSs = this.getDSSListObj();
+            for (DSS currentDSS : allDSSs) {
+                List<DSSModel> qualifyingModels
+                        = currentDSS.getModels().stream()
+                                .filter(model -> { 
+                                	if(model.getCrops() == null)
+                                	{
+                                		return false;
+                                	}
+                                	
+                                	List<String> intersection = model.getCrops().stream()
+                                			.distinct()
+                                			.filter(cropCodes::contains)
+                                			.collect(Collectors.toList());
+                                	return intersection.size() > 0;
+                                	}
+                                )
                                 .collect(Collectors.toList());
                 if (qualifyingModels.size() > 0) {
                     currentDSS.setModels(qualifyingModels);
