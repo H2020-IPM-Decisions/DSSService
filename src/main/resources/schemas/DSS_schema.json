@@ -360,7 +360,7 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/output",
                                 "type": "object",
                                 "title": "The output schema",
-                                "description": "How to interpret the output from the model",
+                                "description": "How to interpret and display the output from the model",
                                 "default": {},
                                 "examples": [
                                     {
@@ -378,12 +378,17 @@
                                                 	"color": "#0066ff"
                                                 }
                                             }
+                                        ],
+                                        "chart_groups": [
+                                        	{"id": "G1","title":"Day degrees","result_parameter_ids": ["TMDD5C","FOOBAR"]},
+                                        	{"id": "G2","title":"Thresholds","result_parameter_ids": ["THRESHOLD_1","THRESHOLD_2","THRESHOLD_3"]}
                                         ]
                                     }
                                 ],
                                 "required": [
                                     "warning_status_interpretation",
-                                    "result_parameters"
+                                    "result_parameters",
+                                    "chart_groups"
                                 ],
                                 "properties": {
                                 	"chart_heading": {
@@ -392,6 +397,17 @@
                                     "warning_status_interpretation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",
                                         "type": "string"
+                                    },
+                                    "chart_groups": {
+                                    	"type": "array",
+                                    	"additionalItems": false,
+                                    	"items": {
+                                    		"properties": {
+                                    			"id": {"type":"string"},
+                                    			"title": {"type":"string"},
+                                    			"result_parameter_ids": {"type":"array","items":{"type":"string"}}
+                                    		}
+                                    	}
                                     },
                                     "result_parameters": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters",

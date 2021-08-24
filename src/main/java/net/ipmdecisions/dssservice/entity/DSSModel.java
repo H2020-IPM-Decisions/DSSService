@@ -48,7 +48,49 @@ public class DSSModel {
     static class Output {
         private String warning_status_interpretation;
         private ResultParameter[] result_parameters;
+        private ChartGroup[] chart_groups;
         private String chart_heading;
+        
+        static class ChartGroup {
+        	private String id, title;
+        	private String[] result_parameter_ids;
+			/**
+			 * @return the title
+			 */
+			public String getTitle() {
+				return title;
+			}
+			/**
+			 * @param title the title to set
+			 */
+			public void setTitle(String title) {
+				this.title = title;
+			}
+			/**
+			 * @return the id
+			 */
+			public String getId() {
+				return id;
+			}
+			/**
+			 * @param id the id to set
+			 */
+			public void setId(String id) {
+				this.id = id;
+			}
+			/**
+			 * @return the result_parameter_ids
+			 */
+			public String[] getResult_parameter_ids() {
+				return result_parameter_ids;
+			}
+			/**
+			 * @param result_parameter_ids the result_parameter_ids to set
+			 */
+			public void setResult_parameter_ids(String[] result_parameter_ids) {
+				this.result_parameter_ids = result_parameter_ids;
+			}
+        }
         
         /**
          * A result or intermediary from a DSS model. These are distinct for 
@@ -189,6 +231,21 @@ public class DSSModel {
 
 		public void setChart_heading(String chart_heading) {
 			this.chart_heading = chart_heading;
+		}
+
+		/**
+		 * @return the chart_groups
+		 */
+		@DocumentationExample("{“id”: “G1”,“title”:”Day degrees”,“result_parameter_ids”: [“TMDD5C”,”FOOBAR”]},{“id”: “G2”,“title”:”Thresholds”,“result_parameter_ids”: [“THRESHOLD_1”,”THRESHOLD_2”,”THRESHOLD_3”]}")
+		public ChartGroup[] getChart_groups() {
+			return chart_groups;
+		}
+
+		/**
+		 * @param chart_groups the chart_groups to set
+		 */
+		public void setChart_groups(ChartGroup[] chart_groups) {
+			this.chart_groups = chart_groups;
 		}
     }
     
