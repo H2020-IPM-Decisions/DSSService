@@ -236,7 +236,7 @@ public class DSSModel {
 		/**
 		 * @return the chart_groups
 		 */
-		@DocumentationExample("{“id”: “G1”,“title”:”Day degrees”,“result_parameter_ids”: [“TMDD5C”,”FOOBAR”]},{“id”: “G2”,“title”:”Thresholds”,“result_parameter_ids”: [“THRESHOLD_1”,”THRESHOLD_2”,”THRESHOLD_3”]}")
+		@DocumentationExample("[{\"id\": \"G1\",\"title\":\"Day degrees\",\"result_parameter_ids\": [\"TMDD5C\",\"FOOBAR\"]},{\"id\": \"G2\",\"title\":\"Thresholds\",\"result_parameter_ids\": [\"THRESHOLD_1\",\"THRESHOLD_2\",\"THRESHOLD_3\"]}]")
 		public ChartGroup[] getChart_groups() {
 			return chart_groups;
 		}
