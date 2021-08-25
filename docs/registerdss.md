@@ -15,7 +15,7 @@ Internally, the API stores the meta data about the DSS as a [YAML file](https://
 Here's an example of a [valid YAML file](https://ipmdecisions.nibio.no/dss/rest/schema/dss/yaml). An annotated excerpt is given below.
 
 ``` yaml
-# YAML sample of model meta data to be used by the plaform
+# YAML model meta data to be used by the plaform
 # (c) 2021 Tor-Einar Skog <tor-einar.skog@nibio.no>
 ---
 # General info about the DSS
@@ -118,6 +118,14 @@ models:
       Grey warning indicates that the flight period of the 1st generation is over.
       Be aware that in areas with field covers (plastic, single or double non-woven covers, etc.) with early crops the preceding season (either on the current field or neighboring fields), the flight period can start earlier due to higher soil temperature under the covers.
     chart_heading: Accumulated day degrees
+    chart_groups:
+      - id: G1
+        title: Day degrees
+        result_parameter_ids: 
+          - TMDD5C
+          - THRESHOLD_1
+          - THRESHOLD_2
+          - THRESHOLD_3
     result_parameters:
       # the id is used with the model_id as the namespace
       - id: TMDD5C

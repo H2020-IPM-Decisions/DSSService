@@ -38,7 +38,7 @@ sudo docker rmi ipmdecisions/dss_api:ALPHA-04
 ```
 
 5. Also, make sure you remove any ancestors as well, use sudo docker images to reveal them (check for recent ones)
-6. Then you can rebuild the image (see above)
+6. Then you can rebuild the image (see above). Consider adding the `--no-cache` tag if you need a complete rebuild
 
 ###Login to the container’s console (e.g. for troubleshooting)
 ```
