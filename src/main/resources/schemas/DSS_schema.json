@@ -383,7 +383,7 @@
                                                 "chart_info": {
                                                 	"default_visible": true,
                                                 	"unit": "&deg;C",
-                                                	"type": "spline",
+                                                	"chart_type": "spline",
                                                 	"color": "#0066ff"
                                                 }
                                             }
