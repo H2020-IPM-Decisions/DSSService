@@ -200,6 +200,13 @@
                                         "form_method": "post",
                                         "content_type": "application/json",
                                         "input_schema_hidden_properties": ["modelId"],
+                                        "input_schema_categories": {
+                                        	"hidden": ["modelId"],
+										    "system": [],
+										    "user_init": ["configParameters.dateGs31","configParameters.date3rdUpperLeafEmerging"],
+										    "triggered": [],
+										    "internal": ["configParameters.thresholdRelativeHumidity","configParameters.thresholdLeafWetness"] 
+                                        },
                                         "input_schema": "{\n  \"type\":\"object\",\n  \"properties\": {\n    \"modelId\": {\"type\": \"string\", \"pattern\":\"^PSILARTEMP$\", \"title\": \"Model Id\", \"default\":\"PSILARTEMP\", \"description\":\"Must be PSILARTEMP\"},\n    \"configParameters\": {\n      \"title\":\"Configuration parameters\",\n      \"type\": \"object\",\n      \"properties\": {\n        \"timeZone\": {\"type\": \"string\", \"title\": \"Time zone (e.g. Europe/Oslo)\", \"default\":\"Europe/Oslo\"},\n        \"timeStart\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"Start date of calculation (YYYY-MM-DD)\"},\n        \"timeEnd\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"End date of calculation (YYYY-MM-DD)\"}\n      },\n      \"required\": [\"timeZone\",\"timeStart\",\"timeEnd\"]\n    },\n    \"weatherData\": {\n      \"$ref\": \"https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata\"\n    }\n  },\n  \"required\": [\"modelId\",\"configParameters\"]\n}\n"
                                     }
                                 ],
@@ -228,9 +235,31 @@
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/content_type",
                                         "type": "string"
                                     },
-                                    "input_schema_hidden_properties": {
-                                    	"type": "array",
-                                    	"items": {"type":"string"}
+                                    "input_schema_categories": {
+                                    	"type": "object",
+                                    	"properties": {
+                                    		"hidden": {
+                                    			"type": "array",
+                                    			"items": {"type":"string"}
+                                    		},
+                                    		"internal": {
+                                    			"type": "array",
+                                    			"items": {"type":"string"}
+                                    		},
+                                    		"triggered": {
+                                    			"type": "array",
+                                    			"items": {"type":"string"}
+                                    		},
+                                    		"user_init": {
+                                    			"type": "array",
+                                    			"items": {"type":"string"}
+                                    		},
+                                    		"system": {
+                                    			"type": "array",
+                                    			"items": {"type":"string"}
+                                    		}
+                                    	}
+                                    	
                                     },
                                     "input_schema": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/input_schema",

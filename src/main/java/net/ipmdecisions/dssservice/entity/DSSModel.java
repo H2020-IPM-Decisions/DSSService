@@ -443,7 +443,8 @@ public class DSSModel {
      */
     public static class Execution {
         private String type, endpoint, form_method, content_type, input_schema;
-        private String [] input_schema_hidden_properties;
+        private InputSchemaCategories input_schema_categories;
+        
         /**
          * @return The type of execution. As of now, the only valid value is
          * ONTHEFLY, meaning that it can be run directly from the platform
@@ -548,13 +549,20 @@ public class DSSModel {
             this.input_schema = input_schema;
         }
 
-		public String [] getInput_schema_hidden_properties() {
-			return input_schema_hidden_properties;
+		/**
+		 * @return the input_schema_categories
+		 */
+		public InputSchemaCategories getInput_schema_categories() {
+			return input_schema_categories;
 		}
 
-		public void setInput_schema_hidden_properties(String [] input_schema_hidden_properties) {
-			this.input_schema_hidden_properties = input_schema_hidden_properties;
+		/**
+		 * @param input_schema_categories the input_schema_categories to set
+		 */
+		public void setInput_schema_categories(InputSchemaCategories input_schema_categories) {
+			this.input_schema_categories = input_schema_categories;
 		}
+
     }
     
     /**
@@ -700,7 +708,82 @@ public class DSSModel {
         }
     }
 
-    /**
+    public static class InputSchemaCategories {
+		private String[] hidden, system, user_init, triggered, internal;
+	
+		/**
+		 * @return the internal
+		 */
+		public String[] getInternal() {
+			return internal;
+		}
+	
+		/**
+		 * @param internal the internal to set
+		 */
+		public void setInternal(String[] internal) {
+			this.internal = internal;
+		}
+	
+		/**
+		 * @return the triggered
+		 */
+		public String[] getTriggered() {
+			return triggered;
+		}
+	
+		/**
+		 * @param triggered the triggered to set
+		 */
+		public void setTriggered(String[] triggered) {
+			this.triggered = triggered;
+		}
+	
+		/**
+		 * @return the user_init
+		 */
+		public String[] getUser_init() {
+			return user_init;
+		}
+	
+		/**
+		 * @param user_init the user_init to set
+		 */
+		public void setUser_init(String[] user_init) {
+			this.user_init = user_init;
+		}
+	
+		/**
+		 * @return the system
+		 */
+		public String[] getSystem() {
+			return system;
+		}
+	
+		/**
+		 * @param system the system to set
+		 */
+		public void setSystem(String[] system) {
+			this.system = system;
+		}
+	
+		/**
+		 * @return the hidden
+		 */
+		public String[] getHidden() {
+			return hidden;
+		}
+	
+		/**
+		 * @param hidden the hidden to set
+		 */
+		public void setHidden(String[] hidden) {
+			this.hidden = hidden;
+		}
+	
+	}
+
+	/**
      * @return The name of the model. E.g. "DOWNCAST" or "Nærstad's model"
      */
     @DocumentationExample("Carrot rust fly temperature model")

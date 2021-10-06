@@ -492,7 +492,7 @@ public class DSSService {
                 if (matchingDSSModel.isPresent()) {
                 	ObjectMapper om = new ObjectMapper();
                 	JsonNode inputSchema = om.readTree(matchingDSSModel.get().getExecution().getInput_schema());
-                	String[] hideThese = matchingDSSModel.get().getExecution().getInput_schema_hidden_properties();
+                	String[] hideThese = matchingDSSModel.get().getExecution().getInput_schema_categories().getHidden();
                 	if(hideThese != null)
                 	{
 	                	for(String hideThis:hideThese)
