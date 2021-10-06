@@ -12,7 +12,6 @@ Let's use the VIPS/PSILARTEMP (Carrot rust fly temperature) model as an example.
             "type_of_decision": "Short-term tactical",
             "type_of_output": "Risk indication",
             "description_URL": "https://www.vips-landbruk.no/forecasts/models/PSILARTEMP/",
-            "description": "The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumuleted degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. \nStandard air temperature (temperature measured 2 m above ground) is used in the model. Degree-days are defined for this model as the sum of the difference between a base temperature of 5,0 °C and the mean temperature for all days with a temperature >5,0 °C, in other words (daily mean temperature – 5,0 °C) from 1 March (beginning when the ground has thawed).\n",
             "citation": null,
             "keywords": "none",
             "pests": [
@@ -33,10 +32,16 @@ Let's use the VIPS/PSILARTEMP (Carrot rust fly temperature) model as an example.
                 "endpoint": "https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd",
                 "form_method": "post",
                 "content_type": "application/json",
-                "input_schema": "{\n  \"type\":\"object\",\n  \"properties\": {\n    \"modelId\": {\"type\": \"string\", \"pattern\":\"^PSILARTEMP$\", \"title\": \"Model Id\", \"default\":\"PSILARTEMP\", \"description\":\"Must be PSILARTEMP\"},\n    \"configParameters\": {\n      \"title\":\"Configuration parameters\",\n      \"type\": \"object\",\n      \"properties\": {\n        \"timeZone\": {\"type\": \"string\", \"title\": \"Time zone (e.g. Europe/Oslo)\", \"default\":\"Europe/Oslo\"},\n        \"timeStart\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"Start date of calculation (YYYY-MM-DD)\"},\n        \"timeEnd\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"End date of calculation (YYYY-MM-DD)\"}\n      },\n      \"required\": [\"timeZone\",\"timeStart\",\"timeEnd\"]\n    },\n    \"weatherData\": {\n      \"$ref\": \"https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata\"\n    }\n  },\n  \"required\": [\"modelId\",\"configParameters\"]\n}\n",
-                "input_schema_hidden_properties": [
-                    "modelId"
-                ]
+                "input_schema": "{\n  \"type\":\"object\",\n  \"properties\": {\n    \"modelId\": {\"type\": \"string\", \"pattern\":\"^PSILARTEMP$\", \"title\": \"Model Id\", \"default\":\"PSILARTEMP\", \"description\":\"Must be PSILARTEMP\"},\n    \"configParameters\": {\n      \"title\":\"Configuration parameters\",\n      \"type\": \"object\",\n      \"properties\": {\n        \"timeZone\": {\"type\": \"string\", \"title\": \"Time zone (e.g. Europe/Oslo)\", \"default\":\"Europe/Oslo\", \"options\":{\"infoText\":\"The time zone information is used when hourly temperature values need to be converted to daily.\"}},\n        \"timeStart\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"Start date of calculation (YYYY-MM-DD)\"},\n        \"timeEnd\": {\"type\":\"string\",\"format\": \"date\", \"title\": \"End date of calculation (YYYY-MM-DD)\"}\n      },\n      \"required\": [\"timeZone\",\"timeStart\",\"timeEnd\"]\n    },\n    \"weatherData\": {\n      \"$ref\": \"https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata\"\n    }\n  },\n  \"required\": [\"modelId\",\"configParameters\"]\n}\n",
+                "input_schema_categories": {
+                    "hidden": [
+                        "modelId"
+                    ],
+                    "system": null,
+                    "user_init": null,
+                    "triggered": null,
+                    "internal": null
+                }
             },
             "input": {
                 "weather_parameters": [
@@ -109,7 +114,26 @@ Let's use the VIPS/PSILARTEMP (Carrot rust fly temperature) model as an example.
                         }
                     }
                 ],
+                "chart_groups": [
+                    {
+                        "id": "G1",
+                        "title": "Day degrees",
+                        "result_parameter_ids": [
+                            "TMDD5C",
+                            "THRESHOLD_1",
+                            "THRESHOLD_2",
+                            "THRESHOLD_3"
+                        ]
+                    }
+                ],
                 "chart_heading": "Accumulated day degrees"
+            },
+            "description": {
+                "other": "The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumuleted degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. \nStandard air temperature (temperature measured 2 m above ground) is used in the model. Degree-days are defined for this model as the sum of the difference between a base temperature of 5,0 °C and the mean temperature for all days with a temperature >5,0 °C, in other words (daily mean temperature – 5,0 °C) from 1 March (beginning when the ground has thawed).\n",
+                "created_by": "",
+                "age": "",
+                "peer_review": "",
+                "case_studies": null
             }
         }
 ```
