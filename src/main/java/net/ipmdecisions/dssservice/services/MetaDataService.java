@@ -20,6 +20,7 @@
 package net.ipmdecisions.dssservice.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -30,8 +31,10 @@ import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +46,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import net.ipmdecisions.dssservice.entity.DSS;
+import net.ipmdecisions.dssservice.entity.DSSModel;
 import net.ipmdecisions.dssservice.entity.FieldObservation;
 import net.ipmdecisions.dssservice.entity.ModelOutput;
 import net.ipmdecisions.dssservice.util.SchemaProvider;
@@ -226,6 +232,10 @@ public class MetaDataService {
     
     /**
      * Validate DSS YAML description file, using this Json schema: https://ipmdecisions.nibio.no/api/dss/rest/schema/dss
+     * Also checking that:
+     * - The EPPO codes are valid (checking against the EPPO database)
+     * - The input_schema is a valid Json schema
+     * - All models in this DSS have unique IDs (doesn't check against other DSS YAML files)
      * @param modelOutputData
      * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false","errorMessage":"Foo Bar Lorem Ipsum"}</code> otherwise
      * @responseExample application/json {"isValid":"true"}
@@ -243,18 +253,53 @@ public class MetaDataService {
             JsonNode j = YAMLReader.readTree(DSSYAMLFile);
             JsonNode schema = SchemaProvider.getDSSSchema();
             SchemaUtils sUtils = new SchemaUtils();
+            Boolean isFileValid = true;
+            List<String> validationErrors = new ArrayList<>();
+            // 1. Does it validate against the DSS metadata Json schema?
+            // -> If not, return immediately
             try
             {
-            	return Response.ok().entity(Map.of("isValid", sUtils.isJsonValid(schema.toString(), j))).build();
+            	isFileValid = sUtils.isJsonValid(schema.toString(), j);
+            	//return Response.ok().entity(Map.of("isValid", fileIsValid)).build();
             }
             catch(SchemaValidationException ex)
             {
-            	return Response.ok().entity(Map.of("isValid", false, "errorMessage", ex.getMessage())).build();
+            	isFileValid = false;
+            	validationErrors.add(ex.getMessage());
+            	//return Response.ok().entity(Map.of("isValid", false, "errorMessage", ex.getMessage())).build();
+            }
+            if(!isFileValid)
+            {
+            	return Response.ok().entity(Map.of("isValid", isFileValid, "errorMessage", validationErrors)).build();
             }
             
+            
+            ObjectMapper mapper = new ObjectMapper();
+            DSS dss = mapper.convertValue(j, new TypeReference<DSS>(){});
+            
+            // 2. Are the input schemas valid Json schema?
+            for(DSSModel model:dss.getModels())
+            {
+            	String input_schema = model.getExecution().getInput_schema();
+            	try
+            	{
+            		sUtils.isValidJsonSchema(sUtils.getJsonFromString(input_schema));
+            		//System.out.println("Found schemanode for " + model.getName() + ":" + input_schema);
+            	}
+            	catch(SchemaValidationException ex)
+            	{
+            		isFileValid = false;
+            		validationErrors.add(ex.getMessage());
+            	}
+            }
+            
+            // 3. Are the EPPO codes valid?
+            
+            return Response.ok().entity(Map.of("isValid", isFileValid, "errorMessage", validationErrors)).build();
         }
         catch(ProcessingException | IOException ex)
         {
+        	ex.printStackTrace();
             return Response.serverError().entity(ex.getMessage()).build();
         }
         

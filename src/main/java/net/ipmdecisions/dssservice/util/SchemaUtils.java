@@ -31,6 +31,8 @@ import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.github.fge.jsonschema.processors.syntax.SyntaxValidator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,18 +52,44 @@ public class SchemaUtils {
     public static final String JSON_V4_SCHEMA_IDENTIFIER = "http://json-schema.org/draft-04/schema#";
     public static final String JSON_SCHEMA_IDENTIFIER_ELEMENT = "$schema";
     
+    /**
+     * Validates the Json data against the Json schema at the given URL
+     * @param schemaURL
+     * @param jsonNode
+     * @return
+     * @throws IOException
+     * @throws ProcessingException
+     * @throws SchemaValidationException
+     */
     public Boolean isJsonValid(URL schemaURL, JsonNode jsonNode) throws IOException, ProcessingException, SchemaValidationException
     {
         JsonSchema schemaNode = this.getSchemaNode(JsonLoader.fromURL(schemaURL));
         return this.isJsonValid(schemaNode, jsonNode);
     }
     
+    /**
+     * Validates the Json data against the Json schema (given as a string)
+     * @param schema
+     * @param jsonNode
+     * @return
+     * @throws IOException
+     * @throws ProcessingException
+     * @throws SchemaValidationException
+     */
     public Boolean isJsonValid(String schema, JsonNode jsonNode) throws IOException, ProcessingException, SchemaValidationException
     {
         JsonSchema schemaNode = this.getSchemaNode(JsonLoader.fromString(schema));
         return this.isJsonValid(schemaNode, jsonNode);
     }
     
+    /**
+     * Validates the Json data against the given Json schema
+     * @param schemaNode
+     * @param jsonNode
+     * @return
+     * @throws ProcessingException
+     * @throws SchemaValidationException
+     */
     public Boolean isJsonValid(JsonSchema schemaNode, JsonNode jsonNode) throws ProcessingException, SchemaValidationException
     {
         ProcessingReport report = schemaNode.validate(jsonNode);
@@ -85,6 +113,14 @@ public class SchemaUtils {
         }
     }
     
+    /**
+     * Validates the Json data against the given Json schema
+     * @param schemaNode
+     * @param jsonNode
+     * @return
+     * @throws ProcessingException
+     * @throws SchemaValidationException
+     */
     public Boolean isJsonValid(JsonNode schemaNode, JsonNode jsonNode) throws ProcessingException, SchemaValidationException
     {
         JsonSchema s = this.getSchemaNode(jsonNode);
@@ -97,7 +133,7 @@ public class SchemaUtils {
      * @return
      * @throws ProcessingException 
      */
-    private JsonSchema getSchemaNode(JsonNode jsonNode) throws ProcessingException
+    public JsonSchema getSchemaNode(JsonNode jsonNode) throws ProcessingException
     {
         JsonNode schemaIdentifier = jsonNode.get(SchemaUtils.JSON_SCHEMA_IDENTIFIER_ELEMENT);
         if(schemaIdentifier == null)
@@ -109,6 +145,19 @@ public class SchemaUtils {
         return factory.getJsonSchema(jsonNode);
     }
     
+    public Boolean isValidJsonSchema(JsonNode jsonNode) throws SchemaValidationException
+    {
+    	JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
+    	SyntaxValidator syntaxValidator = factory.getSyntaxValidator();
+    	if(syntaxValidator.schemaIsValid(jsonNode))
+    	{
+    		return true;
+    	}
+    	ProcessingReport pReport = syntaxValidator.validateSchema(jsonNode);
+    	throw new SchemaValidationException(pReport.toString());
+    }
+    
+    
     public JsonNode getJsonFromInputStream(InputStream inputStream) throws IOException
     {
         
@@ -116,6 +165,14 @@ public class SchemaUtils {
             JsonParser jp = f.createParser(inputStream);
             JsonNode all = jp.readValueAsTree();
             return all;
+    }
+    
+    public JsonNode getJsonFromString(String inputString) throws IOException
+    {
+    	JsonFactory f = new MappingJsonFactory();
+    	JsonParser jp = f.createParser(inputString);
+    	JsonNode all = jp.readValueAsTree();
+    	return all;
     }
     
     public String getSchemaAsString(String url)
