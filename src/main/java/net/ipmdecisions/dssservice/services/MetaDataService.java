@@ -29,14 +29,22 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.kjetland.jackson.jsonSchema.JsonSchemaConfig;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -46,7 +54,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 
+import net.ipmdecisions.dssservice.clients.EPPOClient;
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
 import net.ipmdecisions.dssservice.entity.FieldObservation;
@@ -56,6 +67,9 @@ import net.ipmdecisions.dssservice.util.SchemaUtils;
 import net.ipmdecisions.dssservice.util.SchemaValidationException;
 
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.spi.HttpRequest;
 
 /**
@@ -278,6 +292,8 @@ public class MetaDataService {
             DSS dss = mapper.convertValue(j, new TypeReference<DSS>(){});
             
             // 2. Are the input schemas valid Json schema?
+            // (And we collect EPPO codes as well for the validation task 3)
+            Set<String> EPPOCodes = new HashSet<>();
             for(DSSModel model:dss.getModels())
             {
             	String input_schema = model.getExecution().getInput_schema();
@@ -291,10 +307,57 @@ public class MetaDataService {
             		isFileValid = false;
             		validationErrors.add(ex.getMessage());
             	}
+            	EPPOCodes.addAll(model.getCrops());
+            	EPPOCodes.addAll(model.getPests());
             }
             
             // 3. Are the EPPO codes valid?
-            
+            // Using the https://data.eppo.int/api/rest/1.0/tools/codes2prefnames endpoint (https://data.eppo.int/documentation/rest)
+            // Using Resteasy Client Proxy
+            String authtoken = System.getProperty("net.ipmdecisions.dssservice.EPPO_AUTHTOKEN");
+            Response response = new ResteasyClientBuilder().build()
+            		.target(UriBuilder.fromPath(EPPOClient.SERVICE_PATH))
+            		.proxy(EPPOClient.class)
+            		.getPrefNamesFromCodes(
+	            		authtoken,
+	            		String.join("|", EPPOCodes)
+            		);
+            if(response.getStatus() < 300)
+            {
+	            List<String> notFounds = Arrays.asList(
+	            		response.readEntity(JsonNode.class).get("response").asText().split("\\|")
+	            		)
+	            		.stream()
+	            		.filter(nameResult -> nameResult.contains("NOT FOUND"))
+	            		.map(nameResult -> nameResult.split(";")[0])
+	            		.collect(Collectors.toList());
+	            
+	            if(notFounds.size() > 0)
+	            {
+	            	isFileValid = false;
+	            	validationErrors.add("These EPPO codes are not valid: " + String.join(",",notFounds));
+	            }
+            }
+            else
+            {
+            	String serverErrorMessage = "";
+            	if(authtoken == null)
+            	{
+            		serverErrorMessage = "You have not configured your credentials for the EPPO web service, which this service uses to evaluate EPPO codes.";
+            	}
+            	else if(response.getStatus() == 403) // Probably wrong authToken
+            	{
+            		serverErrorMessage = "The EPPO web service used to by this service to evaluate EPPO codes is claiming that the IPM Decisions DSS API is making a bad request. This is most likely due to the EPPO webservice authtoken not being properly configured.";
+            	}
+            	else
+            	{
+            		serverErrorMessage = "The EPPO web service used to by this service to evaluate EPPO codes returned this error message: ";
+            		serverErrorMessage += "\n" + response.readEntity(String.class);
+            	}
+            	serverErrorMessage += "\nPlease read the API documentation (https://github.com/H2020-IPM-Decisions/DSSService/blob/develop/docs/developer_guide.md)";
+            	response.close();
+            	return Response.serverError().entity(serverErrorMessage).build();
+            }
             return Response.ok().entity(Map.of("isValid", isFileValid, "errorMessage", validationErrors)).build();
         }
         catch(ProcessingException | IOException ex)
@@ -304,7 +367,6 @@ public class MetaDataService {
         }
         
     }
-    
     
     @GET
     @Path("schema/dss")
