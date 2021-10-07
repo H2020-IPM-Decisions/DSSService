@@ -247,11 +247,13 @@ public class MetaDataService {
     /**
      * Validate DSS YAML description file, using this Json schema: https://ipmdecisions.nibio.no/api/dss/rest/schema/dss
      * Also checking that:
-     * - The EPPO codes are valid (checking against the EPPO database)
-     * - The input_schema is a valid Json schema
-     * - All models in this DSS have unique IDs (doesn't check against other DSS YAML files)
+     * <ul>
+     * <li>The EPPO codes are valid (checking against the EPPO database)</li>
+     * <li>The input_schema is a valid Json schema</li>
+     * <li>All models in this DSS have unique IDs (doesn't check against other DSS YAML files)</li>
+     * </ul>
      * @param modelOutputData
-     * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false","errorMessage":"Foo Bar Lorem Ipsum"}</code> otherwise
+     * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false","errorMessage":["These EPPO codes are not valid: PSILOR"],["Foo Bar Lorem Ipsum"]}</code> otherwise
      * @responseExample application/json {"isValid":"true"}
      */
     @POST
