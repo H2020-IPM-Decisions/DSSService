@@ -20,13 +20,9 @@
 					}
 				},
 				"url": {
-					"raw": "https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd",
-					"protocol": "https",
+					"raw": "{{vipscoremanager_url}}/models/PSILARTEMP/run/ipmd",
 					"host": [
-						"coremanager",
-						"vips",
-						"nibio",
-						"no"
+						"{{vipscoremanager_url}}"
 					],
 					"path": [
 						"models",
@@ -53,9 +49,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{vipscore_url}}/models/PSILARTEMP/run/ipmd",
+					"raw": "{{vipscoremanager_url}}/models/PSILARTEMP/run/ipmd",
 					"host": [
-						"{{vipscore_url}}"
+						"{{vipscoremanager_url}}"
 					],
 					"path": [
 						"models",
@@ -82,13 +78,9 @@
 					}
 				},
 				"url": {
-					"raw": "https://coremanager.vips.nibio.no/models/PSILAROBSE/run/ipmd",
-					"protocol": "https",
+					"raw": "{{vipscoremanager_url}}/models/PSILAROBSE/run/ipmd",
 					"host": [
-						"coremanager",
-						"vips",
-						"nibio",
-						"no"
+						"{{vipscoremanager_url}}"
 					],
 					"path": [
 						"models",
