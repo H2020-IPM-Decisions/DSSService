@@ -19,7 +19,6 @@
 
 package net.ipmdecisions.dssservice.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,11 +28,6 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.kjetland.jackson.jsonSchema.JsonSchemaConfig;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,12 +45,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-
 import net.ipmdecisions.dssservice.clients.EPPOClient;
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
@@ -68,8 +60,6 @@ import net.ipmdecisions.dssservice.util.SchemaValidationException;
 
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.spi.HttpRequest;
 
 /**
@@ -317,8 +307,10 @@ public class MetaDataService {
             // Using the https://data.eppo.int/api/rest/1.0/tools/codes2prefnames endpoint (https://data.eppo.int/documentation/rest)
             // Using Resteasy Client Proxy
             String authtoken = System.getProperty("net.ipmdecisions.dssservice.EPPO_AUTHTOKEN");
-            Response response = new ResteasyClientBuilder().build()
-            		.target(UriBuilder.fromPath(EPPOClient.SERVICE_PATH))
+            
+            
+            Response response = ((ResteasyClient)ClientBuilder.newClient())
+            		.target(EPPOClient.SERVICE_PATH)
             		.proxy(EPPOClient.class)
             		.getPrefNamesFromCodes(
 	            		authtoken,
