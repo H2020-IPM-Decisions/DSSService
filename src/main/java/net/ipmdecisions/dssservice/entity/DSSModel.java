@@ -516,6 +516,11 @@ public class DSSModel {
         in addition to see if data such as weather data are part of the input.
         Must be used together with the input property, that further describes
         commonly defined types of input data such as weather data and field observations
+        <h2>Default value templates</h2>
+        <p>We have added a simple templating system for expressing default values. Templates are enclosed in curly
+        brackets {}. The first template added is for CURRENT_YEAR. This is an integer that can be changed by simple
+        arithmetics like addition and substractin. E.g. for the user to enter a sowing date of last year (e.g. winter
+        wheat),it would be expressed like this: "default": "{CURRENT_YEAR-1}-09-15" </p>
         * @jsonExampleOverride {
         "type":"object",
         "properties": {
@@ -525,8 +530,8 @@ public class DSSModel {
             "type": "object",
             "properties": {
               "timeZone": {"type": "string", "title": "Time zone (e.g. Europe/Oslo)", "default":"Europe/Oslo"},
-              "timeStart": {"type":"string","format": "date", "title": "Start date of calculation (YYYY-MM-DD)"},
-              "timeEnd": {"type":"string","format": "date", "title": "End date of calculation (YYYY-MM-DD)"}
+              "timeStart": {"type":"string","format": "date", "default": "{CURRENT_YEAR}-03-01", "title": "Start date of calculation (YYYY-MM-DD)"},
+              "timeEnd": {"type":"string","format": "date", "default": "{CURRENT_YEAR}-09-01", "title": "End date of calculation (YYYY-MM-DD)"}
             },
             "required": ["timeZone","timeStart","timeEnd"]
           },
