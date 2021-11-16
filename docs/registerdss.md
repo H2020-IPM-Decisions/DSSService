@@ -171,7 +171,8 @@ models:
         color: '#999999'
 ```
 
-## input_schema property: Default value templates
+
+## <a name="default_templates"></a> input_schema property: Default value templates
 We have added a simple templating system for expressing default values. Templates are enclosed in curly
 brackets `{}`. Currently, the only template added is for `CURRENT_YEAR`. This is an integer that can be changed by simple
 arithmetics like addition and substraction. E.g. for the user to enter a sowing date of last year (e.g. winter
