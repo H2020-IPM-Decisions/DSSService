@@ -57,7 +57,7 @@ public class FieldObservation {
     @JsonPropertyDescription("The EPPO code for the observed pest. See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes")
     private String pestEPPOCode;
     @NotNull
-    @JsonSchemaTitle("Pest")
+    @JsonSchemaTitle("Crop")
     @JsonPropertyDescription("The EPPO code for the crop in which the pest was observed. See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes")
     private String cropEPPOCode;
     //@JsonSchemaTitle("Quantification")
