@@ -589,7 +589,7 @@ public class DSSService {
                 Geometry geom = reader.read(feature.getGeometry());
                 clientGeometries.add(geom);
             }
-            // Loop through all weather data sources
+            // Loop through all DSS models
             // Return only data sources with geometries intersecting with the client's
             // specified geometries
             GISUtils gisUtils = new GISUtils();
@@ -605,7 +605,7 @@ public class DSSService {
                             }
                             catch(NullPointerException ex)
                             {
-                                return false;
+                                //return false; // We should pass, check for matching countries
                             }
                             // We do a brute force search for the string "Sphere" in the geoJSON string
                             // to bypass any issues in deserialization of that custom type, which is 
@@ -622,9 +622,9 @@ public class DSSService {
                             {
                                 if(!modelGeoJsonStr.isBlank())
                                 {
-                                    modelFeatures.addAll(Arrays.asList((
-                                            (FeatureCollection) GeoJSONFactory.create(modelGeoJsonStr)
-                                    ).getFeatures()));
+                                    modelFeatures.addAll(Arrays.asList(
+                                    		((FeatureCollection) GeoJSONFactory.create(modelGeoJsonStr)).getFeatures()
+                                    		));
                                 }
                             }catch(RuntimeException ex) {}
                             

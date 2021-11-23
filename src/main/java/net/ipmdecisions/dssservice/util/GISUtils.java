@@ -54,8 +54,8 @@ public class GISUtils {
                 }
 
                 this.allCountryBoundaries = (FeatureCollection) GeoJSONFactory.create(all);
-            } catch (IOException ex) {
-                
+            } catch (IOException | NullPointerException ex) {
+                ex.printStackTrace();
             }
         }
         return this.allCountryBoundaries;
