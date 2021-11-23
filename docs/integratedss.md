@@ -1,4 +1,4 @@
-#3. Requirements for integrating your DSS in the platform
+# 3. Requirements for integrating your DSS in the platform
 Please note that this chapter is for DSS developers/providers that want to fully integrate their DSS with the platform. Read the [IPM Decisions project FAQ](https://www.ipmdecisions.net/platform/faqs/) for more information on this.
 
 ## Available through a web service endpoint
