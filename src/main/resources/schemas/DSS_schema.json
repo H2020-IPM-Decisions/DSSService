@@ -87,16 +87,16 @@
                                     }
                                 ],
                                 "properties": {
-                                	"other": {"type":"string"},
-                                	"created_by": {"type":"string"},
-                                	"age": {"type":"string"},
-                                	"assumptions":{"type":"string"},
-                                	"peer_review": {"type":"string"}
+                                	"other": {"type":["string","null"]},
+                                	"created_by": {"type":["string","null"]},
+                                	"age": {"type":["string","null"]},
+                                	"assumptions":{"type":["string","null"]},
+                                	"peer_review": {"type":["string","null"]}
                                 }
                             },
                             "citation": {
                                 "id": "#/properties/models/items/anyOf/0/properties/citation",
-                                "type": "null",
+                                "type": ["string","null"],
                                 "title": "The citation schema",
                                 "description": "Any literature references for the model",
                                 "default": null,
@@ -430,7 +430,7 @@
                                 ],
                                 "properties": {
                                 	"chart_heading": {
-                                		"type": "string"
+                                		"type": ["string","null"]
                                 	},
                                     "warning_status_interpretation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",

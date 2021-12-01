@@ -53,5 +53,6 @@ public class JAXActivator extends Application{
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(net.ipmdecisions.dssservice.services.DSSService.class);
         resources.add(net.ipmdecisions.dssservice.services.MetaDataService.class);
+        resources.add(net.ipmdecisions.dssservice.services.AdminService.class);
     }
 }
