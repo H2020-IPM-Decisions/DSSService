@@ -17,44 +17,5 @@
         <servlet-name>Resteasy</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-    
-    <!-- 
-    
-    Using Wildfly's /bin/add-user.sh, we added a user to the ApplicationRealm. The files 
-    * /standalone/application-users.properties
-    * /standalone/application-roles.properties
-    were populated. The first with a username and an encrypted password. The second with the line [username]=
-    and we created the role SuperUser simply by filling in:  [username]=SuperUser
-    So any user that can authenticate and is part of the SuperUser group will have access to the endpoints in the
-    /rest/admin/ path.
-    I have yet to make role-based authentication work per endpoint in the service class.
-    
-    Ref docs:
-    http://www.mastertheboss.com/jbossas/jboss-script/wildfly-how-to-add-an-user/ 
-    https://docs.jboss.org/resteasy/docs/4.7.0.Final/userguide/html_single/index.html#Securing_JAX-RS_and_RESTeasy
-    http://www.mastertheboss.com/jboss-frameworks/resteasy/securing-jax-rs-services-in-wildfly-applications/
-    https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter15/securing_jax_rs.html
-    
-    
-     -->
-
-    
-     <security-constraint>
-      <web-resource-collection>
-         <web-resource-name>Resteasy</web-resource-name>
-         <url-pattern>/rest/admin/*</url-pattern>
-      </web-resource-collection>
-       <auth-constraint>
-         <role-name>SuperUser</role-name>
-      </auth-constraint>
-  </security-constraint>
-
-   <login-config>
-      <auth-method>BASIC</auth-method>
-      <realm-name>ApplicationRealm</realm-name>
-   </login-config>
-
-   <security-role>
-      <role-name>SuperUser</role-name>
-   </security-role>
+   
 </web-app>

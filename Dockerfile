@@ -1,3 +1,5 @@
+# BUILD Command example
+# sudo docker build --build-arg IPMDSSADMIN_PWD=foobar --tag ipmdecisions/dss_api:BETA-08 .
 # the first stage of our build will use a maven 3.6 parent image
 FROM maven:3.6-openjdk-11 AS MAVEN_BUILD
  
@@ -54,6 +56,6 @@ EXPOSE 8080
 # Set the default command to run on boot
 # This will boot WildFly in the standalone mode and bind to all interface
 # Run the container e.g. like this: sudo docker run --publish 18080:8080 --detach -e EPPO_AUTHTOKEN=***YOUR AUTHTOKEN_HERE*** --name ipmdss ipmdecisions/dss_api:ALPHA-04
-CMD /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -Dnet.ipmdecisions.dssservice.DSS_LIST_FILES_PATH=/DSS_lists/ -Dnet.ipmdecisions.dssservice.COUNTRY_BOUNDARIES_FILE=/countries.geojson -Dnet.ipmdecisions.dssservice.EPPO_AUTHTOKEN=${EPPO_AUTHTOKEN}
+CMD /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -Dnet.ipmdecisions.dssservice.DSS_LIST_FILES_PATH=/DSS_lists/ -Dnet.ipmdecisions.dssservice.COUNTRY_BOUNDARIES_FILE=/countries.geojson -Dnet.ipmdecisions.dssservice.EPPO_AUTHTOKEN=${EPPO_AUTHTOKEN} -Dnet.ipmdecisions.dssservice.IPMDSS_ADMIN_TOKEN_MD5=${IPMDSS_ADMIN_TOKEN_MD5}
 
 

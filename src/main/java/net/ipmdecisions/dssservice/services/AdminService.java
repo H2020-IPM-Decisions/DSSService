@@ -25,12 +25,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -43,6 +48,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import net.ipmdecisions.dssservice.entity.DSS;
+import net.ipmdecisions.dssservice.util.MD5Encrypter;
 import net.ipmdecisions.dssservice.controller.DSSController;
 
 
@@ -51,8 +57,14 @@ import net.ipmdecisions.dssservice.controller.DSSController;
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  *
  */
+@PermitAll
 @Path("rest")
 public class AdminService {
+	
+	@Context
+    private HttpServletRequest httpServletRequest;
+	
+	
 	
 	// If this ever needs to be an EJB, simply annotate with @EJB
 	// and remove the init in the constructor for this class
@@ -62,11 +74,24 @@ public class AdminService {
 	{
 		this.DSSController = new DSSController();
 	}
+	
+	private Response unauthorizedResponse()
+	{
+		return Response.status(Status.UNAUTHORIZED).entity("You are not authorized to access this resource").build();
+	}
+	
+	private boolean isAuthorized()
+	{
+		return httpServletRequest.getHeader("ipmdss_admin_token") != null
+				&& MD5Encrypter.getMD5HexString(httpServletRequest.getHeader("ipmdss_admin_token"))
+				.equals(System.getProperty("net.ipmdecisions.dssservice.IPMDSS_ADMIN_TOKEN_MD5"));
+	}
 
 	@GET
     @Path("admin/heartbeat")
     @Produces("application/json;charset=UTF-8")
     public Response heartbeat() {
+		if( !this.isAuthorized() ) { return this.unauthorizedResponse(); }
         return Response.ok().entity("Alive and well").build();
 	}
 	
@@ -77,6 +102,7 @@ public class AdminService {
 	@Produces("application/x-yaml;charset=UTF-8")
 	public Response addDSS(String DSSYAMLFile,@QueryParam("dryRun") String dryRunStr)
 	{
+		if( !this.isAuthorized() ) { return this.unauthorizedResponse(); }
 		Boolean dryRun = dryRunStr == null ? false : dryRunStr.equals("true");
 		try
 		{
