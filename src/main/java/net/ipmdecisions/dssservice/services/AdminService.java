@@ -95,6 +95,13 @@ public class AdminService {
         return Response.ok().entity("Alive and well").build();
 	}
 	
+	/**
+	 * Add or update DSS meta data. Please remember to update any version info, as
+	 * A DSS with same id and version as an existing one will be rejected.
+	 * @param DSSYAMLFile in the POST body, provide YAML for the DSS
+	 * @param dryRunStr true to test the endpoint without changing the state of the application. Null or false otherwise
+	 * @return the updated/new DSS meta data in YAML format
+	 */
 	@POST
 	@Path("admin/dss/add")
 	@GZIP
