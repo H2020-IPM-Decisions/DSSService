@@ -42,7 +42,7 @@ public class DSSModel {
     private Output output;
     private Description description;
     
-    static class Description {
+    public static class Description {
     	private String other, created_by, age, assumptions, peer_review, case_studies;
 
 		/**

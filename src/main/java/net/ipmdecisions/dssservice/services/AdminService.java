@@ -22,8 +22,18 @@ package net.ipmdecisions.dssservice.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
@@ -33,6 +43,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -48,6 +59,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import net.ipmdecisions.dssservice.entity.DSS;
+import net.ipmdecisions.dssservice.entity.DSSModel;
 import net.ipmdecisions.dssservice.util.MD5Encrypter;
 import net.ipmdecisions.dssservice.controller.DSSController;
 
@@ -157,6 +169,63 @@ public class AdminService {
 						);
 			}
 			return Response.ok().entity(yamlMapper.writeValueAsString(DSSToAdd)).build();
+		}
+		catch(IOException ex)
+		{
+			return Response.serverError().entity(ex.getMessage()).build();
+		}
+	}
+	
+	@GET
+	@Path("admin/dss/{DSSId}/resourcebundle")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response getResourceBundleForDSS(@PathParam("DSSId") String DSSId)
+	{
+		try
+		{
+			// Assuming none existing per now
+			// Generate the default and... Norwegian??
+			DSS  dss = this.DSSController.getDSSById(DSSId);
+			if(dss == null)
+			{
+				return Response.status(Status.NOT_FOUND).entity("A DSS with id=" + DSSId + " was not found.").build();
+			}
+			// And now... all the properties that need to be extracted
+			// Everything is in the models
+			List<String> translatableModelItems = List.of(
+					"name",
+					"description.other",
+					"description.created_by",
+					"description.age",
+					"description.assumptions",
+					"output.warning_status_interpretation",
+					"output.chart_heading",
+					"output.chart_groups.title", // Must be output.chart_groups.[ID].title
+					"output.result_parameters.title", // Must be output.result_parameters.[ID].title
+					"output.result_parameters.description" // Must be output.result_parameters.[ID].title
+					);
+			// e.g. no.nibio.vips.2_0.models.PSILARTEMP.name=Carrot rust fly temperature model
+			String basePath = dss.getId() + "." + dss.getVersion().replace(".","_");
+			Properties props = new Properties();
+			
+			props.setProperty(basePath + ".name", dss.getName());
+			for(DSSModel model:dss.getModels())
+			{
+				String modelPath = basePath + ".models." + model.getId();
+				props.setProperty(modelPath + ".name", model.getName());
+				props.setProperty(modelPath + ".description.other", model.getDescription().getOther());
+				
+				
+			}
+			List<String> keys = props.keySet().stream().map(p->(String)p).collect(Collectors.toList());
+			// Alphanumeric sort gives us pretty much the correct ordering
+			Collections.sort(keys);
+			String retVal = keys.stream()
+					.reduce("", (hitherto, key) -> hitherto + key + "=" + props.get(key) + "\n");
+					
+			StringWriter sw = new StringWriter();
+			props.store(sw,"Auto generated new config file for translation. (c) NIBIO");
+			return Response.ok().entity(retVal).build();
 		}
 		catch(IOException ex)
 		{
