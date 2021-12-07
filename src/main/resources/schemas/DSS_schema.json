@@ -321,13 +321,13 @@
 										"type": ["object","null"],
 										"title": "The start date of gathering weather data",
                                         "description" : "TODO",
-                                        "default": {"determined_by":"FIXED_DATE","value":"XXXX-01-01"},
+                                        "default": {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-01-01"},
                                         "examples": [
-                                            {"determined_by":"FIXED_DATE","value":"XXXX-01-01"},
+                                            {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-01-01"},
                                             {"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeStart"}
                                         ],
                                         "properties":{
-                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format XXXX-MM-DD (e.g. \"XXXX-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
                                             "value":{"type":"string"}
                                         },
                                         "required":["determined_by","value"]
@@ -336,13 +336,13 @@
 										"type": ["object","null"],
 										"title": "The end date of gathering weather data",
                                         "description" : "TODO",
-                                        "default": {"determined_by":"FIXED_DATE","value":"XXXX-12-31"},
+                                        "default": {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-12-31"},
                                         "examples": [
-                                            {"determined_by":"FIXED_DATE","value":"XXXX-12-31"},
+                                            {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-12-31"},
                                             {"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeEnd"}
                                         ],
                                         "properties":{
-                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format XXXX-MM-DD (e.g. \"XXXX-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
                                             "value":{"type":"string"}
                                         },
                                         "required":["determined_by","value"]
