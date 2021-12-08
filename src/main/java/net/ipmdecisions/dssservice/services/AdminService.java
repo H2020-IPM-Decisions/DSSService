@@ -177,8 +177,8 @@ public class AdminService {
 	}
 	
 	@GET
-	@Path("admin/dss/{DSSId}/resourcebundle")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Path("admin/dss/{DSSId}/i18n/csv")
+	@Produces("text/csv;charset=UTF-8")
 	public Response getResourceBundleForDSS(@PathParam("DSSId") String DSSId)
 	{
 		try
@@ -212,16 +212,31 @@ public class AdminService {
 			for(DSSModel model:dss.getModels())
 			{
 				String modelPath = basePath + ".models." + model.getId();
-				props.setProperty(modelPath + ".name", model.getName());
-				props.setProperty(modelPath + ".description.other", model.getDescription().getOther());
-				
+				props.setProperty(modelPath + ".name", this.makeCSVCompatibleValue(model.getName()));
+				props.setProperty(modelPath + ".description.other", this.makeCSVCompatibleValue(model.getDescription().getOther()));
+				props.setProperty(modelPath + ".description.created_by", this.makeCSVCompatibleValue(model.getDescription().getCreated_by()));
+				props.setProperty(modelPath + ".description.age", this.makeCSVCompatibleValue(model.getDescription().getAge()));
+				props.setProperty(modelPath + ".description.assumptions", this.makeCSVCompatibleValue(model.getDescription().getAssumptions()));
+				props.setProperty(modelPath + ".output.warning_status_interpretation", this.makeCSVCompatibleValue(model.getOutput().getWarning_status_interpretation()));
+				props.setProperty(modelPath + ".output.chart_heading", this.makeCSVCompatibleValue(model.getOutput().getChart_heading()));
+				for(DSSModel.Output.ChartGroup cg : model.getOutput().getChart_groups())
+				{
+					props.setProperty(modelPath + ".output.chart_groups." + cg.getId() + ".title", this.makeCSVCompatibleValue(cg.getTitle()));
+				}
+				for(DSSModel.Output.ResultParameter rp : model.getOutput().getResult_parameters())
+				{
+					props.setProperty(modelPath + ".output.result_parameters." + rp.getId() + ".title", this.makeCSVCompatibleValue(rp.getTitle()));
+					props.setProperty(modelPath + ".output.result_parameters." + rp.getId() + ".description", this.makeCSVCompatibleValue(rp.getDescription()));
+				}
 				
 			}
 			List<String> keys = props.keySet().stream().map(p->(String)p).collect(Collectors.toList());
 			// Alphanumeric sort gives us pretty much the correct ordering
 			Collections.sort(keys);
+			// Heading
+			String heading = "\"KEY\",\"default\"\n";
 			String retVal = keys.stream()
-					.reduce("", (hitherto, key) -> hitherto + key + "=" + props.get(key) + "\n");
+					.reduce(heading, (hitherto, key) ->  hitherto + "\"" + key + "\",\"" + props.get(key) + "\"\n");
 					
 			StringWriter sw = new StringWriter();
 			props.store(sw,"Auto generated new config file for translation. (c) NIBIO");
@@ -231,5 +246,11 @@ public class AdminService {
 		{
 			return Response.serverError().entity(ex.getMessage()).build();
 		}
+	}
+	
+	private String makeCSVCompatibleValue(String theVal)
+	{
+		//return theVal != null ? theVal.replace("\n", "\\n").replace("\"", "\\\"") : "";
+		return theVal != null ? theVal.replace("\"", "\\\"") : "";
 	}
 }
