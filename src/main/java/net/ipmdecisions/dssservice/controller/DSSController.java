@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
 
@@ -44,7 +45,7 @@ public class DSSController {
      * @return
      * @throws IOException
      */
-    public List<DSS> getDSSListObj() throws IOException {
+    public List<DSS> getDSSListObj(Boolean platformValidated) throws IOException {
         List<DSS> DSSList = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
@@ -52,6 +53,17 @@ public class DSSController {
         for (File f : DSSInfoFiles) {
 
             DSSList.add(mapper.convertValue(mapper.readValue(f, HashMap.class), new TypeReference<DSS>(){}));
+        }
+        // If the platformValidated is set, filter models with this as the criterium
+        
+        if(platformValidated != null)
+        {
+        	for(DSS dss:DSSList)
+        	{
+        		dss.setModels(dss.getModels().stream()
+        				.filter(model->model.getPlatform_validated().equals(platformValidated))
+        				.collect(Collectors.toList()));
+        	}
         }
         return DSSList;
     }
@@ -66,7 +78,7 @@ public class DSSController {
     
     public DSS getDSSById(String DSSid) throws IOException
     {
-        Optional<DSS> matchingDSS = this.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSid)).findFirst();
+        Optional<DSS> matchingDSS = this.getDSSListObj(true).stream().filter(dss -> dss.getId().equals(DSSid)).findFirst();
         if (matchingDSS.isPresent()) {
             return matchingDSS.get();
         } else {
