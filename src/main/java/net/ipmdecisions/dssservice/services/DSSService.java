@@ -75,7 +75,7 @@ public class DSSService {
     /**
      * List all DSSs and models available in the platform
      *
-     * @return a list of all DSSs and models available in the platform
+     * @return a list of all DSSs and models available in the platform, regardless of validation
      */
     @GET
     @Path("dss")
@@ -83,7 +83,29 @@ public class DSSService {
     @TypeHint(DSS[].class)
     public Response listDSSs() {
         try {
-        	List<DSS> allDSSs = this.DSSController.getDSSListObj(true);
+        	List<DSS> allDSSs = this.DSSController.getDSSListObj(null);
+            return Response.ok().entity(allDSSs).build();
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
+    /**
+     * List all DSSs and models available in the platform
+     * 
+     * @param platformValidated true or false
+     *
+     * @return a list of all DSSs and models available in the platform that are either validated or not
+     */
+    @GET
+    @Path("dss/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listDSSsByValidation(
+    		@PathParam("platformValidated") Boolean platformValidated
+    		) {
+        try {
+        	List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
             return Response.ok().entity(allDSSs).build();
         } catch (IOException ex) {
             return Response.serverError().entity(ex.getMessage()).build();
