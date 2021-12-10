@@ -463,7 +463,16 @@
                                 	},
                                     "warning_status_interpretation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",
-                                        "type": "string"
+                                        "type": "array",
+                                        "additionalItems": false,
+                                        "minItems": 5,
+                                        "maxItems": 5,
+                                        "items": {
+                                        	"properties": {
+                                        		"explanation": {"type":"string"},
+                                        		"recommended_action": {"type":"string"}
+                                        	}
+                                        }
                                     },
                                     "chart_groups": {
                                     	"type": "array",
