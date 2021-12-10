@@ -29,11 +29,12 @@ import java.util.List;
  * with enough information/meta data for the platform to be able to execute
  * the model.
  * 
- * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
+ * @copyright 2021 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 public class DSSModel {
     private String name, id, version, type_of_decision, type_of_output, description_URL, citation, keywords;
+    private Boolean platform_validated;
     private List<String> pests, crops;
     private List<Author> authors;
     private Execution execution;
@@ -1038,4 +1039,18 @@ public class DSSModel {
     public void setValid_spatial(Valid_Spatial valid_spatial) {
         this.valid_spatial = valid_spatial;
     }
+
+	/**
+	 * @return the platform_validated
+	 */
+	public Boolean getPlatform_validated() {
+		return platform_validated != null ? this.platform_validated : false;
+	}
+
+	/**
+	 * @param platform_validated the platform_validated to set
+	 */
+	public void setPlatform_validated(Boolean platform_validated) {
+		this.platform_validated = platform_validated;
+	}
 }

@@ -17,6 +17,7 @@
         "models": {
             "type": "array",
             "additionalItems": false,
+            "required": ["id","name","version"],
             "items": {
                 "type": "object",
                 "properties": {
@@ -113,6 +114,12 @@
                                 "examples": [
                                     "foo, bar, mechanistic, regression"
                                 ]
+                            },
+                            "platform_validated":
+                            {
+                            	"type": "boolean",
+                            	"description":"If not true, the model is not ready to be used on the platform",
+                            	"default": false
                             },
                             "pests": {
                                 "id": "#/properties/models/items/anyOf/0/properties/pests",

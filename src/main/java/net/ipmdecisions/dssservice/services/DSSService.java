@@ -18,14 +18,12 @@
  */
 package net.ipmdecisions.dssservice.services;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,8 +46,6 @@ import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
 import net.ipmdecisions.dssservice.controller.DSSController;
 import net.ipmdecisions.dssservice.util.GISUtils;
-import net.ipmdecisions.dssservice.util.SchemaProvider;
-
 import org.locationtech.jts.geom.Geometry;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
@@ -62,7 +58,7 @@ import org.wololo.jts2geojson.GeoJSONWriter;
  * Web services for listing and querying the DSS Catalogue.
  * For a more thorough description of the concepts, please read <a href="https://github.com/H2020-IPM-Decisions/DSSService/blob/develop/docs/index.md" target="new">the user guide</a>
  *
- * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
+ * @copyright 2021 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 @Path("rest")
@@ -79,7 +75,7 @@ public class DSSService {
     /**
      * List all DSSs and models available in the platform
      *
-     * @return a list of all DSSs and models available in the platform
+     * @return a list of all DSSs and models available in the platform, regardless of validation
      */
     @GET
     @Path("dss")
@@ -87,7 +83,30 @@ public class DSSService {
     @TypeHint(DSS[].class)
     public Response listDSSs() {
         try {
-            return Response.ok().entity(this.DSSController.getDSSListObj()).build();
+        	List<DSS> allDSSs = this.DSSController.getDSSListObj(null);
+            return Response.ok().entity(allDSSs).build();
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
+    /**
+     * List all DSSs and models available in the platform
+     * 
+     * @param platformValidated true or false
+     *
+     * @return a list of all DSSs and models available in the platform that are either validated or not
+     */
+    @GET
+    @Path("dss/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listDSSsByValidation(
+    		@PathParam("platformValidated") Boolean platformValidated
+    		) {
+        try {
+        	List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
+            return Response.ok().entity(allDSSs).build();
         } catch (IOException ex) {
             return Response.serverError().entity(ex.getMessage()).build();
         }
@@ -109,7 +128,7 @@ public class DSSService {
     public Response listModelsForCrop(@PathParam("cropCode") String cropCode) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            List<DSS> allDSSs = this.DSSController.getDSSListObj();
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(true);
             for (DSS currentDSS : allDSSs) {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
@@ -142,7 +161,7 @@ public class DSSService {
         try {
         	List<String> cropCodes = Arrays.asList(cropCodesStr.split(","));
             List<DSS> retVal = new ArrayList<>();
-            List<DSS> allDSSs = this.DSSController.getDSSListObj();
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(true);
             for (DSS currentDSS : allDSSs) {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
@@ -186,7 +205,7 @@ public class DSSService {
     public Response listModelsForPests(@PathParam("pestCode") String pestCode) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            this.DSSController.getDSSListObj().forEach((currentDSS) -> {
+            this.DSSController.getDSSListObj(true).forEach((currentDSS) -> {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
                                 .filter(model -> model.getPests() != null && model.getPests().contains(pestCode))
@@ -221,7 +240,7 @@ public class DSSService {
     		) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            this.DSSController.getDSSListObj().forEach((currentDSS) -> {
+            this.DSSController.getDSSListObj(true).forEach((currentDSS) -> {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
                                 .filter(model -> model.getPests() != null && model.getCrops() != null && model.getPests().contains(pestCode) && model.getCrops().contains(cropCode))
@@ -251,7 +270,7 @@ public class DSSService {
     public Response getAllPests() {
         try {
             Set<String> retVal = new HashSet<>();
-            for (DSS dss : this.DSSController.getDSSListObj()) {
+            for (DSS dss : this.DSSController.getDSSListObj(true)) {
                 dss.getModels().stream()
                 	.filter(model -> model.getPests() != null)
                 	.forEach(model -> retVal.addAll(model.getPests()));
@@ -277,7 +296,7 @@ public class DSSService {
     public Response getAllCrops() {
         try {
         	Set<String> retVal = new HashSet<>();
-            for (DSS dss : this.DSSController.getDSSListObj()) {
+            for (DSS dss : this.DSSController.getDSSListObj(true)) {
                 dss.getModels().stream()
             	.filter(model -> model.getCrops() != null)
             	.forEach(model -> retVal.addAll(model.getCrops()));
@@ -326,7 +345,7 @@ public class DSSService {
     @TypeHint(DSS.class)
     public Response getDSSAsYAML(@PathParam("DSSId") String DSSId) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
             	ObjectMapper YAMLWriter = new ObjectMapper(new YAMLFactory());
                 return Response.ok().entity(YAMLWriter.writeValueAsString(matchingDSS.get())).build();
@@ -353,7 +372,7 @@ public class DSSService {
     @TypeHint(DSSModel.class)
     public Response getDSSModel(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
                 DSS actualDSS = matchingDSS.get();
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
@@ -429,7 +448,7 @@ public class DSSService {
     @TypeHint(DSSModel.class)
     public Response getDSSModelInputSchema(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
                 DSS actualDSS = matchingDSS.get();
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
@@ -494,7 +513,7 @@ public class DSSService {
     @TypeHint(DSSModel.class)
     public Response getDSSModelUIFormSchema(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj().stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
                 DSS actualDSS = matchingDSS.get();
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
@@ -604,7 +623,7 @@ public class DSSService {
             GISUtils gisUtils = new GISUtils();
             
             List<DSS> retVal = new ArrayList<>();
-            for (DSS dss : this.DSSController.getDSSListObj()) {
+            for (DSS dss : this.DSSController.getDSSListObj(true)) {
                 List<DSSModel> matchingModels = dss.getModels().stream()
                         .filter(model -> {
                             String modelGeoJsonStr = "";
