@@ -29,11 +29,12 @@ import java.util.List;
  * with enough information/meta data for the platform to be able to execute
  * the model.
  * 
- * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
+ * @copyright 2021 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 public class DSSModel {
     private String name, id, version, type_of_decision, type_of_output, description_URL, citation, keywords;
+    private Boolean platform_validated;
     private List<String> pests, crops;
     private List<Author> authors;
     private Execution execution;
@@ -42,7 +43,7 @@ public class DSSModel {
     private Output output;
     private Description description;
     
-    public static class Description {
+    static class Description {
     	private String other, created_by, age, assumptions, peer_review, case_studies;
 
 		/**
@@ -90,14 +91,14 @@ public class DSSModel {
 		/**
 		 * @return the assumptions
 		 */
-		public String getAssumptions() {
+		private String getAssumptions() {
 			return assumptions;
 		}
 
 		/**
 		 * @param assumptions the assumptions to set
 		 */
-		public void setAssumptions(String assumptions) {
+		private void setAssumptions(String assumptions) {
 			this.assumptions = assumptions;
 		}
 
@@ -135,12 +136,47 @@ public class DSSModel {
      * to the Json schema https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput
      */
     public static class Output {
-        private String warning_status_interpretation;
+        private WarningStatusInterpretation[]  warning_status_interpretation;
+    static class Output {
+        private WarningStatusInterpretation[]  warning_status_interpretation;
         private ResultParameter[] result_parameters;
         private ChartGroup[] chart_groups;
         private String chart_heading;
         
-        public static class ChartGroup {
+        static class WarningStatusInterpretation {
+        	private String explanation, recommended_action;
+
+			/**
+			 * @return the explanation
+			 */
+			public String getExplanation() {
+				return explanation;
+			}
+
+			/**
+			 * @param explanation the explanation to set
+			 */
+			public void setExplanation(String explanation) {
+				this.explanation = explanation;
+			}
+
+			/**
+			 * @return the recommended_action
+			 */
+			public String getRecommended_action() {
+				return recommended_action;
+			}
+
+			/**
+			 * @param recommended_action the recommended_action to set
+			 */
+			public void setRecommended_action(String recommended_action) {
+				this.recommended_action = recommended_action;
+			}
+        	
+        }
+        
+        static class ChartGroup {
         	private String id, title;
         	private String[] result_parameter_ids;
 			/**
@@ -185,7 +221,7 @@ public class DSSModel {
          * A result or intermediary from a DSS model. These are distinct for 
          * each DSS model
          */
-        public static class ResultParameter {
+        static class ResultParameter {
             private String id, title, description;
             private Chart_info chart_info;
 
@@ -284,18 +320,38 @@ public class DSSModel {
         }
 
         /**
-         * @return A thorough description of how to interpret the GREEN/YELLOW/RED
-         * warning status
-         * @documentationExample Green warning indicates that the flight period has not yet begun. Yellow warning indicates that the flight period is beginning and that flies can be coming into the field. Red warning indicates peak flight period. Grey warning indicates that the flight period of the 1st generation is over. Be aware that in areas with field covers (plastic, single or double non-woven covers, etc.) with early crops the preceding season (either on the current field or neighboring fields), the flight period can start earlier due to higher soil temperature under the covers.
+         * @return A thorough description of how to interpret the GRAY(0)/BLUE(0)/GREEN(2)/YELLOW(3)/RED(4) warning status codes
+         * @documentationExample [
+                                        		{
+                                        			"explanation": "The flight period of the 1st generation is over",
+                                        			"recommended_action": "Consult your advisory service"
+                                        		},
+                                        		{
+                                        			"explanation": "",
+                                        			"recommended_action": ""
+                                        		},
+                                        		{
+                                        			"explanation": "The flight period has not yet begun",
+                                        			"recommended_action": "Consult your advisory service"
+                                        		},
+                                        		{
+                                        			"explanation": "The flight period is beginning, flies can be coming into the field",
+                                        			"recommended_action": "Consult your advisory service"
+                                        		},
+                                        		{
+                                        			"explanation":"Peak flight period",
+                                        			"recommended_action":"Consult your advisory service"
+                                        		}
+                                        	]
          */
-        public String getWarning_status_interpretation() {
+        public WarningStatusInterpretation[] getWarning_status_interpretation() {
             return warning_status_interpretation;
         }
 
         /**
          * @param warning_status_interpretation the warning_status_interpretation to set
          */
-        public void setWarning_status_interpretation(String warning_status_interpretation) {
+        public void setWarning_status_interpretation(WarningStatusInterpretation[] warning_status_interpretation) {
             this.warning_status_interpretation = warning_status_interpretation;
         }
 
@@ -720,7 +776,7 @@ public class DSSModel {
 		 * @return the internal
 		 */
 		public String[] getInternal() {
-			return internal;
+			return internal != null ? internal : new String[0];
 		}
 	
 		/**
@@ -734,7 +790,7 @@ public class DSSModel {
 		 * @return the triggered
 		 */
 		public String[] getTriggered() {
-			return triggered;
+			return triggered!= null ? triggered : new String[0];
 		}
 	
 		/**
@@ -748,7 +804,7 @@ public class DSSModel {
 		 * @return the user_init
 		 */
 		public String[] getUser_init() {
-			return user_init;
+			return user_init!= null ? user_init : new String[0];
 		}
 	
 		/**
@@ -762,7 +818,7 @@ public class DSSModel {
 		 * @return the system
 		 */
 		public String[] getSystem() {
-			return system;
+			return system!= null ? system : new String[0];
 		}
 	
 		/**
@@ -776,7 +832,7 @@ public class DSSModel {
 		 * @return the hidden
 		 */
 		public String[] getHidden() {
-			return hidden;
+			return hidden!= null ? hidden : new String[0];
 		}
 	
 		/**
@@ -1038,4 +1094,18 @@ public class DSSModel {
     public void setValid_spatial(Valid_Spatial valid_spatial) {
         this.valid_spatial = valid_spatial;
     }
+
+	/**
+	 * @return the platform_validated
+	 */
+	public Boolean getPlatform_validated() {
+		return platform_validated != null ? this.platform_validated : false;
+	}
+
+	/**
+	 * @param platform_validated the platform_validated to set
+	 */
+	public void setPlatform_validated(Boolean platform_validated) {
+		this.platform_validated = platform_validated;
+	}
 }
