@@ -60,6 +60,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
+import net.ipmdecisions.dssservice.entity.DSSModel.Output.WarningStatusInterpretation;
 import net.ipmdecisions.dssservice.util.MD5Encrypter;
 import net.ipmdecisions.dssservice.controller.DSSController;
 
@@ -198,7 +199,7 @@ public class AdminService {
 					"description.created_by",
 					"description.age",
 					"description.assumptions",
-					"output.warning_status_interpretation",
+					"output.warning_status_interpretation", // CHANGED TO BE array of WarningStatusInterpretation objects (see below)
 					"output.chart_heading",
 					"output.chart_groups.title", // Must be output.chart_groups.[ID].title
 					"output.result_parameters.title", // Must be output.result_parameters.[ID].title
@@ -217,7 +218,14 @@ public class AdminService {
 				props.setProperty(modelPath + ".description.created_by", this.makeCSVCompatibleValue(model.getDescription().getCreated_by()));
 				props.setProperty(modelPath + ".description.age", this.makeCSVCompatibleValue(model.getDescription().getAge()));
 				props.setProperty(modelPath + ".description.assumptions", this.makeCSVCompatibleValue(model.getDescription().getAssumptions()));
-				props.setProperty(modelPath + ".output.warning_status_interpretation", this.makeCSVCompatibleValue(model.getOutput().getWarning_status_interpretation()));
+				for(int i=0; i<model.getOutput().getWarning_status_interpretation().length;i++)
+				{
+					props.setProperty(modelPath + ".output.warning_status_interpretation." + i + ".explanation", 
+							this.makeCSVCompatibleValue(model.getOutput().getWarning_status_interpretation()[i].getExplanation()));
+					props.setProperty(modelPath + ".output.warning_status_interpretation." + i + ".recommended_action", 
+							this.makeCSVCompatibleValue(model.getOutput().getWarning_status_interpretation()[i].getRecommended_action()));
+				}
+				
 				props.setProperty(modelPath + ".output.chart_heading", this.makeCSVCompatibleValue(model.getOutput().getChart_heading()));
 				for(DSSModel.Output.ChartGroup cg : model.getOutput().getChart_groups())
 				{

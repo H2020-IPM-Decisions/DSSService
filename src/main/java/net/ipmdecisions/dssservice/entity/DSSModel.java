@@ -43,7 +43,7 @@ public class DSSModel {
     private Output output;
     private Description description;
     
-    static class Description {
+    public static class Description {
     	private String other, created_by, age, assumptions, peer_review, case_studies;
 
 		/**
@@ -91,14 +91,14 @@ public class DSSModel {
 		/**
 		 * @return the assumptions
 		 */
-		private String getAssumptions() {
+		public String getAssumptions() {
 			return assumptions;
 		}
 
 		/**
 		 * @param assumptions the assumptions to set
 		 */
-		private void setAssumptions(String assumptions) {
+		public void setAssumptions(String assumptions) {
 			this.assumptions = assumptions;
 		}
 
@@ -137,13 +137,11 @@ public class DSSModel {
      */
     public static class Output {
         private WarningStatusInterpretation[]  warning_status_interpretation;
-    static class Output {
-        private WarningStatusInterpretation[]  warning_status_interpretation;
         private ResultParameter[] result_parameters;
         private ChartGroup[] chart_groups;
         private String chart_heading;
         
-        static class WarningStatusInterpretation {
+        public static class WarningStatusInterpretation {
         	private String explanation, recommended_action;
 
 			/**
@@ -176,7 +174,7 @@ public class DSSModel {
         	
         }
         
-        static class ChartGroup {
+        public static class ChartGroup {
         	private String id, title;
         	private String[] result_parameter_ids;
 			/**
@@ -221,7 +219,7 @@ public class DSSModel {
          * A result or intermediary from a DSS model. These are distinct for 
          * each DSS model
          */
-        static class ResultParameter {
+        public static class ResultParameter {
             private String id, title, description;
             private Chart_info chart_info;
 
