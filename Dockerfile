@@ -9,7 +9,7 @@ COPY ./ ./
 # package our application code
 RUN mvn clean install
 
-RUN git clone --single-branch --branch master https://github.com/H2020-IPM-Decisions/formats.git
+RUN git clone --single-branch --branch master https://github.com/H2020-IPM-Decisions/DSS-Metadata.git
 RUN git clone --single-branch --branch master https://github.com/datasets/geo-countries.git
 
 # Used this as a template: https://github.com/jboss-dockerfiles/wildfly/blob/master/Dockerfile 
@@ -42,7 +42,7 @@ COPY --from=MAVEN_BUILD /target/IPMDecisionsDSSService-$APP_VERSION.war /IPMDeci
 COPY --from=MAVEN_BUILD /geo-countries/data/countries.geojson /countries.geojson
 # This requires you to have cloned the formats repository from GitHub: https://github.com/H2020-IPM-Decisions/formats
 RUN mkdir /DSS_lists
-COPY  --from=MAVEN_BUILD /formats/DSS_metadata/*.yaml /DSS_lists/
+COPY  --from=MAVEN_BUILD /DSS-Metadata/*.yaml /DSS_lists/
 RUN chown -R jboss:jboss /DSS_lists
 RUN ln -s /IPMDecisionsDSSService-$APP_VERSION.war ${JBOSS_HOME}/standalone/deployments/IPMDecisionsDSSService.war
 
