@@ -119,16 +119,37 @@ public class DSSService {
      * @param cropCode EPPO code for the crop
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
      * @pathExample /rest/dss/crop/SOLTU
-     * @return a list of models that are applicable to the given crop
+     * @return a list of ALL models that are applicable to the given crop, regardless of validation status
      */
     @GET
     @Path("dss/crop/{cropCode}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
     public Response listModelsForCrop(@PathParam("cropCode") String cropCode) {
+    	return this.listModelsForCropByValidation(cropCode, null);
+    }
+    
+    /**
+     * Returns a list of models that are applicable to the given crop
+     *
+     * @param cropCode EPPO code for the crop
+     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param platformValidated true or false
+     * 
+     * @pathExample /rest/dss/crop/SOLTU/platform_validated/true
+     * @return a list of models that are applicable to the given crop, filtered on validation status
+     */
+    @GET
+    @Path("dss/crop/{cropCode}/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listModelsForCropByValidation(
+    		@PathParam("cropCode") String cropCode,
+    		@PathParam("platformValidated") Boolean platformValidated
+    		) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            List<DSS> allDSSs = this.DSSController.getDSSListObj(true);
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
             for (DSS currentDSS : allDSSs) {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
@@ -158,10 +179,30 @@ public class DSSService {
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
     public Response listModelsForCrops(@PathParam("cropCodes") String cropCodesStr) {
+    	return this.listModelsForCropsByValidation(cropCodesStr, null);
+    }
+    
+    /**
+     * Returns a list of DSS models that are applicable to the given crops
+     *
+     * @param cropCodes comma separated EPPO codes for the crops
+     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param platformValidated true or false
+     * @pathExample /rest/dss/crops/SOLTU,DAUCS/platform_validated/true
+     * @return a list of models that are applicable to the given crops filtered by the models' validation status
+     */
+    @GET
+    @Path("dss/crops/{cropCodes}/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listModelsForCropsByValidation(
+    		@PathParam("cropCodes") String cropCodesStr,
+    		@PathParam("platformValidated") Boolean platformValidated
+    		) {
         try {
         	List<String> cropCodes = Arrays.asList(cropCodesStr.split(","));
             List<DSS> retVal = new ArrayList<>();
-            List<DSS> allDSSs = this.DSSController.getDSSListObj(true);
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
             for (DSS currentDSS : allDSSs) {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
@@ -189,7 +230,7 @@ public class DSSService {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }
-
+    
     /**
      * Returns a list of models that are applicable to the given pest
      *
@@ -202,10 +243,29 @@ public class DSSService {
     @Path("dss/pest/{pestCode}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
-    public Response listModelsForPests(@PathParam("pestCode") String pestCode) {
+    public Response listModelsForPest(@PathParam("pestCode") String pestCode) {
+    	return this.listModelsForPestByValidation(pestCode, null);
+    }
+
+    /**
+     * Returns a list of models that are applicable to the given pest
+     *
+     * @param pestCode EPPO code for the pest
+     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param platformValidated true or false
+     * @pathExample /rest/dss/pest/PSILRO/platform_validated/true
+     * @return a list of models that are applicable to the given pest filtered by their validation status
+     */
+    @GET
+    @Path("dss/pest/{pestCode}/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listModelsForPestByValidation(
+    		@PathParam("pestCode") String pestCode,
+    		@PathParam("platformValidated") Boolean platformValidated) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            this.DSSController.getDSSListObj(true).forEach((currentDSS) -> {
+            this.DSSController.getDSSListObj(platformValidated).forEach((currentDSS) -> {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
                                 .filter(model -> model.getPests() != null && model.getPests().contains(pestCode))
@@ -238,9 +298,31 @@ public class DSSService {
     		@PathParam("cropCode") String cropCode, 
     		@PathParam("pestCode") String pestCode
     		) {
+    	return this.listModelsForCropPestCombinationByValidation(cropCode, pestCode, null);
+    }
+    
+    /**
+     * Returns a list of models that are applicable to the given crop-pest combination
+     *
+     * @param cropCode EPPO code for the crop
+     * @param pestCode EPPO code for the pest
+     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param platformValidated true or false
+     * @pathExample /rest/dss/crop/DAUCS/pest/PSILRO/platform_validated/true
+     * @return a list of models that are applicable to the given crop-pest combination by their validation status
+     */
+    @GET
+    @Path("dss/crop/{cropCode}/pest/{pestCode}/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listModelsForCropPestCombinationByValidation(
+    		@PathParam("cropCode") String cropCode, 
+    		@PathParam("pestCode") String pestCode,
+    		@PathParam("platformValidated") Boolean platformValidated
+    		) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            this.DSSController.getDSSListObj(true).forEach((currentDSS) -> {
+            this.DSSController.getDSSListObj(platformValidated).forEach((currentDSS) -> {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
                                 .filter(model -> model.getPests() != null && model.getCrops() != null && model.getPests().contains(pestCode) && model.getCrops().contains(cropCode))
