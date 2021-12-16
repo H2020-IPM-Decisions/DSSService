@@ -1,6 +1,7 @@
-#IPM DSS developer guide
+# IPM DSS developer guide
 
-##Prerequisites
+## Prerequisites
+
 ### Credentials for the EPPO web services
 The IPM Decisions DSS API uses the [EPPO web services](https://data.eppo.int/documentation/rest) for some backend operations, such as evaluating EPPO codes sent in by clients. In order to do this, credentials need to be provided for each request. This is in the form of an authtoken that is passed to the service endpoints. To configure this: follow these two steps:
 
