@@ -180,7 +180,7 @@ public class AdminService {
 	@GET
 	@Path("admin/dss/{DSSId}/i18n/csv")
 	@Produces("text/csv;charset=UTF-8")
-	public Response getResourceBundleForDSS(@PathParam("DSSId") String DSSId)
+	public Response geti18nCSVForDSS(@PathParam("DSSId") String DSSId)
 	{
 		try
 		{

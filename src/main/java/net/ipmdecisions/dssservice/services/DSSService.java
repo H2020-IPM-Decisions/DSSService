@@ -81,9 +81,11 @@ public class DSSService {
     @Path("dss")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
-    public Response listDSSs() {
+    public Response listDSSs(
+    		@QueryParam("language") String language
+    		) {
         try {
-        	List<DSS> allDSSs = this.DSSController.getDSSListObj(null);
+        	List<DSS> allDSSs = this.DSSController.getDSSListObj(null,language);
             return Response.ok().entity(allDSSs).build();
         } catch (IOException ex) {
             return Response.serverError().entity(ex.getMessage()).build();
