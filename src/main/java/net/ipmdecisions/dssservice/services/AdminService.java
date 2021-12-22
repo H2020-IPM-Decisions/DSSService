@@ -148,7 +148,7 @@ public class AdminService {
 			// However, if same ID and version - issue error
 			ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 			DSS DSSToAdd = yamlMapper.readValue(DSSYAMLFile, new TypeReference<DSS>(){});
-			DSS matchingDSS = this.DSSController.getDSSById(DSSToAdd.getId(), null);
+			DSS matchingDSS = this.DSSController.getDSSById(DSSToAdd.getId(), null, null);
 			if(matchingDSS != null)
 			{
 				if(matchingDSS.getVersion().equals(DSSToAdd.getVersion()))
@@ -194,7 +194,7 @@ public class AdminService {
 		{
 			// Assuming none existing per now
 			// Generate the default
-			DSS  dss = this.DSSController.getDSSById(DSSId, null);
+			DSS  dss = this.DSSController.getDSSById(DSSId, null, null);
 			if(dss == null)
 			{
 				return Response.status(Status.NOT_FOUND).entity("A DSS with id=" + DSSId + " was not found.").build();

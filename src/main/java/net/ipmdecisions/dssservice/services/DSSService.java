@@ -423,14 +423,14 @@ public class DSSService {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }
-
+    
     /**
      * Get all information about a specific DSS
      *
      * @param DSSId the id of the DSS
      * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
      * 
-     * @return the requested DSS
+     * @return the requested DSS and its models, regardless of validation
      * @pathExample /rest/model/no.nibio.vips
      */
     @GET
@@ -441,8 +441,29 @@ public class DSSService {
     		@PathParam("DSSId") String DSSId,
     		@QueryParam("language") String language
     		) {
+    	return this.getDSS(DSSId, null, language);
+    }
+
+    /**
+     * Get all information about a specific DSS
+     *
+     * @param DSSId the id of the DSS
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param platformValidated true or false
+     * @return the requested DSS and its models, filtered by their validation status
+     * @pathExample /rest/model/no.nibio.vips/platform_validated/true
+     */
+    @GET
+    @Path("dss/{DSSId}/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(DSS.class)
+    public Response getDSS(
+    		@PathParam("DSSId") String DSSId,
+    		@PathParam("platformValidated") Boolean platformValidated,
+    		@QueryParam("language") String language
+    		) {
         try {
-        	DSS matchingDSS = this.DSSController.getDSSById(DSSId, language);
+        	DSS matchingDSS = this.DSSController.getDSSById(DSSId, platformValidated, language);
             if (matchingDSS != null) {
                 return Response.ok().entity(matchingDSS).build();
             } else {

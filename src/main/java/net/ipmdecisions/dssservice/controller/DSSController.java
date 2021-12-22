@@ -176,9 +176,9 @@ public class DSSController {
         return directory.listFiles((dir, name) -> name.endsWith(extension));
     }
     
-    public DSS getDSSById(String DSSid, String language) throws IOException
+    public DSS getDSSById(String DSSid, Boolean platformValidated, String language) throws IOException
     {
-        Optional<DSS> matchingDSS = this.getDSSListObj(true, language).stream().filter(dss -> dss.getId().equals(DSSid)).findFirst();
+        Optional<DSS> matchingDSS = this.getDSSListObj(platformValidated, language).stream().filter(dss -> dss.getId().equals(DSSid)).findFirst();
         if (matchingDSS.isPresent()) {
             return matchingDSS.get();
         } else {
