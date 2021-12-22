@@ -161,11 +161,6 @@ public class DSSController {
     	return dss;
     }
     
-    /*public ResourceBundle getResourceBundleForDSS(String DSSId)
-    {
-    	
-    }*/
-    
     /**
      * Pulls YAML files from set path and creates a list of all DSSs This should
      * be replaced by a decent database
