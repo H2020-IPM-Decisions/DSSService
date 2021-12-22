@@ -142,14 +142,14 @@ public class DSSController {
     			{
     				// Remove the path to input_schema
     				String inputSchemaPath = key.substring(pathToInputSchemaLength);
-    				System.out.println(inputSchemaPath);
+    				//System.out.println(inputSchemaPath);
     				if(inputSchemaProperties.containsKey(inputSchemaPath))
     				{
     					inputSchemaProperties.put(inputSchemaPath, bundle.getString(key));
     				}
     			}
     			
-    			// De-flatten
+    			// De-flatten and set as input schema
     			model.getExecution().setInput_schema(JsonUnflattener.unflatten(inputSchemaProperties));
 			}
     	}
