@@ -35,16 +35,16 @@ For Wildfly, put it in `[WILDFLY_HOME]/standalone/configuration/standalone[-full
 b. Provide it to the Docker build
 Simply use the `-e IPMDSS_ADMIN_TOKEN_MD5=[XXX]` as specified in the `docker run` command in the "Run/test the image" paragraph below
 
-##Building and deploying with Docker
+## Building and deploying with Docker
 
 To see your current images, run `sudo docker images`
 
-###Build the image
+### Build the image
 
 The Dockerfile inside the repo root folder is the build description. To build it, run e.g.:
 `sudo docker build --tag ipmdecisions/dss_api:ALPHA-04 .`
 
-###Run/test the image
+### Run/test the image
 To run it locally:
 `sudo docker run --publish 18080:8080 --detach -e EPPO_AUTHTOKEN=***YOUR AUTHTOKEN_HERE*** -e IPMDSS_ADMIN_TOKEN_MD5=***YOUR MD5 HASHED TOKEN HERE*** --name ipmdss ipmdecisions/dss_api:ALPHA-04`
 
@@ -80,12 +80,12 @@ sudo docker rmi ipmdecisions/dss_api:ALPHA-04
 5. Also, make sure you remove any ancestors as well, use sudo docker images to reveal them (check for recent ones)
 6. Then you can rebuild the image (see above). Consider adding the `--no-cache` tag if you need a complete rebuild
 
-###Login to the container’s console (e.g. for troubleshooting)
+### Login to the container’s console (e.g. for troubleshooting)
 ```
 Sudo docker exec -it <containername> bash
 ```
 
-###Push the image
+### Push the image
 ```
 sudo docker push ipmdecisions/dss_api:ALPHA-04
 ```

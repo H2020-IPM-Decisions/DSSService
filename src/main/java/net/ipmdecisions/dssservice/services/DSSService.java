@@ -74,6 +74,7 @@ public class DSSService {
 
     /**
      * List all DSSs and models available in the platform
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
      *
      * @return a list of all DSSs and models available in the platform, regardless of validation
      */
@@ -96,6 +97,7 @@ public class DSSService {
      * List all DSSs and models available in the platform
      * 
      * @param platformValidated true or false
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
      *
      * @return a list of all DSSs and models available in the platform that are either validated or not
      */
@@ -104,10 +106,11 @@ public class DSSService {
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
     public Response listDSSsByValidation(
-    		@PathParam("platformValidated") Boolean platformValidated
+    		@PathParam("platformValidated") Boolean platformValidated,
+    		@QueryParam("language") String language
     		) {
         try {
-        	List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
+        	List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated, language);
             return Response.ok().entity(allDSSs).build();
         } catch (IOException ex) {
             return Response.serverError().entity(ex.getMessage()).build();
@@ -120,6 +123,8 @@ public class DSSService {
      *
      * @param cropCode EPPO code for the crop
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @pathExample /rest/dss/crop/SOLTU
      * @return a list of ALL models that are applicable to the given crop, regardless of validation status
      */
@@ -127,8 +132,11 @@ public class DSSService {
     @Path("dss/crop/{cropCode}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
-    public Response listModelsForCrop(@PathParam("cropCode") String cropCode) {
-    	return this.listModelsForCropByValidation(cropCode, null);
+    public Response listModelsForCrop(
+    		@PathParam("cropCode") String cropCode,
+    		@QueryParam("language") String language
+    		) {
+    	return this.listModelsForCropByValidation(cropCode, null, language);
     }
     
     /**
@@ -137,6 +145,7 @@ public class DSSService {
      * @param cropCode EPPO code for the crop
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
      * @param platformValidated true or false
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
      * 
      * @pathExample /rest/dss/crop/SOLTU/platform_validated/true
      * @return a list of models that are applicable to the given crop, filtered on validation status
@@ -147,11 +156,12 @@ public class DSSService {
     @TypeHint(DSS[].class)
     public Response listModelsForCropByValidation(
     		@PathParam("cropCode") String cropCode,
-    		@PathParam("platformValidated") Boolean platformValidated
+    		@PathParam("platformValidated") Boolean platformValidated,
+    		@QueryParam("language") String language
     		) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated, language);
             for (DSS currentDSS : allDSSs) {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
@@ -173,15 +183,20 @@ public class DSSService {
      *
      * @param cropCodes comma separated EPPO codes for the crops
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @pathExample /rest/dss/crops/SOLTU,DAUCS
-     * @return a list of models that are applicable to the given crops
+     * @return a list of models that are applicable to the given crops, regardless of validation status
      */
     @GET
     @Path("dss/crops/{cropCodes}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
-    public Response listModelsForCrops(@PathParam("cropCodes") String cropCodesStr) {
-    	return this.listModelsForCropsByValidation(cropCodesStr, null);
+    public Response listModelsForCrops(
+    		@PathParam("cropCodes") String cropCodesStr,
+    		@QueryParam("language") String language
+    		) {
+    	return this.listModelsForCropsByValidation(cropCodesStr, null, language);
     }
     
     /**
@@ -190,6 +205,8 @@ public class DSSService {
      * @param cropCodes comma separated EPPO codes for the crops
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
      * @param platformValidated true or false
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @pathExample /rest/dss/crops/SOLTU,DAUCS/platform_validated/true
      * @return a list of models that are applicable to the given crops filtered by the models' validation status
      */
@@ -199,12 +216,13 @@ public class DSSService {
     @TypeHint(DSS[].class)
     public Response listModelsForCropsByValidation(
     		@PathParam("cropCodes") String cropCodesStr,
-    		@PathParam("platformValidated") Boolean platformValidated
+    		@PathParam("platformValidated") Boolean platformValidated,
+    		@QueryParam("language") String language
     		) {
         try {
         	List<String> cropCodes = Arrays.asList(cropCodesStr.split(","));
             List<DSS> retVal = new ArrayList<>();
-            List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated, language);
             for (DSS currentDSS : allDSSs) {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
@@ -238,15 +256,20 @@ public class DSSService {
      *
      * @param pestCode EPPO code for the pest
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @pathExample /rest/dss/pest/PSILRO
-     * @return a list of models that are applicable to the given pest
+     * @return a list of models that are applicable to the given pest, regardless of validation status
      */
     @GET
     @Path("dss/pest/{pestCode}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS[].class)
-    public Response listModelsForPest(@PathParam("pestCode") String pestCode) {
-    	return this.listModelsForPestByValidation(pestCode, null);
+    public Response listModelsForPest(
+    		@PathParam("pestCode") String pestCode,
+    		@QueryParam("language") String language
+    		) {
+    	return this.listModelsForPestByValidation(pestCode, null, language);
     }
 
     /**
@@ -255,6 +278,8 @@ public class DSSService {
      * @param pestCode EPPO code for the pest
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
      * @param platformValidated true or false
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @pathExample /rest/dss/pest/PSILRO/platform_validated/true
      * @return a list of models that are applicable to the given pest filtered by their validation status
      */
@@ -264,10 +289,12 @@ public class DSSService {
     @TypeHint(DSS[].class)
     public Response listModelsForPestByValidation(
     		@PathParam("pestCode") String pestCode,
-    		@PathParam("platformValidated") Boolean platformValidated) {
+    		@PathParam("platformValidated") Boolean platformValidated,
+    		@QueryParam("language") String language
+    		) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            this.DSSController.getDSSListObj(platformValidated).forEach((currentDSS) -> {
+            this.DSSController.getDSSListObj(platformValidated, language).forEach((currentDSS) -> {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
                                 .filter(model -> model.getPests() != null && model.getPests().contains(pestCode))
@@ -289,8 +316,10 @@ public class DSSService {
      * @param cropCode EPPO code for the crop
      * @param pestCode EPPO code for the pest
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @pathExample /rest/dss/crop/DAUCS/pest/PSILRO
-     * @return a list of models that are applicable to the given crop-pest combination
+     * @return a list of models that are applicable to the given crop-pest combination, regardless of validation status
      */
     @GET
     @Path("dss/crop/{cropCode}/pest/{pestCode}")
@@ -298,9 +327,10 @@ public class DSSService {
     @TypeHint(DSS[].class)
     public Response listModelsForCropPestCombination(
     		@PathParam("cropCode") String cropCode, 
-    		@PathParam("pestCode") String pestCode
+    		@PathParam("pestCode") String pestCode,
+    		@QueryParam("language") String language
     		) {
-    	return this.listModelsForCropPestCombinationByValidation(cropCode, pestCode, null);
+    	return this.listModelsForCropPestCombinationByValidation(cropCode, pestCode, null, language);
     }
     
     /**
@@ -310,6 +340,8 @@ public class DSSService {
      * @param pestCode EPPO code for the pest
      * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
      * @param platformValidated true or false
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @pathExample /rest/dss/crop/DAUCS/pest/PSILRO/platform_validated/true
      * @return a list of models that are applicable to the given crop-pest combination by their validation status
      */
@@ -320,11 +352,12 @@ public class DSSService {
     public Response listModelsForCropPestCombinationByValidation(
     		@PathParam("cropCode") String cropCode, 
     		@PathParam("pestCode") String pestCode,
-    		@PathParam("platformValidated") Boolean platformValidated
+    		@PathParam("platformValidated") Boolean platformValidated,
+    		@QueryParam("language") String language
     		) {
         try {
             List<DSS> retVal = new ArrayList<>();
-            this.DSSController.getDSSListObj(platformValidated).forEach((currentDSS) -> {
+            this.DSSController.getDSSListObj(platformValidated, language).forEach((currentDSS) -> {
                 List<DSSModel> qualifyingModels
                         = currentDSS.getModels().stream()
                                 .filter(model -> model.getPests() != null && model.getCrops() != null && model.getPests().contains(pestCode) && model.getCrops().contains(cropCode))
@@ -395,6 +428,8 @@ public class DSSService {
      * Get all information about a specific DSS
      *
      * @param DSSId the id of the DSS
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @return the requested DSS
      * @pathExample /rest/model/no.nibio.vips
      */
@@ -402,9 +437,12 @@ public class DSSService {
     @Path("dss/{DSSId}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSS.class)
-    public Response getDSS(@PathParam("DSSId") String DSSId) {
+    public Response getDSS(
+    		@PathParam("DSSId") String DSSId,
+    		@QueryParam("language") String language
+    		) {
         try {
-        	DSS matchingDSS = this.DSSController.getDSSById(DSSId);
+        	DSS matchingDSS = this.DSSController.getDSSById(DSSId, language);
             if (matchingDSS != null) {
                 return Response.ok().entity(matchingDSS).build();
             } else {
@@ -420,6 +458,8 @@ public class DSSService {
      * Get all information about a specific DSS in YAML format
      *
      * @param DSSId the id of the DSS
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @return the requested DSS
      * @pathExample /rest/model/no.nibio.vips
      */
@@ -427,9 +467,12 @@ public class DSSService {
     @Path("dss/{DSSId}/yaml")
     @Produces("application/x-yaml;charset=UTF-8")
     @TypeHint(DSS.class)
-    public Response getDSSAsYAML(@PathParam("DSSId") String DSSId) {
+    public Response getDSSAsYAML(
+    		@PathParam("DSSId") String DSSId,
+    		@QueryParam("language") String language
+    		) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null, language).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
             	ObjectMapper YAMLWriter = new ObjectMapper(new YAMLFactory());
                 return Response.ok().entity(YAMLWriter.writeValueAsString(matchingDSS.get())).build();
@@ -447,6 +490,8 @@ public class DSSService {
      *
      * @param DSSId The id of the DSS containing the model
      * @param ModelId The id of the DSS model requested
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @return The requested DSS model
      * @pathExample /rest/model/no.nibio.vips/PSILARTEMP
      */
@@ -454,9 +499,13 @@ public class DSSService {
     @Path("model/{DSSId}/{ModelId}")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSSModel.class)
-    public Response getDSSModel(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
+    public Response getDSSModel(
+    		@PathParam("DSSId") String DSSId, 
+    		@PathParam("ModelId") String ModelId,
+    		@QueryParam("language") String language
+    		) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null, language).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
                 DSS actualDSS = matchingDSS.get();
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
@@ -478,6 +527,8 @@ public class DSSService {
      *
      * @param DSSId The id of the DSS containing the model
      * @param ModelId The id of the DSS model requested
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @return The input Json schema for the DSS model
      * @pathExample /rest/model/no.nibio.vips/PSILARTEMP/input_schema
      * @responseExample application/json {
@@ -530,9 +581,13 @@ public class DSSService {
     @Path("model/{DSSId}/{ModelId}/input_schema")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSSModel.class)
-    public Response getDSSModelInputSchema(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
+    public Response getDSSModelInputSchema(
+    		@PathParam("DSSId") String DSSId, 
+    		@PathParam("ModelId") String ModelId,
+    		@QueryParam("language") String language
+    		) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null, language).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
                 DSS actualDSS = matchingDSS.get();
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
@@ -553,6 +608,8 @@ public class DSSService {
      * Provide Json schema only for the parts that should be viewed in the platform's HTML UI form
      * @param DSSId The id of the DSS containing the model
      * @param ModelId The id of the DSS model requested
+     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * 
      * @return The input Json schema for the DSS model
      * @pathExample /rest/model/no.nibio.vips/PSILARTEMP/input_schema/ui_form
      * @responseExample application/json {
@@ -595,9 +652,13 @@ public class DSSService {
     @Path("model/{DSSId}/{ModelId}/input_schema/ui_form")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(DSSModel.class)
-    public Response getDSSModelUIFormSchema(@PathParam("DSSId") String DSSId, @PathParam("ModelId") String ModelId) {
+    public Response getDSSModelUIFormSchema(
+    		@PathParam("DSSId") String DSSId, 
+    		@PathParam("ModelId") String ModelId,
+    		@QueryParam("language") String language
+    		) {
         try {
-            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
+            Optional<DSS> matchingDSS = this.DSSController.getDSSListObj(null, language).stream().filter(dss -> dss.getId().equals(DSSId)).findFirst();
             if (matchingDSS.isPresent()) {
                 DSS actualDSS = matchingDSS.get();
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();

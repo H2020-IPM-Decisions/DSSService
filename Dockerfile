@@ -41,9 +41,9 @@ ENV APP_VERSION=BETA-SNAPSHOT
 COPY --from=MAVEN_BUILD /target/IPMDecisionsDSSService-$APP_VERSION.war /IPMDecisionsDSSService-$APP_VERSION.war
 COPY --from=MAVEN_BUILD /geo-countries/data/countries.geojson /countries.geojson
 # This requires you to have cloned the formats repository from GitHub: https://github.com/H2020-IPM-Decisions/formats
-RUN mkdir /DSS_lists
-COPY  --from=MAVEN_BUILD /DSS-Metadata/*.yaml /DSS_lists/
-RUN chown -R jboss:jboss /DSS_lists
+RUN mkdir /DSS-Metadata
+COPY  --from=MAVEN_BUILD /DSS-Metadata/ /DSS-Metadata/
+RUN chown -R jboss:jboss /DSS-Metadata
 RUN ln -s /IPMDecisionsDSSService-$APP_VERSION.war ${JBOSS_HOME}/standalone/deployments/IPMDecisionsDSSService.war
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
@@ -57,6 +57,6 @@ EXPOSE 8080
 # Set the default command to run on boot
 # This will boot WildFly in the standalone mode and bind to all interface
 # Run the container e.g. like this: sudo docker run --publish 18080:8080 --detach -e EPPO_AUTHTOKEN=***YOUR AUTHTOKEN_HERE*** --name ipmdss ipmdecisions/dss_api:ALPHA-04
-CMD /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -Dnet.ipmdecisions.dssservice.DSS_LIST_FILES_PATH=/DSS_lists/ -Dnet.ipmdecisions.dssservice.COUNTRY_BOUNDARIES_FILE=/countries.geojson -Dnet.ipmdecisions.dssservice.EPPO_AUTHTOKEN=${EPPO_AUTHTOKEN} -Dnet.ipmdecisions.dssservice.IPMDSS_ADMIN_TOKEN_MD5=${IPMDSS_ADMIN_TOKEN_MD5}
+CMD /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -Dnet.ipmdecisions.dssservice.DSS_LIST_FILES_PATH=/DSS-Metadata -Dnet.ipmdecisions.dssservice.COUNTRY_BOUNDARIES_FILE=/countries.geojson -Dnet.ipmdecisions.dssservice.EPPO_AUTHTOKEN=${EPPO_AUTHTOKEN} -Dnet.ipmdecisions.dssservice.IPMDSS_ADMIN_TOKEN_MD5=${IPMDSS_ADMIN_TOKEN_MD5}
 
 
