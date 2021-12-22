@@ -174,9 +174,9 @@ models:
 
 ## <a name="default_templates"></a> input_schema property: Default value templates
 We have added a simple templating system for expressing default values. Templates are enclosed in curly
-brackets `{}`. Currently, the only template added is for `CURRENT_YEAR`. This is an integer that can be changed by simple
-arithmetics like addition and substraction. E.g. for the user to enter a sowing date of last year (e.g. winter
-wheat),it would be expressed like this: `"default": "{CURRENT_YEAR-1}-09-15"` 
+brackets `{}`. Currently, there are two templates added:
+* `CURRENT_YEAR`
+* `PREVIOUS_YEAR`
 
 See [the page on generating api requests](apirequest.md) for details about the input_schema properties. Using the [Json editor](https://json-editor.github.io/json-editor/) and the [Json schema generator](https://www.jsonschema.net/home) can be a great help in creating the schema.
 
