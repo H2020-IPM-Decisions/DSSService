@@ -55,8 +55,10 @@ import org.jboss.resteasy.annotations.GZIP;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.wnameless.json.flattener.JsonFlattener;
 
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
@@ -177,6 +179,12 @@ public class AdminService {
 		}
 	}
 	
+	/**
+	 * Generate a starting point for translation. Returns the keys and "default" column as CSV,
+	 * with comma as separator and double quotes for strings. So don't use double quotes in the text!
+	 * @param DSSId
+	 * @return
+	 */
 	@GET
 	@Path("admin/dss/{DSSId}/i18n/csv")
 	@Produces("text/csv;charset=UTF-8")
@@ -185,26 +193,13 @@ public class AdminService {
 		try
 		{
 			// Assuming none existing per now
-			// Generate the default and... Norwegian??
+			// Generate the default
 			DSS  dss = this.DSSController.getDSSById(DSSId);
 			if(dss == null)
 			{
 				return Response.status(Status.NOT_FOUND).entity("A DSS with id=" + DSSId + " was not found.").build();
 			}
 			// And now... all the properties that need to be extracted
-			// Everything is in the models
-			List<String> translatableModelItems = List.of(
-					"name",
-					"description.other",
-					"description.created_by",
-					"description.age",
-					"description.assumptions",
-					"output.warning_status_interpretation", // CHANGED TO BE array of WarningStatusInterpretation objects (see below)
-					"output.chart_heading",
-					"output.chart_groups.title", // Must be output.chart_groups.[ID].title
-					"output.result_parameters.title", // Must be output.result_parameters.[ID].title
-					"output.result_parameters.description" // Must be output.result_parameters.[ID].title
-					);
 			// e.g. no.nibio.vips.2_0.models.PSILARTEMP.name=Carrot rust fly temperature model
 			String basePath = dss.getId() + "." + dss.getVersion().replace(".","_");
 			Properties props = new Properties();
@@ -237,6 +232,20 @@ public class AdminService {
 					props.setProperty(modelPath + ".output.result_parameters." + rp.getId() + ".description", this.makeCSVCompatibleValue(rp.getDescription()));
 				}
 				
+				// Finding and adding translatable items in the input_schema
+				Map<String, Object> inputSchemaProperties = JsonFlattener.flattenAsMap(model.getExecution().getInput_schema());
+				Set<String> propsOfInterest = Set.of("title", "description", "infoText");
+				
+				for(String key:inputSchemaProperties.keySet())
+				{
+					for(String propOfInterest:propsOfInterest)
+					{
+						if(key.endsWith("." + propOfInterest)) {
+							props.setProperty(modelPath + ".execution.input_schema." + key, (String) inputSchemaProperties.get(key));
+						}
+					}
+				}
+
 			}
 			List<String> keys = props.keySet().stream().map(p->(String)p).collect(Collectors.toList());
 			// Alphanumeric sort gives us pretty much the correct ordering

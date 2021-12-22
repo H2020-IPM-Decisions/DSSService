@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,8 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.wnameless.json.flattener.JsonFlattener;
+import com.github.wnameless.json.unflattener.JsonUnflattener;
 
 import jdk.jfr.Description;
 import net.ipmdecisions.dssservice.entity.DSS;
@@ -128,6 +131,26 @@ public class DSSController {
     				rp.setTitle(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".title"));
     				rp.setDescription(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".description"));
 				}
+    			
+    			// Flatten the current input schema
+    			Map<String, Object> inputSchemaProperties = JsonFlattener.flattenAsMap(model.getExecution().getInput_schema());
+    			// Replace the matching properties
+    			Integer pathToInputSchemaLength = (modelPath + ".execution.input_schema.").length();
+    			for(String key: Collections.list(bundle.getKeys()).stream()
+    					.filter(k->k.startsWith(modelPath + ".execution.input_schema.")).collect(Collectors.toList())
+    					) 
+    			{
+    				// Remove the path to input_schema
+    				String inputSchemaPath = key.substring(pathToInputSchemaLength);
+    				System.out.println(inputSchemaPath);
+    				if(inputSchemaProperties.containsKey(inputSchemaPath))
+    				{
+    					inputSchemaProperties.put(inputSchemaPath, bundle.getString(key));
+    				}
+    			}
+    			
+    			// De-flatten
+    			model.getExecution().setInput_schema(JsonUnflattener.unflatten(inputSchemaProperties));
 			}
     	}
     	catch(MissingResourceException ex)
