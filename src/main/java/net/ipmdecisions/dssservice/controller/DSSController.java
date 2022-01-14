@@ -74,13 +74,11 @@ public class DSSController {
         }
         
         // i18n
-        if(language != null)
-        {
-        	for(DSS dss:DSSList)
-        	{
-        		dss = this.getDSSTranslated(dss, language);
-        	}
-        }
+        language = language != null ? language : "default";
+    	for(DSS dss:DSSList)
+    	{
+    		dss = this.getDSSTranslated(dss, language);
+    	}
         
         return DSSList;
     }
