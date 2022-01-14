@@ -183,18 +183,38 @@ public class AdminService {
 	 * Generate a starting point for translation. Returns the keys and "default" column as CSV,
 	 * with comma as separator and double quotes for strings. So don't use double quotes in the text!
 	 * @param DSSId
-	 * @return
+	 * @return CSV file with translation for the given DSS and models regardless of validation status
 	 */
 	@GET
 	@Path("admin/dss/{DSSId}/i18n/csv")
 	@Produces("text/csv;charset=UTF-8")
-	public Response geti18nCSVForDSS(@PathParam("DSSId") String DSSId)
+	public Response geti18nCSVForDSS(
+			@PathParam("DSSId") String DSSId
+	)
+	{
+		return this.geti18nCSVForDSS(DSSId, null);
+	}
+	
+	/**
+	 * Generate a starting point for translation. Returns the keys and "default" column as CSV,
+	 * with comma as separator and double quotes for strings. So don't use double quotes in the text!
+	 * @param DSSId
+	 * @param platformValidated true or false
+	 * @return CSV file with translation for the given DSS and models filtered by validation status
+	 */
+	@GET
+	@Path("admin/dss/{DSSId}/i18n/csv/platform_validated/{platformValidated}")
+	@Produces("text/csv;charset=UTF-8")
+	public Response geti18nCSVForDSS(
+			@PathParam("DSSId") String DSSId,
+			@PathParam("platformValidated") Boolean platformValidated
+	)
 	{
 		try
 		{
 			// Assuming none existing per now
 			// Generate the default
-			DSS  dss = this.DSSController.getDSSById(DSSId, null, null);
+			DSS  dss = this.DSSController.getDSSById(DSSId, platformValidated, null);
 			if(dss == null)
 			{
 				return Response.status(Status.NOT_FOUND).entity("A DSS with id=" + DSSId + " was not found.").build();
@@ -247,13 +267,16 @@ public class AdminService {
 				}
 
 			}
+			
+			String separator = ";";
+			
 			List<String> keys = props.keySet().stream().map(p->(String)p).collect(Collectors.toList());
 			// Alphanumeric sort gives us pretty much the correct ordering
 			Collections.sort(keys);
 			// Heading
-			String heading = "\"KEY\",\"default\"\n";
+			String heading = "\"KEY\"" + separator + "\"default\"\n";
 			String retVal = keys.stream()
-					.reduce(heading, (hitherto, key) ->  hitherto + "\"" + key + "\",\"" + props.get(key) + "\"\n");
+					.reduce(heading, (hitherto, key) ->  hitherto + "\"" + key + "\"" + separator + "\"" + props.get(key) + "\"\n");
 					
 			StringWriter sw = new StringWriter();
 			props.store(sw,"Auto generated new config file for translation. (c) NIBIO");
