@@ -166,10 +166,19 @@ public class AdminService {
 			// Store the DSS file 
 			if(!dryRun)
 			{
-				yamlMapper.writeValue(
-						new File(System.getProperty("net.ipmdecisions.dssservice.DSS_LIST_FILES_PATH") + this.DSSController.getDSSFileName(DSSToAdd) + ".yaml") , 
-						DSSToAdd
-						);
+				if(System.getProperty("net.ipmdecisions.dssservice.DSS_LIST_FILES_PATH") != null)
+				{
+					String path = System.getProperty("net.ipmdecisions.dssservice.DSS_LIST_FILES_PATH") 
+							+ (System.getProperty("net.ipmdecisions.dssservice.DSS_LIST_FILES_PATH").endsWith("/") ? "" : "/");
+					yamlMapper.writeValue(
+							new File(path + this.DSSController.getDSSFileName(DSSToAdd) + ".yaml") , 
+							DSSToAdd
+							);
+				}
+				else
+				{
+					return Response.serverError().entity("ERROR: path for DSS files is not set").build();
+				}
 			}
 			return Response.ok().entity(yamlMapper.writeValueAsString(DSSToAdd)).build();
 		}
