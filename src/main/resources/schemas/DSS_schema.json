@@ -325,35 +325,46 @@
                                         }
                                     },
                                     "weather_data_period_start": {
-										"type": ["object","null"],
+										"type": ["array","null"],
 										"title": "The start date of gathering weather data",
-                                        "description" : "TODO",
-                                        "default": {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-01-01"},
+                                        "description" : "Array of definitions with the highest priority first",
+                                        "default": [{"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-01-01"}],
                                         "examples": [
-                                            {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-01-01"},
-                                            {"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeStart"}
+                                            [
+                                            	{"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeStart"},
+                                            	{"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-01-01"}
+                                            ]
                                         ],
-                                        "properties":{
-                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
-                                            "value":{"type":"string"}
-                                        },
-                                        "required":["determined_by","value"]
+                                        "items": {
+                                        	"type": "object",
+                                        	"required": ["determined_by","value"],
+                                        	"properties": {
+                                        		"determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                            	"value":{"type":"string"}
+                                            }
+                                        }
 									},
-                                    "weather_data_period_end": {
-										"type": ["object","null"],
+									"weather_data_period_end": {
+										"type": ["array","null"],
 										"title": "The end date of gathering weather data",
-                                        "description" : "TODO",
+                                        "description" : "Array of definitions with the highest priority first",
                                         "default": {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-12-31"},
                                         "examples": [
-                                            {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-12-31"},
-                                            {"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeEnd"}
+                                            [
+                                            	{"determined_by":"INPUT_SCHEMA_PROPERTY","value":"configParameters.timeEnd"},
+                                            	{"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-12-31"}
+                                            ]
                                         ],
-                                        "properties":{
-                                            "determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
-                                            "value":{"type":"string"}
-                                        },
-                                        "required":["determined_by","value"]
+                                        "items": {
+                                        	"type": "object",
+                                        	"required": ["determined_by","value"],
+                                        	"properties": {
+                                        		"determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                            	"value":{"type":"string"}
+                                            }
+                                        }
 									},
+
                                     "field_observation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/input/properties/field_observation",
                                         "type": ["object","null"],

@@ -631,7 +631,7 @@ public class DSSModel {
     static class Input {
         private List<WeatherParameter> weather_parameters;
         private FieldObservation field_observation;
-        private DSSDate weather_data_period_start, weather_data_period_end;
+        private DSSDate[] weather_data_period_start, weather_data_period_end;
 
         /**
          * @return Specification of the weather result_parameters required by the model
@@ -661,19 +661,19 @@ public class DSSModel {
             this.field_observation = field_observation;
         }
 
-		public DSSDate getWeather_data_period_start() {
+		public DSSDate[] getWeather_data_period_start() {
 			return weather_data_period_start;
 		}
 
-		public void setWeather_data_period_start(DSSDate weather_data_period_start) {
+		public void setWeather_data_period_start(DSSDate[] weather_data_period_start) {
 			this.weather_data_period_start = weather_data_period_start;
 		}
 
-		public DSSDate getWeather_data_period_end() {
+		public DSSDate[] getWeather_data_period_end() {
 			return weather_data_period_end;
 		}
 
-		public void setWeather_data_period_end(DSSDate weather_data_period_end) {
+		public void setWeather_data_period_end(DSSDate[] weather_data_period_end) {
 			this.weather_data_period_end = weather_data_period_end;
 		}
         
