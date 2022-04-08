@@ -238,10 +238,7 @@ public class AdminService {
 			{
 				String modelPath = basePath + ".models." + model.getId();
 				props.setProperty(modelPath + ".name", this.makeCSVCompatibleValue(model.getName()));
-				props.setProperty(modelPath + ".description.other", this.makeCSVCompatibleValue(model.getDescription().getOther()));
-				props.setProperty(modelPath + ".description.created_by", this.makeCSVCompatibleValue(model.getDescription().getCreated_by()));
-				props.setProperty(modelPath + ".description.age", this.makeCSVCompatibleValue(model.getDescription().getAge()));
-				props.setProperty(modelPath + ".description.assumptions", this.makeCSVCompatibleValue(model.getDescription().getAssumptions()));
+				props.setProperty(modelPath + ".description", this.makeCSVCompatibleValue(model.getDescription()));
 				for(int i=0; i<model.getOutput().getWarning_status_interpretation().length;i++)
 				{
 					props.setProperty(modelPath + ".output.warning_status_interpretation." + i + ".explanation", 

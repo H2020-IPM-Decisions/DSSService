@@ -29,11 +29,11 @@ import java.util.List;
  * with enough information/meta data for the platform to be able to execute
  * the model.
  * 
- * @copyright 2021 <a href="http://www.nibio.no/">NIBIO</a>
+ * @copyright 2022 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 public class DSSModel {
-    private String name, id, version, type_of_decision, type_of_output, description_URL, citation, keywords;
+    private String name, id, version, purpose, description, type_of_decision, type_of_output, description_URL, citation, keywords;
     private Boolean platform_validated;
     private List<String> pests, crops;
     private List<Author> authors;
@@ -41,95 +41,6 @@ public class DSSModel {
     private Input input;
     private Valid_Spatial valid_spatial;
     private Output output;
-    private Description description;
-    
-    public static class Description {
-    	private String other, created_by, age, assumptions, peer_review, case_studies;
-
-		/**
-		 * @return the other
-		 */
-		public String getOther() {
-			return other;
-		}
-
-		/**
-		 * @param other the other to set
-		 */
-		public void setOther(String other) {
-			this.other = other;
-		}
-
-		/**
-		 * @return the created_by
-		 */
-		public String getCreated_by() {
-			return created_by;
-		}
-
-		/**
-		 * @param created_by the created_by to set
-		 */
-		public void setCreated_by(String created_by) {
-			this.created_by = created_by;
-		}
-
-		/**
-		 * @return the age
-		 */
-		public String getAge() {
-			return age;
-		}
-
-		/**
-		 * @param age the age to set
-		 */
-		public void setAge(String age) {
-			this.age = age;
-		}
-
-		/**
-		 * @return the assumptions
-		 */
-		public String getAssumptions() {
-			return assumptions;
-		}
-
-		/**
-		 * @param assumptions the assumptions to set
-		 */
-		public void setAssumptions(String assumptions) {
-			this.assumptions = assumptions;
-		}
-
-		/**
-		 * @return the peer_review
-		 */
-		public String getPeer_review() {
-			return peer_review;
-		}
-
-		/**
-		 * @param peer_review the peer_review to set
-		 */
-		public void setPeer_review(String peer_review) {
-			this.peer_review = peer_review;
-		}
-
-		/**
-		 * @return the case_studies
-		 */
-		public String getCase_studies() {
-			return case_studies;
-		}
-
-		/**
-		 * @param case_studies the case_studies to set
-		 */
-		public void setCase_studies(String case_studies) {
-			this.case_studies = case_studies;
-		}
-    }
     
     /**
      * Describes the output returned by the DSS model. The output must conform
@@ -944,14 +855,14 @@ public class DSSModel {
      * @return A description of the model
      * @jsonExampleOverride "The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumulated degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. "
      */
-    public Description getDescription() {
+    public String getDescription() {
         return description;
     }
 
     /**
      * @param description the description to set
      */
-    public void setDescription(Description description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -1105,5 +1016,20 @@ public class DSSModel {
 	 */
 	public void setPlatform_validated(Boolean platform_validated) {
 		this.platform_validated = platform_validated;
+	}
+
+	/**
+	 * @return the purpose
+	 * @DocumentationExample("Estimates risk of transmission of virus by aphid vectors")
+	 */
+	public String getPurpose() {
+		return purpose;
+	}
+
+	/**
+	 * @param purpose the purpose to set
+	 */
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
 	}
 }

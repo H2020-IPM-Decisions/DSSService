@@ -104,11 +104,10 @@ public class DSSController {
 			{
     			String modelPath = basePath + ".models." + model.getId();
     			model.setName(bundle.getString(modelPath + ".name"));
-    			DSSModel.Description d = model.getDescription();
-    			d.setOther(bundle.getString(modelPath + ".description.other"));
-    			d.setCreated_by(bundle.getString(modelPath + ".description.created_by"));
-    			d.setAge(bundle.getString(modelPath + ".description.age"));
-    			d.setAssumptions(bundle.getString(modelPath + ".description.assumptions"));
+    			
+    			//DSSModel.Description d = model.getDescription();
+    			model.setDescription(bundle.getString(modelPath + ".description"));
+
     			DSSModel.Output.WarningStatusInterpretation[] wsi = model.getOutput().getWarning_status_interpretation();
     			for(int i=0; i < wsi.length;i++)
 				{
