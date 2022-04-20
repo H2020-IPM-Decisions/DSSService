@@ -20,6 +20,8 @@
 package net.ipmdecisions.dssservice.entity;
 
 import com.webcohesion.enunciate.metadata.DocumentationExample;
+
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -410,9 +412,23 @@ public class DSSModel {
         private String type, endpoint, form_method, content_type, input_schema;
         private InputSchemaCategories input_schema_categories;
         
+        /** Can be executed directly from the platform */
+        public final static String TYPE_ON_THE_FLY = "ONTHEFLY";
+        /** Link to the external provider (No integration) */
+        public final static String TYPE_LINK = "LINK";
+        
+        private final static List<String> validExecutionTypes = Arrays.asList(
+        		Execution.TYPE_ON_THE_FLY, 
+        		Execution.TYPE_LINK
+        		);
+        
+        public static Boolean isValidExecutionType(String candidate)
+        {
+        	return Execution.validExecutionTypes.contains(candidate);
+        }
+        
         /**
-         * @return The type of execution. As of now, the only valid value is
-         * ONTHEFLY, meaning that it can be run directly from the platform
+         * @return The type of execution. See Execution.TYPE_ON_THE_FLY and Execution.TYPE_LINK
          */
         @DocumentationExample("ONTHEFLY")
         public String getType() {

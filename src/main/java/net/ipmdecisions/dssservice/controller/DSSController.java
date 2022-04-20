@@ -34,6 +34,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -52,7 +55,8 @@ public class DSSController {
      * @return
      * @throws IOException
      */
-    public List<DSS> getDSSListObj(Boolean platformValidated, String language) throws IOException {
+    public List<DSS> getDSSListObj(Boolean platformValidated, String language, String executionType) throws IOException {
+    	
         List<DSS> DSSList = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
@@ -69,6 +73,16 @@ public class DSSController {
         	{
         		dss.setModels(dss.getModels().stream()
         				.filter(model->model.getPlatform_validated().equals(platformValidated))
+        				.collect(Collectors.toList()));
+        	}
+        }
+        
+        if(executionType != null && DSSModel.Execution.isValidExecutionType(executionType))
+        {
+        	for(DSS dss:DSSList)
+        	{
+        		dss.setModels(dss.getModels().stream()
+        				.filter(model->model.getExecution().getType().equals(executionType))
         				.collect(Collectors.toList()));
         	}
         }
@@ -162,7 +176,7 @@ public class DSSController {
      * @throws IOException
      */
     public List<DSS> getDSSListObj(Boolean platformValidated) throws IOException {
-    	return this.getDSSListObj(platformValidated, null);
+    	return this.getDSSListObj(platformValidated, null, null);
     }
     
     private File[] getFilesWithExtension(String path, String extension) throws IOException {
@@ -173,9 +187,9 @@ public class DSSController {
         return directory.listFiles((dir, name) -> name.endsWith(extension));
     }
     
-    public DSS getDSSById(String DSSid, Boolean platformValidated, String language) throws IOException
+    public DSS getDSSById(String DSSid, Boolean platformValidated, String language, String executionType) throws IOException
     {
-        Optional<DSS> matchingDSS = this.getDSSListObj(platformValidated, language).stream().filter(dss -> dss.getId().equals(DSSid)).findFirst();
+        Optional<DSS> matchingDSS = this.getDSSListObj(platformValidated, language, executionType).stream().filter(dss -> dss.getId().equals(DSSid)).findFirst();
         if (matchingDSS.isPresent()) {
             return matchingDSS.get();
         } else {
