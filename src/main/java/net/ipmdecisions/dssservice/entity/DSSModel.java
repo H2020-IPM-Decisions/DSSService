@@ -46,7 +46,7 @@ public class DSSModel {
     
     /**
      * Describes the output returned by the DSS model. The output must conform
-     * to the Json schema https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput
+     * to the Json schema https://platform.ipmdecisions.net/api/dss/rest/schema/modeloutput
      */
     public static class Output {
         private WarningStatusInterpretation[]  warning_status_interpretation;
@@ -517,7 +517,7 @@ public class DSSModel {
             "required": ["timeZone","timeStart","timeEnd"]
           },
           "weatherData": {
-            "$ref": "https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata"
+            "$ref": "https://platform.ipmdecisions.net/api/wx/rest/schema/weatherdata"
           }
         },
         "required": ["modelId","configParameters"]
@@ -661,7 +661,7 @@ public class DSSModel {
         private int interval;
 
         /**
-         * @return The parameter, as defined here: https://ipmdecisions.nibio.no/api/wx/rest/parameter
+         * @return The parameter, as defined here: https://platform.ipmdecisions.net/api/wx/rest/parameter
          */
         @DocumentationExample(value="1002", value2="2001")
         public int getParameter_code() {

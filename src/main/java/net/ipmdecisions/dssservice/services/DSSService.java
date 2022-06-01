@@ -621,7 +621,7 @@ public class DSSService {
       ]
     },
     "weatherData": {
-      "$ref": "https://ipmdecisions.nibio.no/api/wx/rest/schema/weatherdata"
+      "$ref": "https://platform.ipmdecisions.net/api/wx/rest/schema/weatherdata"
     }
   },
   "required": [

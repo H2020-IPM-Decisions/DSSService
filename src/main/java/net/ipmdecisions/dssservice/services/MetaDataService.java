@@ -122,7 +122,7 @@ public class MetaDataService {
             "title": "Field observations",
             "type": "array",
             "items": {
-                "$ref": "https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation"
+                "$ref": "https://platform.ipmdecisions.net/api/dss/rest/schema/fieldobservation"
             }
         },
         "fieldObservationQuantifications": {
@@ -210,7 +210,7 @@ public class MetaDataService {
     }
     
     /**
-     * Validate model output against this schema: https://ipmdecisions.nibio.no/api/dss/rest/schema/modeloutput
+     * Validate model output against this schema: https://platform.ipmdecisions.net/api/dss/rest/schema/modeloutput
      * @param modelOutputData
      * @return <code>{"isValid":"true"}</code> if the data is valid, <code>{"isValid":"false"}</code> otherwise
      * @responseExample application/json {"isValid":"true"}
@@ -235,7 +235,7 @@ public class MetaDataService {
     }
     
     /**
-     * Validate DSS YAML description file, using this Json schema: https://ipmdecisions.nibio.no/api/dss/rest/schema/dss
+     * Validate DSS YAML description file, using this Json schema: https://platform.ipmdecisions.net/api/dss/rest/schema/dss
      * Also checking that:
      * <ul>
      * <li>The EPPO codes are valid (checking against the EPPO database)</li>
