@@ -238,6 +238,7 @@ public class AdminService {
 			{
 				String modelPath = basePath + ".models." + model.getId();
 				props.setProperty(modelPath + ".name", this.makeCSVCompatibleValue(model.getName()));
+				props.setProperty(modelPath + ".purpose", model.getPurpose());
 				props.setProperty(modelPath + ".description", this.makeCSVCompatibleValue(model.getDescription()));
 				for(int i=0; i<model.getOutput().getWarning_status_interpretation().length;i++)
 				{
