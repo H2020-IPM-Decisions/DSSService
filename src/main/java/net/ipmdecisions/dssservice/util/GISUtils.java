@@ -25,34 +25,47 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 import org.wololo.geojson.GeoJSONFactory;
 import org.wololo.jts2geojson.GeoJSONWriter;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.ipmdecisions.dssservice.services.DSSService;
 
 /**
  * @copyright 2020 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 public class GISUtils {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(GISUtils.class);
+	
     private FeatureCollection allCountryBoundaries = null;
 
     public FeatureCollection getCountryBoundaries(){
         if(this.allCountryBoundaries == null)
         {
             try {
-                FileReader in = new FileReader(System.getProperty("net.ipmdecisions.dssservice.COUNTRY_BOUNDARIES_FILE"));
-                BufferedReader br = new BufferedReader(in);
-                String all = "";
-                String line;
-                while((line = br.readLine()) != null)
-                {
-                    all += line;
-                }
 
+                Path path = Paths.get(System.getProperty("net.ipmdecisions.dssservice.COUNTRY_BOUNDARIES_FILE"));
+            	Stream<String> lines = Files.lines(path);
+                String all = lines.collect(Collectors.joining("\n"));
+                lines.close();
                 this.allCountryBoundaries = (FeatureCollection) GeoJSONFactory.create(all);
             } catch (IOException | NullPointerException ex) {
                 ex.printStackTrace();
@@ -95,5 +108,17 @@ public class GISUtils {
     public void setCountryBoundaries(FeatureCollection countryBoundaries)
     {
         this.allCountryBoundaries = countryBoundaries;
+    }
+    
+    public boolean isGeoJsonStringEmpty(String geoJsonString) {
+    	try
+    	{
+	    	ObjectMapper oMapper = new ObjectMapper();
+	    	JsonNode node = oMapper.readTree(geoJsonString);
+	    	return node.isEmpty();
+    	}
+    	catch(JsonProcessingException ex) {
+    		return false;
+    	}
     }
 }
