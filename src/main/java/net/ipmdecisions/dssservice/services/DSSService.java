@@ -49,6 +49,8 @@ import net.ipmdecisions.dssservice.entity.DSSModel;
 import net.ipmdecisions.dssservice.controller.DSSController;
 import net.ipmdecisions.dssservice.util.GISUtils;
 import org.locationtech.jts.geom.Geometry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 import org.wololo.geojson.GeoJSONFactory;
@@ -65,6 +67,8 @@ import org.wololo.jts2geojson.GeoJSONWriter;
  */
 @Path("rest")
 public class DSSService {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(DSSService.class);
 	
 	// If this ever needs to be an EJB, simply annotate with @EJB
 	// and remove the init in the constructor for this class
@@ -808,7 +812,12 @@ public class DSSService {
     @Consumes("application/json")
     @Produces("application/json")
     @TypeHint(DSS[].class)
-    public Response listModelsForLocation(String geoJson) {
+    public Response listModelsForLocation(
+    		String geoJson, // Sent as POST data (in the request body)
+    		@QueryParam("platformValidated") Boolean platformValidated,
+            @QueryParam("executionType") String executionType,
+            @QueryParam("language") String language
+    		) {
         try {
             FeatureCollection clientFeatures = (FeatureCollection) GeoJSONFactory.create(geoJson);
             GeoJSONReader reader = new GeoJSONReader();
@@ -824,7 +833,9 @@ public class DSSService {
             GISUtils gisUtils = new GISUtils();
             
             List<DSS> retVal = new ArrayList<>();
-            for (DSS dss : this.DSSController.getDSSListObj(true)) {
+            LOGGER.debug("platformValidated is " + platformValidated);
+            for (DSS dss : this.DSSController.getDSSListObj(platformValidated, language, executionType)) {
+
                 List<DSSModel> matchingModels = dss.getModels().stream()
                         .filter(model -> {
                             String modelGeoJsonStr = "";
@@ -849,13 +860,13 @@ public class DSSService {
                             ))).getFeatures());
                             try
                             {
-                                if(!modelGeoJsonStr.isBlank())
+                                if(!modelGeoJsonStr.isBlank() && ! gisUtils.isGeoJsonStringEmpty(modelGeoJsonStr))
                                 {
                                     modelFeatures.addAll(Arrays.asList(
                                     		((FeatureCollection) GeoJSONFactory.create(modelGeoJsonStr)).getFeatures()
                                     		));
                                 }
-                            }catch(RuntimeException ex) {}
+                            }catch(RuntimeException ex) {LOGGER.debug(ex.getMessage());}
                             
                             // Match with all geometries in request. If found, add data source to
                             // list of matching data sources
@@ -905,7 +916,10 @@ public class DSSService {
     @TypeHint(DSS[].class)
     public Response listModelsForPoint(
             @QueryParam("latitude") Double latitude, 
-            @QueryParam("longitude") Double longitude
+            @QueryParam("longitude") Double longitude,
+            @QueryParam("executionType") String executionType,
+            @QueryParam("platformValidated") Boolean platformValidated,
+            @QueryParam("language") String language
             )
     {
 
@@ -918,7 +932,7 @@ public class DSSService {
         Map<String, Object> properties = new HashMap<>();
         features.add(new Feature(point,properties));
         GeoJSONWriter writer = new GeoJSONWriter();
-        return this.listModelsForLocation(writer.write(features).toString());
+        return this.listModelsForLocation(writer.write(features).toString(), platformValidated, executionType, language);
     }
 
     
