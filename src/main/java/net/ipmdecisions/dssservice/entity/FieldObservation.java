@@ -44,7 +44,7 @@ public class FieldObservation {
     @NotNull
     @JsonSchemaTitle("Location  of the observation. In GeoJson format.")
     @JsonSchemaInject(strings = {
-        @JsonSchemaString(path = "$ref", value="https://platform.ipmdecisions.net/schemas/geojson.json")
+        @JsonSchemaString(path = "$ref", value="https://platform.ipmdecisions.net/api/dss/rest/schema/geojson")
         }
     )
     private Object location;

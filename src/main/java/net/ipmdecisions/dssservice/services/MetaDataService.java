@@ -377,6 +377,21 @@ public class MetaDataService {
         }
     }
     
+    @GET
+    @Path("schema/geojson")
+    @GZIP
+    @Produces("application/json;charset=UTF-8")
+    public Response getGeoJsonSchema()
+    {
+        try
+        {
+            return Response.ok().entity(SchemaProvider.getGeoJsonSchema()).build();
+        }
+        catch(IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+    
     /*
     This takes some more work due to the polymorphism of the FieldObservation Object
     @POST

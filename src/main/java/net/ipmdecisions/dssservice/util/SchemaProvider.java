@@ -33,4 +33,9 @@ public class SchemaProvider {
     {
         return SchemaProvider.schemaUtils.getJsonFromInputStream(new BufferedInputStream(schemaUtils.getClass().getResourceAsStream("/schemas/DSS_schema.json")));
     }
+    
+    public static JsonNode getGeoJsonSchema() throws IOException
+    {
+        return SchemaProvider.schemaUtils.getJsonFromInputStream(new BufferedInputStream(schemaUtils.getClass().getResourceAsStream("/schemas/geojson.json")));
+    }
 }
