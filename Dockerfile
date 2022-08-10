@@ -34,6 +34,9 @@ RUN cd $HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
+    
+# Replace standalone.xml (the main WildFly config file)
+COPY ./wildfly_config/standalone.xml_${WILDFLY_VERSION} ${JBOSS_HOME}/standalone/configuration/standalone.xml  
 
 ENV APP_VERSION=BETA-SNAPSHOT
 
