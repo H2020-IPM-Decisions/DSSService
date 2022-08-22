@@ -2,8 +2,8 @@
     "$schema": "http://json-schema.org/draft-04/schema",
     "id": "https://platform.ipmdecisions.net/api/dss/rest/schema/dss",
     "type": "object",
-    "title": "The DSS schema",
-    "description": "The IPM Decisions DSS metadata. A DSS consists of one or more pest prediction models",
+    "title": "The IPM Decisions DSS metadata schema",
+    "description": "The IPM Decisions DSS metadata. It describes the structure of the DSS information used in the IPM Decisions platform. A DSS consists of one or more pest prediction models (for instance: VIPS is a DSS that has models for Potato late blight, Apple scab, Carrot rust fly etc.), in addition to contact information about the DSS provider.",
     "required": [
         "models",
         "id",
@@ -14,7 +14,167 @@
         "organization"
     ],
     "properties": {
+        "id": {
+            "id": "#/properties/id",
+            "type": "string",
+            "title": "The DSS ID",
+            "description": "A unique ID for this DSS, e.g. \"no.nibio.vips\"",
+            "default": "",
+            "examples": [
+                "no.nibio.vips"
+            ]
+        },
+        "version": {
+            "id": "#/properties/version",
+            "type": "string",
+            "title": "The DSS version",
+            "description": "The version number of the DSS. Change this when a DSS (or this metadata describing it) changes significantly, so that the platform can distinguish between different configurations.",
+            "default": "",
+            "examples": [
+                "2.0"
+            ]
+        },
+        "name": {
+            "id": "#/properties/name",
+            "type": "string",
+            "title": "The DSS name [1]",
+            "description": "The name of the DSS, e.g. \"VIPS\", \"ADAS DSS\"",
+            "default": "",
+            "examples": [
+                "VIPS"
+            ]
+        },
+        "url": {
+            "id": "#/properties/url",
+            "type": "string",
+            "title": "The DSS web address (URL)",
+            "description": "A URL to the DSS (outside of the IPM Decisions platform), e.g. \"https://www.vips-landbruk.no/\"",
+            "default": "",
+            "examples": [
+                "https://www.vips-landbruk.no/"
+            ]
+        },
+        "languages": {
+            "id": "#/properties/languages",
+            "type": "array",
+            "title": "Supported languages",
+            "description": "A list of languages that the DSS supports (translations). E.g. \"Norwegian\", \"English\"",
+            "default": [],
+            "examples": [
+                [
+                    "Norwegian",
+                    "English"
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "id": "#/properties/languages/items",
+                "type": "string"
+            }
+        },
+        "organization": {
+            "id": "#/properties/organization",
+            "type": "object",
+            "title": "DSS provider (organization) information",
+            "description": "Information about the (main) organization behind the DSS",
+            "default": {},
+            "examples": [
+                {
+                    "name": "NIBIO",
+                    "country": "Norway",
+                    "address": "Postboks 115",
+                    "postal_code": "1431",
+                    "city": "Ås",
+                    "email": "berit.nordskog@nibio.no",
+                    "url": "https://www.nibio.no/"
+                }
+            ],
+            "required": [
+                "name",
+                "country",
+                "address",
+                "postal_code",
+                "city",
+                "email",
+                "url"
+            ],
+            "properties": {
+                "name": {
+                    "id": "#/properties/organization/properties/name",
+                    "type": "string",
+                    "title": "Organization name [2]",
+                    "description": "The name of the organization, e.g. \"NIBIO\" or \"ADAS\"",
+                    "default": "",
+                    "examples": [
+                        "NIBIO"
+                    ]
+                },
+                "country": {
+                    "id": "#/properties/organization/properties/country",
+                    "type": "string",
+                    "title": "Organization country [3]",
+                    "description": "The country of the organization's main headquarters",
+                    "default": "",
+                    "examples": [
+                        "Norway"
+                    ]
+                },
+                "address": {
+                    "id": "#/properties/organization/properties/address",
+                    "type": "string",
+                    "title": "Organization street address",
+                    "description": "The address of the organization's main headquarters",
+                    "default": "",
+                    "examples": [
+                        "Høgskoleveien 7"
+                    ]
+                },
+                "postal_code": {
+                    "id": "#/properties/organization/properties/postal_code",
+                    "type": "string",
+                    "title": "Organization postal code",
+                    "description": "The postal code of the organization's main headquarters",
+                    "default": "",
+                    "examples": [
+                        "1431"
+                    ]
+                },
+                "city": {
+                    "id": "#/properties/organization/properties/city",
+                    "type": "string",
+                    "title": "Organization city",
+                    "description": "The city of the organization's main headquarters",
+                    "default": "",
+                    "examples": [
+                        "Ås"
+                    ]
+                },
+                "email": {
+                    "id": "#/properties/organization/properties/email",
+                    "type": "string",
+                    "title": "Organization email",
+                    "description": "A contact email for the organization",
+                    "default": "",
+                    "examples": [
+                        "berit.nordskog@nibio.no"
+                    ]
+                },
+                "url": {
+                    "id": "#/properties/organization/properties/url",
+                    "type": "string",
+                    "title": "Organization web address (URL)",
+                    "description": "A URL to the organization, e.g. \"https://www.nibio.no/\"",
+                    "default": "",
+                    "examples": [
+                        "https://www.nibio.no/"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
         "models": {
+            "title": "The list of DSS pest prediction models",
+            "description": "For each DSS pest prediction model (there has to be at least one), create an item in this list. E.g. VIPS is a DSS that has models for Potato late blight, Apple scab, Carrot rust fly etc. ",
             "type": "array",
             "additionalItems": false,
             "required": ["id","name","version"],
@@ -22,6 +182,8 @@
                 "type": "object",
                 "properties": {
                             "name": {
+                                "title": "Model name [4]",
+                                "description": "The name of the model, e.g. \"Carrot rust fly temperature model\"",
                                 "type": "string",
                                 "examples": [
                                     "Carrot rust fly temperature model"
@@ -29,8 +191,8 @@
                             },
                             "id": {
                                 "type": "string",
-                                "title": "The id schema",
-                                "description": "A unique ID for the model in the namespace of the DSS.",
+                                "title": "Model ID [5]",
+                                "description": "A unique ID for the model in the namespace of the DSS. E.g. \"PSILARTEMP\"",
                                 "default": "",
                                 "examples": [
                                     "PSILARTEMP"
@@ -39,8 +201,8 @@
                             "version": {
                                 "id": "#/properties/models/items/anyOf/0/properties/version",
                                 "type": "string",
-                                "title": "The version schema",
-                                "description": "Use this for uniquely versioning the model (over time)",
+                                "title": "Model version",
+                                "description": "Use this for uniquely versioning the model (over time). If the input schema has changed, the version number must be updated, so that the platform can keep track of the changes.",
                                 "default": "",
                                 "examples": [
                                     "1.0"
@@ -49,8 +211,8 @@
                             "type_of_decision": {
                                 "id": "#/properties/models/items/anyOf/0/properties/type_of_decision",
                                 "type": "string",
-                                "title": "The type_of_decision schema",
-                                "description": "Describing what kind of decision the model gives advice on",
+                                "title": "Type of decision",
+                                "description": "Describing what kind of decision the model gives advice on. E.g. \"Short-term tactical\"",
                                 "default": "",
                                 "examples": [
                                     "Short-term tactical"
@@ -59,8 +221,8 @@
                             "type_of_output": {
                                 "id": "#/properties/models/items/anyOf/0/properties/type_of_output",
                                 "type": "string",
-                                "title": "The type_of_output schema",
-                                "description": "What kind of output does the model give",
+                                "title": "The type of output",
+                                "description": "What kind of output does the model give. E.g. \"Risk indication\"",
                                 "default": "",
                                 "examples": [
                                     "Risk indication"
@@ -69,37 +231,38 @@
                             "description_URL": {
                                 "id": "#/properties/models/items/anyOf/0/properties/description_URL",
                                 "type": "string",
-                                "title": "The description_URL schema",
-                                "description": "A URL to more description about the model",
+                                "title": "Description URL",
+                                "description": "A URL (web address) to more description of the model, e.g. on the DSS provider's web site",
                                 "default": "",
                                 "examples": [
                                     "https://www.vips-landbruk.no/forecasts/models/PSILARTEMP/"
                                 ]
                             },
-                            "description": {
-                                "id": "#/properties/models/items/anyOf/0/properties/description",
-                                "type": "string",
-                                "title": "The description schema",
-                                "description": "A concise description of the model",
-                                "default": "",
-                                "examples": [
-                                    "The warning system model «Carrot rust fly temperature» is based on a Finnish temperature-based model (Markkula et al, 1998; Tiilikkala & Ojanen, 1999; Markkula et al, 2000). The model determines the start of the flight period for the 1st and 2nd generation of carrot rust fly based on accumuleted degree-days (day-degrees) over a base temperature of 5,0 °C. VIPS uses the model for the 1st generation only. \nStandard air temperature (temperature measured 2 m above ground) is used in the model. Degree-days are defined for this model as the sum of the difference between a base temperature of 5,0 °C and the mean temperature for all days with a temperature >5,0 °C, in other words (daily mean temperature – 5,0 °C) from 1 March (beginning when the ground has thawed).\n"
-                                ]
-                            },
                             "purpose": {
                                 "id": "#/properties/models/items/anyOf/0/properties/purpose",
                                 "type": "string",
-                                "title": "Purpose of the model",
+                                "title": "Purpose of the model [6]",
                                 "description": "A short description of the model",
                                 "default": "",
                                 "examples": [
                                     "Estimates risk of flight and egg laying in pome fruit"
                                 ]
                             },
+                            "description": {
+                                "id": "#/properties/models/items/anyOf/0/properties/description",
+                                "type": "string",
+                                "title": "Description [7]",
+                                "description": "A concise description of the model. For example: \n THE PEST: Leaf blotch diseases of wheat can be caused by septoria tritici blotch (Zymoseptoria tritici) and staganospora nodorum blotch (Parastagonospora nodorum), which are both  favoured by wet conditions. \nTHE DECISION: Fungicide treatments may need to be applied between stem extension and ear emergence, mainly to protect the upper leaves.  \nTHE MODEL: The humidity model estimates risk of septoria tritici blotch infections in winter wheat. Risk of attack is assumed after 20 hours with continuous wetness. A wet hour is defined as minimum 0,2 mm precipitation in an hour or minimum 85% relative humidity. \nTHE PARAMETERS: Weather data from GS 31 are used. In addition, the dates of occurrence of growth stages 31 and 32 are entered. The model calculates the expected date for the other stages. This can be adjusted manually. Adding information on fungicide spraying dates is vital for the model. After spraying, the model assumes that the crop is protected for 10 days. The thresholds for number of wet hours and relative humidity can be adjusted manually.  \nSOURCE: Created by Aahus University and SEGES and released in Denmark in 2017. Tested in Lithuania, Norway, Sweden, Finland and Denmark in 2018 and 2019. \nASSUMPTIONS: septoria tritici blotch is present and periods with high humidity create risk for a damaging epidemic",
+                                "default": "",
+                                "format": "textarea",
+                                "examples": [
+                                    "THE PEST: Leaf blotch diseases of wheat can be caused by septoria tritici blotch (Zymoseptoria tritici) and staganospora nodorum blotch (Parastagonospora nodorum), which are both  favoured by wet conditions. \nTHE DECISION: Fungicide treatments may need to be applied between stem extension and ear emergence, mainly to protect the upper leaves.  \nTHE MODEL: The humidity model estimates risk of septoria tritici blotch infections in winter wheat. Risk of attack is assumed after 20 hours with continuous wetness. A wet hour is defined as minimum 0,2 mm precipitation in an hour or minimum 85% relative humidity. \nTHE PARAMETERS: Weather data from GS 31 are used. In addition, the dates of occurrence of growth stages 31 and 32 are entered. The model calculates the expected date for the other stages. This can be adjusted manually. Adding information on fungicide spraying dates is vital for the model. After spraying, the model assumes that the crop is protected for 10 days. The thresholds for number of wet hours and relative humidity can be adjusted manually.  \nSOURCE: Created by Aahus University and SEGES and released in Denmark in 2017. Tested in Lithuania, Norway, Sweden, Finland and Denmark in 2018 and 2019. \nASSUMPTIONS: septoria tritici blotch is present and periods with high humidity create risk for a damaging epidemic"
+                                ]
+                            },
                             "citation": {
                                 "id": "#/properties/models/items/anyOf/0/properties/citation",
                                 "type": ["string","null"],
-                                "title": "The citation schema",
+                                "title": "Citations",
                                 "description": "Any literature references for the model",
                                 "default": null,
                                 "examples": [
@@ -109,8 +272,8 @@
                             "keywords": {
                                 "id": "#/properties/models/items/anyOf/0/properties/keywords",
                                 "type": ["string","null"],
-                                "title": "The keywords schema",
-                                "description": "keywords to make this model searchable",
+                                "title": "Keywords",
+                                "description": "Keywords to make this model searchable. E.g. \"foo, bar, mechanistic, regression\"",
                                 "default": "",
                                 "examples": [
                                     "foo, bar, mechanistic, regression"
@@ -119,14 +282,15 @@
                             "platform_validated":
                             {
                             	"type": "boolean",
-                            	"description":"If not true, the model is not ready to be used on the platform",
+                                "title": "Validated for use in the platform",
+                            	"description":"If not true, the model is not ready to be used on the platform. This is to be decided by IPM Decisions.",
                             	"default": false
                             },
                             "pests": {
                                 "id": "#/properties/models/items/anyOf/0/properties/pests",
                                 "type": "array",
-                                "title": "The pests schema",
-                                "description": "A list of EPPO codes for the pests predicted by this model",
+                                "title": "List of relevant pests (EPPO codes) [8]",
+                                "description": "A list of EPPO codes (https://gd.eppo.int/) for the pests predicted by this model. E.g. [\"PSILRO\"]",
                                 "default": [],
                                 "examples": [
                                     [
@@ -142,8 +306,8 @@
                             "crops": {
                                 "id": "#/properties/models/items/anyOf/0/properties/crops",
                                 "type": "array",
-                                "title": "The crops schema",
-                                "description": "A list of EPPO codes for the crops in which this model predicts pests",
+                                "title": "List of relevant crops (EPPO codes) [9]",
+                                "description": "A list of EPPO codes (https://gd.eppo.int/) for the crops in which this model predicts pests. E.g. [\"DAUCS\"]",
                                 "default": [],
                                 "examples": [
                                     [
@@ -159,8 +323,8 @@
                             "authors": {
                                 "id": "#/properties/models/items/anyOf/0/properties/authors",
                                 "type": "array",
-                                "title": "The authors schema",
-                                "description": "List of model authors",
+                                "title": "Author(s) of the model",
+                                "description": "List of model author(s)",
                                 "default": [],
                                 "examples": [
                                     [
@@ -180,14 +344,17 @@
                                             ],
                                             "properties": {
                                                 "name": {
+                                                    "title": "Author name [10]",
                                                     "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/name",
                                                     "type": "string"
                                                 },
                                                 "email": {
+                                                    "title": "Author email address",
                                                     "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/email",
                                                     "type": ["string","null"]
                                                 },
                                                 "organization": {
+                                                    "title": "Author organization [11]",
                                                     "id": "#/properties/models/items/anyOf/0/properties/authors/items/anyOf/0/properties/organization",
                                                     "type": ["string","null"]
                                                 }
@@ -198,7 +365,7 @@
                             "execution": {
                                 "id": "#/properties/models/items/anyOf/0/properties/execution",
                                 "type": "object",
-                                "title": "The execution schema",
+                                "title": "Model execution meta data",
                                 "description": "Meta data about how to execute the model",
                                 "default": {},
                                 "examples": [
@@ -229,49 +396,71 @@
                                     "type": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/type",
                                         "type": "string",
-                                        "title": "The type schema"
+                                        "title": "Type of execution",
+                                        "description": "E.g. \"ONTHEFLY\" (Executable on the fly from a web service endpoint) or \"LINK\" (The user just gets a link to the DSS)"
                                     },
                                     "endpoint": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/endpoint",
-                                        "type": "string"
+                                        "type": "string",
+                                        "title": "Web service endpoint",
+                                        "description": "Assuming that the model can be run on the fly, please state the URL to the web service endpoint"
                                     },
                                     "form_method": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/form_method",
-                                        "type": "string"
+                                        "type": "string",
+                                        "title": "Web service HTTP method",
+                                        "description": "One of the HTTP methods (GET, POST, UPDATE)"
                                     },
                                     "content_type": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/content_type",
-                                        "type": "string"
+                                        "type": "string",
+                                        "title": "MIME type",
+                                        "description": "The MIME type (https://www.iana.org/assignments/media-types/media-types.xhtml) of the data sent to the DSS web service endpoint. E.g. \"application/json\""
                                     },
                                     "input_schema_categories": {
                                     	"type": "object",
+                                        "title": "Categories of the input schema properties",
+                                        "description": "Use these categories to hint to the platform how the DSS input parameter fields should be displayed in a form. Use their full path, e.g. \"configParameters.thresholdPrecipitation\"",
                                     	"properties": {
                                     		"hidden": {
                                     			"type": "array",
-                                    			"items": {"type":"string"}
+                                    			"items": {"type":"string"},
+                                                "title": "List of hidden parameters",
+                                                "description": "These properties will not be visible to the user in the DSS input parameter form, their values will be provided by defaults"
                                     		},
                                     		"internal": {
                                     			"type": "array",
-                                    			"items": {"type":"string"}
+                                    			"items": {"type":"string"},
+                                                "title": "List of internal parameters",
+                                                "description": "Can be set by the researcher/advisor as part of the adaptation dashboard (one of the advanced dashboards in the platform), for changing the model's characteristics, e.g. for adaptation to a new region/country"
                                     		},
                                     		"triggered": {
                                     			"type": "array",
-                                    			"items": {"type":"string"}
+                                    			"items": {"type":"string"},
+                                                "title": "List of DSS triggered parameters",
+                                                "description": "Input to these properties may be triggered by the model. This can be e.g. field observations that the model requires to proceed with its calculations/recommendations, and that it doesn't get automatically by the system."
                                     		},
                                     		"user_init": {
                                     			"type": "array",
-                                    			"items": {"type":"string"}
+                                    			"items": {"type":"string"},
+                                                "title": "User initiated parameters",
+                                                "description": "This is the default. These are values that the user is able to set as part of the initial set-up. E.g. sowing date."
                                     		},
                                     		"system": {
                                     			"type": "array",
-                                    			"items": {"type":"string"}
+                                    			"items": {"type":"string"},
+                                                "title": "System parameters",
+                                                "description": "Parameters that should be set by the IPM Decisions Platform. E.g. start date and end date for running the model. "
                                     		}
                                     	}
                                     	
                                     },
                                     "input_schema": {
                                         "id": "#/properties/models/items/anyOf/0/properties/execution/properties/input_schema",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "textarea",
+                                        "title": "Input schema",
+                                        "description": "This is the schema that expresses the DSS's need for input data: Which parameters, what types (string, number, array etc) are they. Used by the platform to create a form for the user to set up the DSS for their field(s)"
                                     }
                                 },
                                 "additionalProperties": false
@@ -279,8 +468,8 @@
                             "input": {
                                 "id": "#/properties/models/items/anyOf/0/properties/input",
                                 "type": "object",
-                                "title": "The input schema",
-                                "description": "A Json schema describing the inputs and their formats",
+                                "title": "Description of input",
+                                "description": "Description of important input parameters such as weather data and field observations.",
                                 "default": {},
                                 "examples": [
                                     {
@@ -297,8 +486,8 @@
                                     "weather_parameters": {
                                         "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters",
                                         "type": ["array","null"],
-                                        "title": "The weather schema",
-                                        "description": "A list of weather parameters and their intervals (given in seconds) that are required",
+                                        "title": "Weather parameters",
+                                        "description": "A list of weather parameters and their intervals (given in seconds) that are required. A complete list can be found here: https://ipmdecisions.nibio.no/api/wx/rest/parameter",
                                         "default": [],
                                         "examples": [
                                             [
@@ -315,11 +504,15 @@
                                             "properties": {
                                                 "parameter_code": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items/anyOf/0/properties/parameter_code",
-                                                    "type": "integer"
+                                                    "type": "integer",
+                                                    "title": "Parameter code",
+                                                    "description": "See https://ipmdecisions.nibio.no/api/wx/rest/parameter for a complete list."
                                                 },
                                                 "interval": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items/anyOf/0/properties/interval",
-                                                    "type": "integer"
+                                                    "type": "integer",
+                                                    "title": "Interval (seconds)",
+                                                    "description": "3600 = Hourly weather data. 86400 = Daily weather data"
                                                 }
                                             },
                                             "additionalProperties": true
@@ -327,7 +520,7 @@
                                     },
                                     "weather_data_period_start": {
 										"type": ["array","null"],
-										"title": "The start date of gathering weather data",
+										"title": "The start date of collecting weather data",
                                         "description" : "Array of definitions with the highest priority first",
                                         "default": [{"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-01-01"}],
                                         "examples": [
@@ -340,14 +533,19 @@
                                         	"type": "object",
                                         	"required": ["determined_by","value"],
                                         	"properties": {
-                                        		"determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                        		"determined_by": {
+                                                    "type":"string",
+                                                    "title": "Weather data period start is determined by",
+                                                    "description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", 
+                                                    "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"
+                                                },
                                             	"value":{"type":"string"}
                                             }
                                         }
 									},
 									"weather_data_period_end": {
 										"type": ["array","null"],
-										"title": "The end date of gathering weather data",
+										"title": "The end date of collecting weather data",
                                         "description" : "Array of definitions with the highest priority first",
                                         "default": {"determined_by":"FIXED_DATE","value":"{CURRENT_YEAR}-12-31"},
                                         "examples": [
@@ -360,7 +558,12 @@
                                         	"type": "object",
                                         	"required": ["determined_by","value"],
                                         	"properties": {
-                                        		"determined_by": {"type":"string","description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"},
+                                        		"determined_by": {
+                                                    "type":"string",
+                                                    "title": "Weather data period end is determined by",
+                                                    "description": "Could be either FIXED DATE or INPUT_SCHEMA_PROPERTY. In the former case, the date should be of format {CURRENT_YEAR}-MM-DD (e.g. \"{CURRENT_YEAR}-01-01\"). In the latter case, it should be the path to a date property in the input_schema.", 
+                                                    "pattern": "^FIXED_DATE$|^INPUT_SCHEMA_PROPERTY$"
+                                                },
                                             	"value":{"type":"string"}
                                             }
                                         }
@@ -369,10 +572,15 @@
                                     "field_observation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/input/properties/field_observation",
                                         "type": ["object","null"],
+                                        "title": "Field observation",
+                                        "description": "What species field observations are required as input to the model",
                                         "properties": {
                                             "species": {
                                                 "type":"array",
+                                                "title": "List of species observations that can be registered",
                                                     "items": {
+                                                        "title": "Species (EPPO Code)",
+                                                        "description": "See https://gd.eppo.int/",
                                                         "type": "string"
                                                     }
                                                 }
@@ -385,7 +593,7 @@
                             "valid_spatial": {
                                 "id": "#/properties/models/items/anyOf/0/properties/valid_spatial",
                                 "type": "object",
-                                "title": "The valid_spatial schema",
+                                "title": "Spatial (geographic) validity",
                                 "description": "Where is this model confirmed to work? Describe either by a list of countries or by (a) polygon(s) in GeoJson format",
                                 "default": {},
                                 "examples": [
@@ -400,6 +608,8 @@
                                     "countries": {
                                         "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries",
                                         "type": "array",
+                                        "title": "List of countries (country codes) [12]",
+                                        "description": "ISO-3166-1 Three-letter country codes https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes",
                                         "additionalItems": false,
                                         "items": {
                                             "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items",
@@ -408,6 +618,8 @@
                                     },
                                     "geoJSON": {
                                         "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/geoJSON",
+                                        "title": "GeoJSON description of valid areas",
+                                        "description": "If you prefer specifying areas using GIS polygons, then use GeoJSON to describe it: https://geojson.org/. Draw polygons here: http://geojson.io",
                                         "type": "string"
                                     }
                                 },
@@ -416,7 +628,7 @@
                             "output": {
                                 "id": "#/properties/models/items/anyOf/0/properties/output",
                                 "type": "object",
-                                "title": "The output schema",
+                                "title": "Description of DSS model output",
                                 "description": "How to interpret and display the output from the model",
                                 "default": {},
                                 "examples": [
@@ -470,36 +682,43 @@
                                     "chart_groups"
                                 ],
                                 "properties": {
-                                	"chart_heading": {
-                                		"type": ["string","null"]
-                                	},
                                     "warning_status_interpretation": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",
                                         "type": "array",
+                                        "title": "Warning status interpretation [13]",
+                                        "description": "A list of texts helping the user to interpret the different warning statuses (green, yellow, red) in the given context. Ordering is important. The items relate to the statuses in this order: [WARNING NOT APPLICABLE, MISSING DATA, GREEN STATUS, YELLOW STATUS, RED STATUS] ",
                                         "additionalItems": false,
                                         "minItems": 5,
                                         "maxItems": 5,
                                         "items": {
                                         	"properties": {
-                                        		"explanation": {"type":"string"},
-                                        		"recommended_action": {"type":"string"}
+                                        		"explanation": {"type":"string", "title": "Explanation"},
+                                        		"recommended_action": {"type":"string", "title": "Recommended action"}
                                         	}
                                         }
                                     },
+                                    "chart_heading": {
+                                        "title": "Chart heading",
+                                		"type": ["string","null"]
+                                	},
                                     "chart_groups": {
                                     	"type": "array",
+                                        "title": "Chart groups",
+                                        "description": "For each chart that you want to display, group the parameters in this section",
                                     	"additionalItems": false,
                                     	"items": {
                                     		"properties": {
-                                    			"id": {"type":"string"},
-                                    			"title": {"type":"string"},
-                                    			"result_parameter_ids": {"type":"array","items":{"type":"string"}}
+                                    			"id": {"type":"string","title": "Chart group ID"},
+                                    			"title": {"type":"string", "title": "Chart group title"},
+                                    			"result_parameter_ids": {"type":"array","title": "Result parameter IDs","description": "Use the result parameter IDs specified in the List of result parameters elsewhere (probably below) in the schema","items":{"type":"string"}}
                                     		}
                                     	}
                                     },
                                     "result_parameters": {
                                         "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters",
                                         "type": "array",
+                                        "title": "List of result parameters",
+                                        "description": "The model outputs are a timeseries with key-value pairs. These are unique for each DSS model. Specify here, please.",
                                         "additionalItems": false,
                                         "items": {
                                             "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items",
@@ -511,23 +730,30 @@
                                             "properties": {
                                                 "id": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/id",
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "title": "Result parameter ID",
+                                                    "description": "E.g. \"TMDD5C\""
                                                 },
                                                 "title": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/title",
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "title": "Result parameter name",
+                                                    "description": "E.g. \"Accumulated day degrees\""
                                                 },
                                                 "description": {
                                                     "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/description",
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "title": "Result parameter description",
+                                                    "description": "E.g. \"The accumulated day degrees with a base temperature of 5 degrees celcius\""
                                                 },
                                                 "chart_info": {
                                                 	"id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items/anyOf/0/properties/chart_info",
+                                                    "title": "Information for chart rendering",
                                                 	"properties": {
-                                                		"default_visible": {"type": "boolean"},
-                                                		"unit": {"type": "string"},
-                                                		"chart_type": {"type": "string", "enum": ["line","spline","area","areaspline","column","scatter"]},
-                                                		"color": {"type": "string"}
+                                                		"default_visible": {"type": "boolean", "title": "Default visible?"},
+                                                		"unit": {"type": "string", "title": "Measuring unit", "description": "E.g. &deg;C"},
+                                                		"chart_type": {"type": "string", "title": "Chart type","default": "line", "description": "See https://www.chartjs.org/docs/latest/charts/ for examples of chart types", "enum": ["bar","bubble","doughnut","pie","line","polarArea","radar","scatter"]},
+                                                		"color": {"type": "string", "title": "Color (hex code)", "description": "E.g. \"#ffff00\" Use a color picker online: https://www.w3schools.com/colors/colors_picker.asp"}
                                                 	},
                                                 	"required": ["default_visible","unit","chart_type","color"]
                                                 }
@@ -543,164 +769,6 @@
                     
                 
             }
-        },
-        "id": {
-            "id": "#/properties/id",
-            "type": "string",
-            "title": "The id schema",
-            "description": "A unique ID for this DSS",
-            "default": "",
-            "examples": [
-                "no.nibio.vips"
-            ]
-        },
-        "version": {
-            "id": "#/properties/version",
-            "type": "string",
-            "title": "The version schema",
-            "description": "The version of the DSS",
-            "default": "",
-            "examples": [
-                "2.0"
-            ]
-        },
-        "name": {
-            "id": "#/properties/name",
-            "type": "string",
-            "title": "The name schema",
-            "description": "The name of the DSS",
-            "default": "",
-            "examples": [
-                "VIPS"
-            ]
-        },
-        "url": {
-            "id": "#/properties/url",
-            "type": "string",
-            "title": "The url schema",
-            "description": "A URL to the DSS (outside of the IPM Decisions platform)",
-            "default": "",
-            "examples": [
-                "https://www.vips-landbruk.no/"
-            ]
-        },
-        "languages": {
-            "id": "#/properties/languages",
-            "type": "array",
-            "title": "The languages schema",
-            "description": "A list of languages that the DSS supports",
-            "default": [],
-            "examples": [
-                [
-                    "Norwegian",
-                    "English"
-                ]
-            ],
-            "additionalItems": true,
-            "items": {
-                "id": "#/properties/languages/items",
-                "type": "string"
-            }
-        },
-        "organization": {
-            "id": "#/properties/organization",
-            "type": "object",
-            "title": "The organization schema",
-            "description": "Information about the (main) organization behind the DSS",
-            "default": {},
-            "examples": [
-                {
-                    "name": "NIBIO",
-                    "country": "Norway",
-                    "address": "Postboks 115",
-                    "postal_code": "1431",
-                    "city": "Ås",
-                    "email": "berit.nordskog@nibio.no",
-                    "url": "https://www.nibio.no/"
-                }
-            ],
-            "required": [
-                "name",
-                "country",
-                "address",
-                "postal_code",
-                "city",
-                "email",
-                "url"
-            ],
-            "properties": {
-                "name": {
-                    "id": "#/properties/organization/properties/name",
-                    "type": "string",
-                    "title": "The name schema",
-                    "description": "The name of the organization",
-                    "default": "",
-                    "examples": [
-                        "NIBIO"
-                    ]
-                },
-                "country": {
-                    "id": "#/properties/organization/properties/country",
-                    "type": "string",
-                    "title": "The country schema",
-                    "description": "The country of the organization's main headquarters",
-                    "default": "",
-                    "examples": [
-                        "Norway"
-                    ]
-                },
-                "address": {
-                    "id": "#/properties/organization/properties/address",
-                    "type": "string",
-                    "title": "The address schema",
-                    "description": "The address of the organization's main headquarters",
-                    "default": "",
-                    "examples": [
-                        "Postboks 115"
-                    ]
-                },
-                "postal_code": {
-                    "id": "#/properties/organization/properties/postal_code",
-                    "type": "string",
-                    "title": "The postal_code schema",
-                    "description": "The postal code of the organization's main headquarters",
-                    "default": "",
-                    "examples": [
-                        "1431"
-                    ]
-                },
-                "city": {
-                    "id": "#/properties/organization/properties/city",
-                    "type": "string",
-                    "title": "The city schema",
-                    "description": "The city of the organization's main headquarters",
-                    "default": "",
-                    "examples": [
-                        "Ås"
-                    ]
-                },
-                "email": {
-                    "id": "#/properties/organization/properties/email",
-                    "type": "string",
-                    "title": "The email schema",
-                    "description": "A contact email for the organization",
-                    "default": "",
-                    "examples": [
-                        "berit.nordskog@nibio.no"
-                    ]
-                },
-                "url": {
-                    "id": "#/properties/organization/properties/url",
-                    "type": "string",
-                    "title": "The url schema",
-                    "description": "A URL to the organization",
-                    "default": "",
-                    "examples": [
-                        "https://www.nibio.no/"
-                    ]
-                }
-            },
-            "additionalProperties": false
         }
     },
     "additionalProperties": false
