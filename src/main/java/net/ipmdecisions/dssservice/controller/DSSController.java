@@ -121,6 +121,8 @@ public class DSSController {
     			
     			//DSSModel.Description d = model.getDescription();
     			model.setDescription(bundle.getString(modelPath + ".description"));
+    			
+    			model.setPurpose(bundle.getString(modelPath + ".purpose"));
 
     			DSSModel.Output.WarningStatusInterpretation[] wsi = model.getOutput().getWarning_status_interpretation();
     			for(int i=0; i < wsi.length;i++)
