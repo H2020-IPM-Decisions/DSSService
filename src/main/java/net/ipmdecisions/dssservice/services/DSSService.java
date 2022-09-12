@@ -24,29 +24,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
+import net.ipmdecisions.dssservice.controller.DSSController;
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
-import net.ipmdecisions.dssservice.controller.DSSController;
 import net.ipmdecisions.dssservice.util.GISUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
@@ -58,21 +38,26 @@ import org.wololo.geojson.Point;
 import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * Web services for listing and querying the DSS Catalogue.
  * For a more thorough description of the concepts, please read <a href="https://github.com/H2020-IPM-Decisions/DSSService/blob/develop/docs/index.md" target="new">the user guide</a>
- *
- * @copyright 2022 <a href="http://www.nibio.no/">NIBIO</a>
+ * {@code @copyright} 2022 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 @Path("rest")
 public class DSSService {
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(DSSService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DSSService.class);
 	
 	// If this ever needs to be an EJB, simply annotate with @EJB
 	// and remove the init in the constructor for this class
-	private DSSController DSSController;
+	private final DSSController DSSController;
 	
 	public DSSService() {
 		this.DSSController = new DSSController();
@@ -80,7 +65,7 @@ public class DSSService {
 
     /**
      * List all DSSs and models available in the platform
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      *
      * @return a list of all DSSs and models available in the platform, regardless of validation
@@ -104,9 +89,9 @@ public class DSSService {
     
     /**
      * List all DSSs and models available in the platform
-     * 
+     *
      * @param platformValidated true or false
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      *
      * @return a list of all DSSs and models available in the platform that are either validated or not
@@ -132,11 +117,10 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given crop
      *
-     * @param cropCode EPPO code for the crop
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param cropCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the crop
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
-     * 
+     *
      * @pathExample /rest/dss/crop/SOLTU
      * @return a list of ALL models that are applicable to the given crop, regardless of validation status
      */
@@ -155,12 +139,11 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given crop
      *
-     * @param cropCode EPPO code for the crop
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param cropCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the crop
      * @param platformValidated true or false
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
-     * 
+     *
      * @pathExample /rest/dss/crop/SOLTU/platform_validated/true
      * @return a list of models that are applicable to the given crop, filtered on validation status
      */
@@ -196,11 +179,10 @@ public class DSSService {
     /**
      * Returns a list of DSS models that are applicable to the given crops
      *
-     * @param cropCodes comma separated EPPO codes for the crops
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param cropCodesStr comma separated <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a> for the crops
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
-     * 
+     *
      * @pathExample /rest/dss/crops/SOLTU,DAUCS
      * @return a list of models that are applicable to the given crops, regardless of validation status
      */
@@ -219,12 +201,11 @@ public class DSSService {
     /**
      * Returns a list of DSS models that are applicable to the given crops
      *
-     * @param cropCodes comma separated EPPO codes for the crops
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param cropCodesStr comma separated <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a> for the crops
      * @param platformValidated true or false
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
-     * 
+     *
      * @pathExample /rest/dss/crops/SOLTU,DAUCS/platform_validated/true
      * @return a list of models that are applicable to the given crops filtered by the models' validation status
      */
@@ -273,11 +254,10 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given pest
      *
-     * @param pestCode EPPO code for the pest
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param pestCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the pest
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
-     * 
+     *
      * @pathExample /rest/dss/pest/PSILRO
      * @return a list of models that are applicable to the given pest, regardless of validation status
      */
@@ -296,12 +276,11 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given pest
      *
-     * @param pestCode EPPO code for the pest
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param pestCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the pest
      * @param platformValidated true or false
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
-     * 
+     *
      * @pathExample /rest/dss/pest/PSILRO/platform_validated/true
      * @return a list of models that are applicable to the given pest filtered by their validation status
      */
@@ -336,12 +315,11 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given crop-pest combination
      *
-     * @param cropCode EPPO code for the crop
-     * @param pestCode EPPO code for the pest
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param cropCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the crop
+     * @param pestCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the pest
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
-     * 
+     *
      * @pathExample /rest/dss/crop/DAUCS/pest/PSILRO
      * @return a list of models that are applicable to the given crop-pest combination, regardless of validation status
      */
@@ -361,11 +339,10 @@ public class DSSService {
     /**
      * Returns a list of models that are applicable to the given crop-pest combination
      *
-     * @param cropCode EPPO code for the crop
-     * @param pestCode EPPO code for the pest
-     * https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes
+     * @param cropCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the crop
+     * @param pestCode <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO code</a> for the pest
      * @param platformValidated true or false
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * 
      * @pathExample /rest/dss/crop/DAUCS/pest/PSILRO/platform_validated/true
@@ -402,9 +379,8 @@ public class DSSService {
 
     /**
      *
-     * @return A list of EPPO codes
-     * (https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes) for all pests
-     * that the DSS models in the platform deals with in some way.
+     * @return A list of <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a>
+     * for all pests that the DSS models in the platform deal with in some way.
      * @responseExample application/json ["PSILRO","PHYTIN","SEPTAP"]
      */
     @GET
@@ -427,8 +403,7 @@ public class DSSService {
     }
 
     /**
-     * @return A list of EPPO codes
-     * (https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes) for all crops
+     * @return A list of <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a> for all crops
      * that the DSS models in the platform
      *
      * @responseExample application/json ["DAUCS","SOLTU","APUGD"]
@@ -455,7 +430,7 @@ public class DSSService {
      * Get all information about a specific DSS
      *
      * @param DSSId the id of the DSS
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * 
      * @return the requested DSS and its models, regardless of validation
@@ -477,7 +452,7 @@ public class DSSService {
      * Get all information about a specific DSS
      *
      * @param DSSId the id of the DSS
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * @param platformValidated true or false
      * @return the requested DSS and its models, filtered by their validation status
@@ -510,7 +485,7 @@ public class DSSService {
      * Get all information about a specific DSS in YAML format
      *
      * @param DSSId the id of the DSS
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * 
      * @return the requested DSS
@@ -544,7 +519,7 @@ public class DSSService {
      *
      * @param DSSId The id of the DSS containing the model
      * @param ModelId The id of the DSS model requested
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * 
      * @return The requested DSS model
@@ -583,7 +558,7 @@ public class DSSService {
      *
      * @param DSSId The id of the DSS containing the model
      * @param ModelId The id of the DSS model requested
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * 
      * @return The input Json schema for the DSS model
@@ -666,7 +641,7 @@ public class DSSService {
      * Provide Json schema only for the parts that should be viewed in the platform's HTML UI form
      * @param DSSId The id of the DSS containing the model
      * @param ModelId The id of the DSS model requested
-     * @param language two-letter code for language (ISO-639-1: https://www.loc.gov/standards/iso639-2/php/code_list.php)
+     * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * 
      * @return The input Json schema for the DSS model
@@ -741,7 +716,7 @@ public class DSSService {
 	                		
 	                		//System.out.println("pathToHideThisParent=" + pathToHideThisParent);
 	                		ObjectNode parent = (ObjectNode) inputSchema.at(pathToHideThisParent);
-	                		JsonNode removedNode = parent.remove(hideThisPath[hideThisPath.length-1]);
+	                		parent.remove(hideThisPath[hideThisPath.length-1]);
 	                		// For getting the "required" attribute
 	                		
 	                		// Remove any "required" statements for hidden fields
@@ -786,25 +761,25 @@ public class DSSService {
      * Example geoJson input
      * <pre>
      * {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-              "type": "Point",
-              "coordinates": [
-                12.01629638671875,
-                59.678835236960765
-              ]
-            }
-          }
-        ]
-      }
-     * 
+     "type": "FeatureCollection",
+     "features": [
+     {
+     "type": "Feature",
+     "properties": {},
+     "geometry": {
+     "type": "Point",
+     "coordinates": [
+     12.01629638671875,
+     59.678835236960765
+     ]
+     }
+     }
+     ]
+     }
+     *
      * </pre>
      *
-     * @param geoJson valid GeoJSON https://geojson.org/
+     * @param geoJson valid <a href="https://geojson.org/">GeoJSON</a>
      * @return A list of all the matching DSS models
      */
     @POST
@@ -871,11 +846,9 @@ public class DSSService {
                             // Match with all geometries in request. If found, add data source to
                             // list of matching data sources
                             List<Geometry> modelGeometries = modelFeatures.stream()
-                                    .map(f -> {
-                                        return reader.read(f.getGeometry());
-                                    })
+                                    .map(f -> reader.read(f.getGeometry()))
                                     .filter(modelGeometry -> {
-                                        Boolean matching = false;
+                                        boolean matching = false;
                                         for (Geometry clientGeometry : clientGeometries) {
                                             if (modelGeometry.intersects(clientGeometry)) {
                                                 matching = true;
