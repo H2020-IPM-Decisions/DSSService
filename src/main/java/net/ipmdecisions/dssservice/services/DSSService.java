@@ -935,5 +935,36 @@ public class DSSService {
         return this.listModelsForLocation(writer.write(features).toString(), platformValidated, executionType, language);
     }
 
+    /**
+     * Lists all the countries for which DSS models exist
+     * @param platformValidated true or false (default). If true, return information only for
+     *                          DSS models that have platform_validated set to true in the metadata
+     * @return
+     */
+    @GET
+    @Path("countries")
+    @Produces("application/json")
+    public Response getDSSCountries(
+            @QueryParam("platformValidated") Boolean platformValidated
+    )
+    {
+        try {
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(platformValidated);
+            Set<String> countries = new HashSet<>();
+            for(DSS dss:allDSSs)
+            {
+                for(DSSModel dssModel:dss.getModels())
+                {
+                    if(dssModel.getValid_spatial() != null && dssModel.getValid_spatial().getCountries() != null)
+                    {
+                        countries.addAll(Arrays.asList(dssModel.getValid_spatial().getCountries()));
+                    }
+                }
+            }
+            return Response.ok().entity(countries).build();
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
     
 }
