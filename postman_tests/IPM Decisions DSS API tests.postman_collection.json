@@ -698,7 +698,7 @@
 					"response": []
 				},
 				{
-					"name": "Get one DSS as Json translated to Danish",
+					"name": "Get VIPS DSS as Json translated to Danish",
 					"event": [
 						{
 							"listen": "test",
@@ -734,6 +734,49 @@
 								{
 									"key": "language",
 									"value": "dk"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ADAS DSS as Json translated to Dutch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and the correct id is present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(\"adas.dss\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/adas.dss?language=nl",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"adas.dss"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "nl"
 								}
 							]
 						}
