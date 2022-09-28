@@ -1282,6 +1282,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get DSS summary as CSV",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/summary/csv?language=en",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"summary",
+								"csv"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

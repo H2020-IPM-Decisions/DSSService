@@ -86,6 +86,69 @@ public class DSSService {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }
+
+    /**
+     * Outputs a
+     *  @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
+     *      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
+     * @return CSV summary of the models
+     *
+     * @responseExample
+     * Source name,DSS Model name, Crop(s), Pest(s), Purpose
+     * IPM Decisions,Hutton Criteria Late Blight Model,Solanum tuberosum,Phytophthora infestans,Estimates risk of late blight
+     * VIPS,Cabbage fly flight model (Scandinavia),Brassica sp.,Delia radicum,Estimates risk of flight and egg laying in crop
+     */
+    @GET
+    @Path("dss/summary/csv")
+    @Produces("text/csv;charset=UTF-8")
+    @TypeHint(DSS[].class)
+    public Response listDSSsSummaryCSV(
+            @QueryParam("language") String language,
+            @QueryParam("executionType") String executionType
+    ) {
+        try {
+            List<DSS> allDSSs = this.DSSController.getDSSListObj(null,language, executionType);
+            String output = "Source name,DSS Model name, Crop(s), Pest(s), Purpose\n";
+
+            // Collecting all EPPO Codes in one go
+            Set<String> allEPPOCodesInDSSs = new HashSet<>();
+            for(DSS dss:allDSSs) {
+                String name = dss.getName();
+                for (DSSModel model : dss.getModels()) {
+                    if(model.getCrops() != null) {
+                        allEPPOCodesInDSSs.addAll(model.getCrops());
+                    }
+                    if(model.getPests() != null) {
+                        allEPPOCodesInDSSs.addAll(model.getPests());
+                    }
+                }
+            }
+
+            Map<String,String> allEPPOCodesMapped = this.DSSController.getOrganismNamesFromEPPO(new ArrayList<>(allEPPOCodesInDSSs));
+
+            for(DSS dss:allDSSs){
+                String name = dss.getName();
+                for(DSSModel model:dss.getModels())
+                {
+                    String cropList = model.getCrops() != null ? String.join("/", model.getCrops().stream()
+                            .map(eppoCode->allEPPOCodesMapped.get(eppoCode))
+                            .collect(Collectors.toList()))
+                            : "";
+                    String pestList = model.getPests() != null ? String.join("/", model.getPests().stream()
+                            .map(eppoCode->allEPPOCodesMapped.get(eppoCode))
+                            .collect(Collectors.toList()))
+                            : "";
+
+                    output += name + "," + model.getName() + "," +
+                            cropList + "," + pestList + "," +
+                            model.getPurpose() + "\n";
+                }
+            }
+            return Response.ok().entity(output).build();
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
     
     /**
      * List all DSSs and models available in the platform

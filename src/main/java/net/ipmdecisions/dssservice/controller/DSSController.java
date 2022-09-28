@@ -23,28 +23,24 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.github.wnameless.json.flattener.JsonFlattener;
 import com.github.wnameless.json.unflattener.JsonUnflattener;
 
+import net.ipmdecisions.dssservice.clients.EPPOClient;
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 
 public class DSSController {
 	
@@ -223,4 +219,34 @@ public class DSSController {
     {
     	return dss.getId().replace(".", "_") + "_" + dss.getVersion().replace(".", "_");
     }
+
+	public Map<String, String> getOrganismNamesFromEPPO(List<String> EPPOCodes)
+	{
+		String authtoken = System.getProperty("net.ipmdecisions.dssservice.EPPO_AUTHTOKEN");
+
+
+		Response response = ((ResteasyClient) ClientBuilder.newClient())
+				.target(EPPOClient.SERVICE_PATH)
+				.proxy(EPPOClient.class)
+				.getPrefNamesFromCodes(
+						authtoken,
+						String.join("|", EPPOCodes)
+				);
+
+		List<String> EPPOResponse = Arrays.asList(response.readEntity(JsonNode.class).get("response").asText().split("\\|"));
+		Map<String, String> retVal = new HashMap<>();
+
+		for(String mapping:EPPOResponse)
+		{
+			String[] mapArr = mapping.split(";");
+			retVal.put(mapArr[0],mapArr[1]);
+		}
+
+		return retVal;
+		/*
+		if(response.getStatus() < 300)
+		{
+			// TODO: Feedback
+		}*/
+	}
 }
