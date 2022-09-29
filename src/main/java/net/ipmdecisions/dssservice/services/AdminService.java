@@ -251,12 +251,18 @@ public class AdminService {
 				props.setProperty(modelPath + ".output.chart_heading", this.makeCSVCompatibleValue(model.getOutput().getChart_heading()));
 				for(DSSModel.Output.ChartGroup cg : model.getOutput().getChart_groups())
 				{
-					props.setProperty(modelPath + ".output.chart_groups." + cg.getId() + ".title", this.makeCSVCompatibleValue(cg.getTitle()));
+					if(cg.getId() != null && !cg.getId().isBlank())
+					{
+						props.setProperty(modelPath + ".output.chart_groups." + cg.getId() + ".title", this.makeCSVCompatibleValue(cg.getTitle()));
+					}
+
 				}
 				for(DSSModel.Output.ResultParameter rp : model.getOutput().getResult_parameters())
 				{
-					props.setProperty(modelPath + ".output.result_parameters." + rp.getId() + ".title", this.makeCSVCompatibleValue(rp.getTitle()));
-					props.setProperty(modelPath + ".output.result_parameters." + rp.getId() + ".description", this.makeCSVCompatibleValue(rp.getDescription()));
+					if(rp.getId() != null && !rp.getId().isBlank()) {
+						props.setProperty(modelPath + ".output.result_parameters." + rp.getId() + ".title", this.makeCSVCompatibleValue(rp.getTitle()));
+						props.setProperty(modelPath + ".output.result_parameters." + rp.getId() + ".description", this.makeCSVCompatibleValue(rp.getDescription()));
+					}
 				}
 				
 				// Finding and adding translatable items in the input_schema
