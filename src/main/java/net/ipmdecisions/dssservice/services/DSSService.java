@@ -41,6 +41,9 @@ import org.wololo.jts2geojson.GeoJSONWriter;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1002,5 +1005,34 @@ public class DSSService {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }
-    
+
+    /**
+     *
+     * @param logoFileName The file name of the logo.
+     * @return
+     */
+    @GET
+    @Path("dss/logo/{logoFileName}")
+    public Response getDSSLogo(@PathParam("logoFileName") String logoFileName){
+        try
+        {
+            InputStream logo = this.DSSController.getLogo(logoFileName);
+            if(logo != null) {
+                Response.ResponseBuilder response = Response.ok().entity(logo);
+                // Check file ending to decide image mime type
+                String mimeType = "image/jpg";
+                FileNameMap fileNameMap = URLConnection.getFileNameMap();
+                mimeType = fileNameMap.getContentTypeFor(logoFileName);
+                response.header("Content-Type", mimeType);
+                return response.build();
+            }
+            else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
+        catch(NullPointerException | IllegalArgumentException ex)
+        {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 }

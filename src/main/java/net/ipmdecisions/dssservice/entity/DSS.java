@@ -32,10 +32,16 @@ import java.util.List;
  */
 public class DSS {
     private List<DSSModel> models;
-    private String id, version, name,url;
+    private String id;
+    private String version;
+    private String name;
+    private String url;
+    private String logo_url;
     private List<String> languages;
     private Organization organization;
-    
+
+
+
     /**
      * A data class for identifying the Organization behind/responsible for the DSS
      */
@@ -223,6 +229,22 @@ public class DSS {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     *
+     * @return A URL to the DSS provider's logo. It might be e.g. at the DSS provider's web site or it might be located in the DSS API. In the latter case, it will only have a relative path, e.g.  '/dss/logo/VIPSLogo.png'
+     */
+    public String getLogo_url() {
+        return logo_url;
+    }
+
+    /**
+     * A URL to the DSS provider's logo. It might be e.g. at the DSS provider's web site or it might be located in the DSS API. In the latter case, it will only have a relative path, e.g.  '/dss/logo/VIPSLogo.png'
+     * @param logo_url URL to the logo for this DSS.
+     */
+    public void setLogo_url(String logo_url) {
+        this.logo_url = logo_url;
     }
 
     /**

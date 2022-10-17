@@ -21,8 +21,11 @@ package net.ipmdecisions.dssservice.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -248,5 +251,15 @@ public class DSSController {
 		{
 			// TODO: Feedback
 		}*/
+	}
+
+	public InputStream getLogo(String logoFileName) throws IllegalArgumentException
+	{
+		Path p = Paths.get(logoFileName);
+		if(!p.toString().equals(logoFileName))
+		{
+			throw new IllegalArgumentException(logoFileName + " is not a legal filename");
+		}
+		return this.getClass().getResourceAsStream("/logos/" + logoFileName);
 	}
 }

@@ -1308,6 +1308,48 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get DSS logo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Content-Type is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"pm.test(\"Content-type is image/png\", function(){",
+									"    pm.expect(pm.response.headers.get(\"Content-type\")).to.equal(\"image/png\");",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/dss/logo/VIPSLogo.png",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"dss",
+								"logo",
+								"VIPSLogo.png"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
