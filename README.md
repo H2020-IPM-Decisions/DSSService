@@ -4,7 +4,7 @@
 This service is part of the <a href="https://ipmdecisions.net/" target="new">Horizon 2020 IPM Decisions project</a>.
 The service provides the system with sufficient information for a client to be able to connect to and get information from any registered DSS (Decision Support System)
 
-The source code for this service can be found here: <a href="https://github.com/H2020-IPM-Decisions/WeatherService" target="new">https://github.com/H2020-IPM-Decisions/WeatherService</a>
+The source code for this service can be found here: <a href="https://github.com/H2020-IPM-Decisions/DSSService" target="new">https://github.com/H2020-IPM-Decisions/DSSService</a>
 
 ## 1. A catalogue of DSSs and their models available to the platform
 The catalogue is a list of DSSs available to the platform. Each DSS may contain one or more models. So even we are describing a standalone model, 
