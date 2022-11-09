@@ -288,6 +288,11 @@ public class MetaDataService {
             Set<String> EPPOCodes = new HashSet<>();
             for(DSSModel model:dss.getModels())
             {
+                // If the DSS model is a LINK, the input schema is irrelevant
+                if(model.getExecution().getType().equals(DSSModel.Execution.TYPE_LINK))
+                {
+                    continue;
+                }
             	String input_schema = model.getExecution().getInput_schema();
             	try
             	{
