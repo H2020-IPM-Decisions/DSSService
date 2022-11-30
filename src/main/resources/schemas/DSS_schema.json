@@ -10,6 +10,7 @@
         "version",
         "name",
         "url",
+        "logo_url",
         "languages",
         "organization"
     ],
@@ -83,6 +84,7 @@
             ],
             "additionalItems": true,
             "items": {
+                "title": "Language",
                 "id": "#/properties/languages/items",
                 "type": "string"
             }
@@ -193,10 +195,13 @@
             "title": "The list of DSS pest prediction models",
             "description": "For each DSS pest prediction model (there has to be at least one), create an item in this list. E.g. VIPS is a DSS that has models for Potato late blight, Apple scab, Carrot rust fly etc. ",
             "type": "array",
+            "format": "tabs",
             "additionalItems": false,
             "required": ["id","name","version"],
             "items": {
                 "type": "object",
+                "title": "DSS Model",
+                "headerTemplate": "{{ self.name }}",
                 "properties": {
                     "name": {
                         "title": "Model name [4]",
@@ -209,9 +214,9 @@
                     "id": {
                         "type": "string",
                         "title": "Model ID [5]",
-                        "description": "A unique ID for the model in the namespace of the DSS. E.g. \"PSILARTEMP\". No spaces allowed.",
+                        "description": "A unique ID for the model in the namespace of the DSS. E.g. \"PSILARTEMP\". One word only, no spaces allowed.",
                         "default": "",
-                        "pattern": "^[^\\s]*$",
+                        "pattern": "^[a-zA-Z0-9_]+$",
                         "examples": [
                             "PSILARTEMP"
                         ]
@@ -320,7 +325,8 @@
                         "additionalItems": false,
                         "items": {
                             "id": "#/properties/models/items/anyOf/0/properties/pests/items",
-                            "type" : "string",
+                            "type": "string",
+                            "title": "Pest",
                             "pattern": "^[^\\s]*$"
                         }
                     },
@@ -339,6 +345,7 @@
                         "items": {
                             "id": "#/properties/models/items/anyOf/0/properties/crops/items",
                             "type" : "string",
+                            "title": "Crop",
                             "pattern": "^[^\\s]*$"
                         }
                     },
@@ -360,6 +367,7 @@
                         "additionalItems": false,
                         "items": {
                             "id": "#/properties/models/items/anyOf/0/properties/authors/items",
+                            "title": "Author",
                             "type": "object",
                             "required": [
                                 "name"
@@ -447,31 +455,31 @@
                                 "properties": {
                                     "hidden": {
                                         "type": "array",
-                                        "items": {"type":"string"},
+                                        "items": {"type":"string", "title": "Hidden parameter"},
                                         "title": "List of hidden parameters",
                                         "description": "These properties will not be visible to the user in the DSS input parameter form, their values will be provided by defaults"
                                     },
                                     "internal": {
                                         "type": "array",
-                                        "items": {"type":"string"},
+                                        "items": {"type":"string", "title": "Internal parameter"},
                                         "title": "List of internal parameters",
                                         "description": "Can be set by the researcher/advisor as part of the adaptation dashboard (one of the advanced dashboards in the platform), for changing the model's characteristics, e.g. for adaptation to a new region/country"
                                     },
                                     "triggered": {
                                         "type": "array",
-                                        "items": {"type":"string"},
+                                        "items": {"type":"string", "title": "Triggered parameter"},
                                         "title": "List of DSS triggered parameters",
                                         "description": "Input to these properties may be triggered by the model. This can be e.g. field observations that the model requires to proceed with its calculations/recommendations, and that it doesn't get automatically by the system."
                                     },
                                     "user_init": {
                                         "type": "array",
-                                        "items": {"type":"string"},
+                                        "items": {"type":"string", "title": "User initiated parameter"},
                                         "title": "User initiated parameters",
                                         "description": "This is the default. These are values that the user is able to set as part of the initial set-up. E.g. sowing date."
                                     },
                                     "system": {
                                         "type": "array",
-                                        "items": {"type":"string"},
+                                        "items": {"type":"string", "title": "System parameter"},
                                         "title": "System parameters",
                                         "description": "Parameters that should be set by the IPM Decisions Platform. E.g. start date and end date for running the model. "
                                     }
@@ -525,6 +533,7 @@
                                 "items": {
                                     "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items",
                                     "type": "object",
+                                    "title": "Weather parameter",
                                     "properties": {
                                         "parameter_code": {
                                             "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items/anyOf/0/properties/parameter_code",
@@ -555,6 +564,7 @@
                                 ],
                                 "items": {
                                     "type": "object",
+                                    "title": "Weather data period start definition",
                                     "required": ["determined_by","value"],
                                     "properties": {
                                         "determined_by": {
@@ -580,6 +590,7 @@
                                 ],
                                 "items": {
                                     "type": "object",
+                                    "title": "Weather data period end definition",
                                     "required": ["determined_by","value"],
                                     "properties": {
                                         "determined_by": {
@@ -637,6 +648,7 @@
                                 "additionalItems": false,
                                 "items": {
                                     "id": "#/properties/models/items/anyOf/0/properties/valid_spatial/properties/countries/items",
+                                    "title": "Country",
                                     "type": "string"
                                 }
                             },
@@ -709,14 +721,15 @@
                                 "id": "#/properties/models/items/anyOf/0/properties/output/properties/warning_status_interpretation",
                                 "type": "array",
                                 "title": "Warning status interpretation [13]",
-                                "description": "A list of texts helping the user to interpret the different warning statuses (green, yellow, red) in the given context. Ordering is important. Please provide text as follows: Item 1: WARNING NOT APPLICABLE; Item 2:  MISSING DATA; Item 3: GREEN STATUS; Item 4: YELLOW STATUS; Item 5: RED STATUS. If supporting text is not relevant for a given status for this model, put ‘NA’ against this item.",
+                                "description": "A list of texts helping the user to interpret the different warning statuses (green, yellow, red) in the given context. Ordering is important. Please provide text as follows: Status 1: WARNING NOT APPLICABLE; Status 2:  MISSING DATA; Status 3: GREEN STATUS; Status 4: YELLOW STATUS; Status 5: RED STATUS. If supporting text is not relevant for a given status for this model, put ‘NA’ against this item. The texts are presented in various places in the platform, both separately (explanation and recommended action) and combined.",
                                 "additionalItems": false,
                                 "minItems": 5,
                                 "maxItems": 5,
                                 "items": {
+                                    "title": "Status",
                                     "properties": {
-                                        "explanation": {"type":"string", "title": "Explanation"},
-                                        "recommended_action": {"type":"string", "title": "Recommended action"}
+                                        "explanation": {"type":"string", "title": "Explanation", "description": "What were the conditions that led to this warning status?"},
+                                        "recommended_action": {"type":"string", "title": "Recommended action", "description": "What is the recommended action given this warning status?"}
                                     }
                                 }
                             },
@@ -732,6 +745,7 @@
                                 "description": "For each chart that you want to display, group the parameters in this section.",
                                 "additionalItems": false,
                                 "items": {
+                                    "title": "Chart group",
                                     "properties": {
                                         "id": {"type":"string", "pattern": "^[^\\s]*$", "title": "Chart group ID", "description": "The chart's ID - used to reference it e.g. when translating. Example: \"G1\". Must not contain spaces."},
                                         "title": {"type":"string", "title": "Chart group title", "description": "The chart title as displayed to the user"},
@@ -746,6 +760,7 @@
                                 "description": "The model outputs are a timeseries with DSS model specific key-value pairs. You can think of it as a series of chronologically ordered rows with named columns. The key would be the equivalent of the column name (e.g. in Excel [A,B,(...)]), except that you can name it a bit more meaningfully - and you can add a title, a description and chart rendering information as well. Specify here, please.",
                                 "additionalItems": false,
                                 "items": {
+                                    "title": "Result parameter",
                                     "id": "#/properties/models/items/anyOf/0/properties/output/properties/result_parameters/items",
                                     "required": [
                                         "id",
