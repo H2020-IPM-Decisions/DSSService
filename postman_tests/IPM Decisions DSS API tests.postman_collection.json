@@ -404,7 +404,7 @@
 									"",
 									"pm.test(\"IPMWise is returned\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData[0].models[0].id).to.eql(\"ipmwise.no\");",
+									"    pm.expect(jsonData[0].models[0].id).to.eql(\"ipmwiseNO\");",
 									"});"
 								],
 								"type": "text/javascript"
@@ -456,7 +456,7 @@
 									"",
 									"pm.test(\"IPMWise is returned\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData[0].models[0].id).to.eql(\"ipmwise.no\");",
+									"    pm.expect(jsonData[0].models[0].id).to.eql(\"ipmwiseNO\");",
 									"});",
 									""
 								],
