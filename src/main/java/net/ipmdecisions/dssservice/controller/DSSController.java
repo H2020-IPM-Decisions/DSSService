@@ -43,10 +43,13 @@ import com.github.wnameless.json.unflattener.JsonUnflattener;
 import net.ipmdecisions.dssservice.clients.EPPOClient;
 import net.ipmdecisions.dssservice.entity.DSS;
 import net.ipmdecisions.dssservice.entity.DSSModel;
+import net.ipmdecisions.dssservice.services.DSSService;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DSSController {
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DSSController.class);
 	/**
      * Pulls YAML files from set path and creates a list of all DSSs This should
      * be replaced by a decent database
@@ -106,38 +109,40 @@ public class DSSController {
     	try
     	{
     		ResourceBundle bundle = ResourceBundle.getBundle(dss.getId(), new Locale(language), loader);
-    		/*Enumeration<String> e = bundle.getKeys();
-    		while(e.hasMoreElements())
+    		Enumeration<String> e = bundle.getKeys();
+    		/*while(e.hasMoreElements())
     		{
     			String key = e.nextElement();
-    			System.out.println(key + ": " + bundle.getString(key));
+    			LOGGER.debug(key + ": |" + bundle.getString(key) + "|" + bundle.getString(key).isBlank()+ "/" + bundle.getString(key).isEmpty());
     		}*/
-    		dss.setName(bundle.getString(basePath + ".name"));
+			//if()
+			//LOGGER.debug("Translating metadata. DSS.name=" + dss.getName());
+    		dss.setName(bundle.getString(basePath + ".name").isBlank() ? dss.getName() : bundle.getString(basePath + ".name"));
     		for(DSSModel model:dss.getModels())
 			{
     			String modelPath = basePath + ".models." + model.getId();
-    			model.setName(bundle.getString(modelPath + ".name"));
+    			model.setName(bundle.getString(modelPath + ".name").isBlank() ? model.getName() : bundle.getString(modelPath + ".name"));
     			
     			//DSSModel.Description d = model.getDescription();
-    			model.setDescription(bundle.getString(modelPath + ".description"));
+    			model.setDescription(bundle.getString(modelPath + ".description").isBlank() ? model.getDescription() : bundle.getString(modelPath + ".description"));
     			
-    			model.setPurpose(bundle.getString(modelPath + ".purpose"));
+    			model.setPurpose(bundle.getString(modelPath + ".purpose").isBlank() ? model.getPurpose() : bundle.getString(modelPath + ".purpose"));
 
     			DSSModel.Output.WarningStatusInterpretation[] wsi = model.getOutput().getWarning_status_interpretation();
     			for(int i=0; i < wsi.length;i++)
 				{
-    				wsi[i].setExplanation(bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".explanation"));
-    				wsi[i].setRecommended_action(bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".recommended_action"));
+    				wsi[i].setExplanation(bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".explanation").isBlank() ? wsi[i].getExplanation() : bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".explanation"));
+    				wsi[i].setRecommended_action(bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".recommended_action").isBlank() ? wsi[i].getRecommended_action() : bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".recommended_action"));
 				}
-    			model.getOutput().setChart_heading(bundle.getString(modelPath + ".output.chart_heading"));
+    			model.getOutput().setChart_heading(bundle.getString(modelPath + ".output.chart_heading").isBlank() ? model.getOutput().getChart_heading(): bundle.getString(modelPath + ".output.chart_heading"));
     			for(DSSModel.Output.ChartGroup cg : model.getOutput().getChart_groups())
 				{
-    				cg.setTitle(bundle.getString(modelPath + ".output.chart_groups." + cg.getId() + ".title"));
+    				cg.setTitle(bundle.getString(modelPath + ".output.chart_groups." + cg.getId() + ".title").isBlank() ? cg.getTitle() : bundle.getString(modelPath + ".output.chart_groups." + cg.getId() + ".title"));
 				}
     			for(DSSModel.Output.ResultParameter rp : model.getOutput().getResult_parameters())
 				{
-    				rp.setTitle(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".title"));
-    				rp.setDescription(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".description"));
+    				rp.setTitle(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".title").isBlank() ? rp.getTitle() : bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".title"));
+    				rp.setDescription(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".description").isBlank() ? rp.getDescription() : bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".description"));
 				}
     			
     			// Flatten the current input schema
@@ -153,7 +158,7 @@ public class DSSController {
     				//System.out.println(inputSchemaPath);
     				if(inputSchemaProperties.containsKey(inputSchemaPath))
     				{
-    					inputSchemaProperties.put(inputSchemaPath, bundle.getString(key));
+    					inputSchemaProperties.put(inputSchemaPath, bundle.getString(key).isBlank() ? inputSchemaProperties.get(inputSchemaPath) : bundle.getString(key));
     				}
     			}
     			
