@@ -95,14 +95,13 @@ public class DSSController {
     	{
     		dss = this.getDSSTranslated(dss, language);
     	}
-        
         return DSSList;
     }
     
     public DSS getDSSTranslated(DSS dss, String language) throws IOException
     {
     	String basePath = dss.getId() + "." + dss.getVersion().replace(".","_");
-    	//System.out.println("get " + language + " for " + dss.getId());
+    	LOGGER.debug("get " + language + " for " + dss.getId());
     	File file = new File(System.getProperty("net.ipmdecisions.dssservice.DSS_LIST_FILES_PATH") + "/i18n");
     	URL[] urls = {file.toURI().toURL()};
     	ClassLoader loader = new URLClassLoader(urls);
@@ -110,10 +109,13 @@ public class DSSController {
     	{
     		ResourceBundle bundle = ResourceBundle.getBundle(dss.getId(), new Locale(language), loader);
     		Enumeration<String> e = bundle.getKeys();
-    		/*while(e.hasMoreElements())
+			/*
+    		while(e.hasMoreElements())
     		{
     			String key = e.nextElement();
-    			LOGGER.debug(key + ": |" + bundle.getString(key) + "|" + bundle.getString(key).isBlank()+ "/" + bundle.getString(key).isEmpty());
+				if(key.indexOf("NAERSTADMO") > 0) {
+					LOGGER.debug(key + ": |" + bundle.getString(key) + "|" + bundle.getString(key).isBlank() + "/" + bundle.getString(key).isEmpty());
+				}
     		}*/
 			//if()
 			//LOGGER.debug("Translating metadata. DSS.name=" + dss.getName());
@@ -121,13 +123,18 @@ public class DSSController {
     		for(DSSModel model:dss.getModels())
 			{
     			String modelPath = basePath + ".models." + model.getId();
-    			model.setName(bundle.getString(modelPath + ".name").isBlank() ? model.getName() : bundle.getString(modelPath + ".name"));
-    			
-    			//DSSModel.Description d = model.getDescription();
+				// Putting in an extra try-catch here to keep model iteration running after a model is missing params
+				try
+				{
+					model.setName(bundle.getString(modelPath + ".name").isBlank() ? model.getName() : bundle.getString(modelPath + ".name"));
+				}
+				catch(MissingResourceException ex)
+				{
+					System.out.println("WARNING: " + ex.getMessage());
+					continue;
+				}
     			model.setDescription(bundle.getString(modelPath + ".description").isBlank() ? model.getDescription() : bundle.getString(modelPath + ".description"));
-    			
     			model.setPurpose(bundle.getString(modelPath + ".purpose").isBlank() ? model.getPurpose() : bundle.getString(modelPath + ".purpose"));
-
     			DSSModel.Output.WarningStatusInterpretation[] wsi = model.getOutput().getWarning_status_interpretation();
     			for(int i=0; i < wsi.length;i++)
 				{
