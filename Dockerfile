@@ -9,7 +9,7 @@ COPY ./ ./
 # package our application code
 RUN mvn clean install
 
-RUN git clone --single-branch --branch master https://github.com/H2020-IPM-Decisions/DSS-Metadata.git
+RUN git clone --single-branch --branch main https://gitlab.nibio.no/madiphs/dss-metadata.git DSS-Metadata
 RUN git clone --single-branch --branch master https://github.com/datasets/geo-countries.git
 
 # Used this as a template: https://github.com/jboss-dockerfiles/wildfly/blob/master/Dockerfile 
