@@ -43,7 +43,7 @@ ENV APP_VERSION=1.0.1
 # copy only the artifacts we need from the first stage and discard the rest
 COPY --from=MAVEN_BUILD /target/IPMDecisionsDSSService-$APP_VERSION.war /IPMDecisionsDSSService-$APP_VERSION.war
 COPY --from=MAVEN_BUILD /geo-countries/data/countries.geojson /countries.geojson
-# This requires you to have cloned the formats repository from GitHub: https://github.com/H2020-IPM-Decisions/formats
+# This requires you to have cloned the DSS-metadata repository from GitHub: https://github.com/H2020-IPM-Decisions/dss-metadata
 RUN mkdir /DSS-Metadata
 COPY  --from=MAVEN_BUILD /DSS-Metadata/ /DSS-Metadata/
 RUN chown -R jboss:jboss /DSS-Metadata
