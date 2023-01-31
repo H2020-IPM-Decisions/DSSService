@@ -698,7 +698,7 @@
 					"response": []
 				},
 				{
-					"name": "Get VIPS DSS as Json translated to Danish",
+					"name": "Get VIPS DSS as Json translated to Slovenian",
 					"event": [
 						{
 							"listen": "test",
@@ -721,7 +721,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{dss_url}}/rest/dss/no.nibio.vips?language=dk",
+							"raw": "{{dss_url}}/rest/dss/no.nibio.vips?language=sl",
 							"host": [
 								"{{dss_url}}"
 							],
@@ -733,7 +733,7 @@
 							"query": [
 								{
 									"key": "language",
-									"value": "dk"
+									"value": "sl"
 								}
 							]
 						}
@@ -817,6 +817,45 @@
 								"no.nibio.vips",
 								"PSILARTEMP",
 								"input_schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ADAS/DEROAG input schema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and we find the data type of the startDate property\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties.configParameters.properties.startDate.format).to.eql(\"date\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/model/adas.dss/DEROAG_Cereals/input_schema/ui_form",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"model",
+								"adas.dss",
+								"DEROAG_Cereals",
+								"input_schema",
+								"ui_form"
 							]
 						}
 					},
