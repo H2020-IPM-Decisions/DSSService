@@ -809,10 +809,16 @@ public class DSSService {
 	                	
                 	}
                 	// Weather data part will always be hidden
+                    // Checking for lowerCase (which is standard)
                 	if(inputSchema.findParent("weatherData") != null)
                 	{
                 		((ObjectNode)inputSchema.findParent("weatherData")).remove("weatherData");
                 	}
+                    // Checking for UpperCamelCase (which some providers have specified)
+                    if(inputSchema.findParent("WeatherData") != null)
+                    {
+                        ((ObjectNode)inputSchema.findParent("WeatherData")).remove("WeatherData");
+                    }
                 	
                     return Response.ok().entity(inputSchema).build();
                 } else {

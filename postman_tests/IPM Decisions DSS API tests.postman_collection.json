@@ -834,7 +834,7 @@
 									"});",
 									"pm.test(\"Response is Json, and we find the data type of the startDate property\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.properties.configParameters.properties.startDate.format).to.eql(\"date\");",
+									"    pm.expect(jsonData.definitions.observations.properties.date.format).to.eql(\"date\");",
 									"});"
 								],
 								"type": "text/javascript"
@@ -863,6 +863,50 @@
 				},
 				{
 					"name": "Get input_schema for the HTML form (Json schema) for a DSS model",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and we find the data type of the timeZone\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties.configParameters.properties.timeZone.type).to.eql(\"string\");",
+									"});",
+									"pm.test(\"Response is Json, and the weatherData property should not be present. \", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.properties.weatherData).to.be.undefined;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/model/no.nibio.vips/PSILARTEMP/input_schema/ui_form",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"model",
+								"no.nibio.vips",
+								"PSILARTEMP",
+								"input_schema",
+								"ui_form"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get input_schema for the HTML form (Json schema) for a SEGES CPO model",
 					"event": [
 						{
 							"listen": "test",
