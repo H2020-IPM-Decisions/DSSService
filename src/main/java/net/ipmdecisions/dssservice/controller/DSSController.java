@@ -108,47 +108,49 @@ public class DSSController {
     	try
     	{
     		ResourceBundle bundle = ResourceBundle.getBundle(dss.getId(), new Locale(language), loader);
-    		Enumeration<String> e = bundle.getKeys();
 			/*
+    		Enumeration<String> e = bundle.getKeys();
+
     		while(e.hasMoreElements())
     		{
     			String key = e.nextElement();
-				if(key.indexOf("NAERSTADMO") > 0) {
-					LOGGER.debug(key + ": |" + bundle.getString(key) + "|" + bundle.getString(key).isBlank() + "/" + bundle.getString(key).isEmpty());
+				if(key.indexOf("MELIAE") > 0) {
+					LOGGER.debug(key + ": |" + this.getBundleStringSafe(bundle, key) + "|" + this.getBundleStringSafe(bundle, key).isBlank() + "/" + this.getBundleStringSafe(bundle, key).isEmpty());
 				}
     		}*/
 			//if()
-			//LOGGER.debug("Translating metadata. DSS.name=" + dss.getName());
-    		dss.setName(bundle.getString(basePath + ".name").isBlank() ? dss.getName() : bundle.getString(basePath + ".name"));
+			LOGGER.debug("Translating metadata. DSS.name=" + dss.getName());
+    		dss.setName(this.getBundleStringSafe(bundle,basePath + ".name").isBlank() ? dss.getName() : this.getBundleStringSafe(bundle,basePath + ".name"));
     		for(DSSModel model:dss.getModels())
 			{
     			String modelPath = basePath + ".models." + model.getId();
 				// Putting in an extra try-catch here to keep model iteration running after a model is missing params
 				try
 				{
-					model.setName(bundle.getString(modelPath + ".name").isBlank() ? model.getName() : bundle.getString(modelPath + ".name"));
+					model.setName(this.getBundleStringSafe(bundle,modelPath + ".name").isBlank() ? model.getName() : this.getBundleStringSafe(bundle,modelPath + ".name"));
 				}
 				catch(MissingResourceException ex)
 				{
 					System.out.println("WARNING: " + ex.getMessage());
 					continue;
 				}
-    			model.setDescription(bundle.getString(modelPath + ".description").isBlank() ? model.getDescription() : bundle.getString(modelPath + ".description"));
-    			model.setPurpose(bundle.getString(modelPath + ".purpose").isBlank() ? model.getPurpose() : bundle.getString(modelPath + ".purpose"));
+    			model.setDescription(this.getBundleStringSafe(bundle,modelPath + ".description").isBlank() ? model.getDescription() : this.getBundleStringSafe(bundle,modelPath + ".description"));
+
+    			model.setPurpose(this.getBundleStringSafe(bundle,modelPath + ".purpose").isBlank() ? model.getPurpose() : this.getBundleStringSafe(bundle,modelPath + ".purpose"));
 				// LINK DSS lack some properties
-				if(model.getOutput() != null) {
+				if(model.getOutput() != null && ! model.getExecution().getType().equals(DSSModel.Execution.TYPE_LINK)) {
 					DSSModel.Output.WarningStatusInterpretation[] wsi = model.getOutput().getWarning_status_interpretation();
 					for (int i = 0; i < wsi.length; i++) {
-						wsi[i].setExplanation(bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".explanation").isBlank() ? wsi[i].getExplanation() : bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".explanation"));
-						wsi[i].setRecommended_action(bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".recommended_action").isBlank() ? wsi[i].getRecommended_action() : bundle.getString(modelPath + ".output.warning_status_interpretation." + i + ".recommended_action"));
+						wsi[i].setExplanation(this.getBundleStringSafe(bundle,modelPath + ".output.warning_status_interpretation." + i + ".explanation").isBlank() ? wsi[i].getExplanation() : this.getBundleStringSafe(bundle,modelPath + ".output.warning_status_interpretation." + i + ".explanation"));
+						wsi[i].setRecommended_action(this.getBundleStringSafe(bundle,modelPath + ".output.warning_status_interpretation." + i + ".recommended_action").isBlank() ? wsi[i].getRecommended_action() : this.getBundleStringSafe(bundle,modelPath + ".output.warning_status_interpretation." + i + ".recommended_action"));
 					}
-					model.getOutput().setChart_heading(bundle.getString(modelPath + ".output.chart_heading").isBlank() ? model.getOutput().getChart_heading() : bundle.getString(modelPath + ".output.chart_heading"));
+					model.getOutput().setChart_heading(this.getBundleStringSafe(bundle,modelPath + ".output.chart_heading").isBlank() ? model.getOutput().getChart_heading() : this.getBundleStringSafe(bundle,modelPath + ".output.chart_heading"));
 					for (DSSModel.Output.ChartGroup cg : model.getOutput().getChart_groups()) {
-						cg.setTitle(bundle.getString(modelPath + ".output.chart_groups." + cg.getId() + ".title").isBlank() ? cg.getTitle() : bundle.getString(modelPath + ".output.chart_groups." + cg.getId() + ".title"));
+						cg.setTitle(this.getBundleStringSafe(bundle,modelPath + ".output.chart_groups." + cg.getId() + ".title").isBlank() ? cg.getTitle() : this.getBundleStringSafe(bundle,modelPath + ".output.chart_groups." + cg.getId() + ".title"));
 					}
 					for (DSSModel.Output.ResultParameter rp : model.getOutput().getResult_parameters()) {
-						rp.setTitle(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".title").isBlank() ? rp.getTitle() : bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".title"));
-						rp.setDescription(bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".description").isBlank() ? rp.getDescription() : bundle.getString(modelPath + ".output.result_parameters." + rp.getId() + ".description"));
+						rp.setTitle(this.getBundleStringSafe(bundle,modelPath + ".output.result_parameters." + rp.getId() + ".title").isBlank() ? rp.getTitle() : this.getBundleStringSafe(bundle,modelPath + ".output.result_parameters." + rp.getId() + ".title"));
+						rp.setDescription(this.getBundleStringSafe(bundle,modelPath + ".output.result_parameters." + rp.getId() + ".description").isBlank() ? rp.getDescription() : this.getBundleStringSafe(bundle,modelPath + ".output.result_parameters." + rp.getId() + ".description"));
 					}
 				}
     			
@@ -165,7 +167,7 @@ public class DSSController {
     				//System.out.println(inputSchemaPath);
     				if(inputSchemaProperties.containsKey(inputSchemaPath))
     				{
-    					inputSchemaProperties.put(inputSchemaPath, bundle.getString(key).isBlank() ? inputSchemaProperties.get(inputSchemaPath) : bundle.getString(key));
+    					inputSchemaProperties.put(inputSchemaPath, this.getBundleStringSafe(bundle,key).isBlank() ? inputSchemaProperties.get(inputSchemaPath) : this.getBundleStringSafe(bundle,key));
     				}
     			}
     			
@@ -175,11 +177,23 @@ public class DSSController {
     	}
     	catch(MissingResourceException ex)
     	{
-    		System.out.println("WARNING: " + ex.getMessage());
-    		
+    		LOGGER.warn("WARNING [" + this.getClass().getName() + ".GetDSSTranslated]: " + ex.getMessage());
     	}
     	return dss;
     }
+
+	private String getBundleStringSafe(ResourceBundle bundle, String key)
+	{
+		try
+		{
+			return bundle.getString(key);
+		}
+		catch(MissingResourceException ex)
+		{
+			LOGGER.debug("DEBUG [" + this.getClass().getName() + ".getBundleStringSafe]: " + ex.getMessage());
+			return "";
+		}
+	}
     
     /**
      * Pulls YAML files from set path and creates a list of all DSSs This should
