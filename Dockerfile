@@ -54,6 +54,9 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 USER jboss
 
+# Increase RAM for WildFly
+ENV JBOSS_JAVA_SIZING="-Xms128m -Xmx4096m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=2048M"
+
 # Expose the ports we're interested in
 EXPOSE 8080
 
