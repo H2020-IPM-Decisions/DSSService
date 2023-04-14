@@ -21,6 +21,7 @@ package net.ipmdecisions.dssservice.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
@@ -710,7 +711,7 @@ public class DSSService {
      * @param language two-letter code for language (<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php">ISO-639-1</a>)
      * @param executionType filter for types of models. Example values are ONTHEFLY and LINK. See DSSModel.Execution for more
      * 
-     * @return The input Json schema for the DSS model
+     * @return The input Json schema for the DSS model, modified for the UI auto generation
      * @pathExample /rest/model/no.nibio.vips/PSILARTEMP/input_schema/ui_form
      * @responseExample application/json {
   "type": "object",
@@ -765,16 +766,20 @@ public class DSSService {
                 Optional<DSSModel> matchingDSSModel = actualDSS.getModels().stream().filter(model -> model.getId().equals(ModelId)).findFirst();
                 if (matchingDSSModel.isPresent()) {
                 	ObjectMapper om = new ObjectMapper();
+                    // Reading the input schema
                 	JsonNode inputSchema = om.readTree(matchingDSSModel.get().getExecution().getInput_schema());
+                    // Which parameters should be hidden? Look in the "input_schema_categories.hidden" list
                 	String[] hideThese = matchingDSSModel.get().getExecution().getInput_schema_categories().getHidden();
-                	if(hideThese != null)
+                	// Loop the list of hidden parameters (if we find any), remove them from the Json node treee
+                    if(hideThese != null)
                 	{
 	                	for(String hideThis:hideThese)
 	                	{
 	                		//System.out.println("hideThis=" + hideThis);
 	                		String[] hideThisPath = hideThis.split("\\.");
 	                		String pathToHideThisParent = "/properties";
-	                		for(int i=0;i<hideThisPath.length-1;i++)
+	                		// Navigate to the parent node, so that we can remove the child
+                            for(int i=0;i<hideThisPath.length-1;i++)
 	                		{
 	                			pathToHideThisParent += "/" + hideThisPath[i];
 	                			pathToHideThisParent += "/properties";
@@ -787,15 +792,15 @@ public class DSSService {
 	                		
 	                		// Remove any "required" statements for hidden fields
 	                		String pathToHideThisRequired = pathToHideThisParent.substring(0, pathToHideThisParent.lastIndexOf("/properties")) + "/required";
-	                		ArrayNode required = (ArrayNode) inputSchema.at(pathToHideThisRequired);
-	                		if(required != null)
+	                		JsonNode required = inputSchema.at(pathToHideThisRequired);
+	                		if(required.getNodeType().equals(JsonNodeType.ARRAY))
 	                		{
 		                		for(int i=0;i<required.size();i++)
 		                		{
 		                			//System.out.println(required.get(i).asText() + "/" + hideThisPath[hideThisPath.length-1]);
 		                			if(required.get(i).asText().equals(hideThisPath[hideThisPath.length-1]))
 		                			{
-		                				required.remove(i);
+                                        ((ArrayNode)required).remove(i);
 		                				break;
 		                			}
 		                		}
@@ -804,10 +809,16 @@ public class DSSService {
 	                	
                 	}
                 	// Weather data part will always be hidden
+                    // Checking for lowerCase (which is standard)
                 	if(inputSchema.findParent("weatherData") != null)
                 	{
                 		((ObjectNode)inputSchema.findParent("weatherData")).remove("weatherData");
                 	}
+                    // Checking for UpperCamelCase (which some providers have specified)
+                    if(inputSchema.findParent("WeatherData") != null)
+                    {
+                        ((ObjectNode)inputSchema.findParent("WeatherData")).remove("WeatherData");
+                    }
                 	
                     return Response.ok().entity(inputSchema).build();
                 } else {
