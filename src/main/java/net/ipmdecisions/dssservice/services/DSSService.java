@@ -476,6 +476,36 @@ public class DSSService {
      * @responseExample application/json ["DAUCS","SOLTU","APUGD"]
      */
     @GET
+    @Path("crop/execution_type/{executionType}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(String[].class)
+    public Response getAllCropsForDSSOfExecutionType(
+            @PathParam("executionType") String executionType
+    ) {
+        try {
+            Set<String> retVal = new HashSet<>();
+            for (DSS dss : this.DSSController.getDSSListObj(true)) {
+                dss.getModels().stream()
+                        .filter(model -> model.getCrops() != null
+                                && model.getExecution() != null
+                                && model.getExecution().getType() != null
+                                && model.getExecution().getType().equals(executionType)
+                        )
+                        .forEach(model -> retVal.addAll(model.getCrops()));
+            }
+            return Response.ok().entity(retVal).build();
+        } catch (IOException ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+
+    /**
+     * @return A list of <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a> for all crops
+     * that the DSS models in the platform
+     *
+     * @responseExample application/json ["DAUCS","SOLTU","APUGD"]
+     */
+    @GET
     @Path("crop")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(String[].class)
