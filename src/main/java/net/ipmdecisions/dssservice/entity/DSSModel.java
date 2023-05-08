@@ -659,6 +659,7 @@ public class DSSModel {
     static class WeatherParameter {
         private int parameter_code;
         private int interval;
+        private Boolean is_required;
 
         /**
          * @return The parameter, as defined here: https://platform.ipmdecisions.net/api/wx/rest/parameter
@@ -692,6 +693,15 @@ public class DSSModel {
         public void setInterval(int interval) {
             this.interval = interval;
         }
+
+        /**
+         * If true, the DSS cannot run without this weather parameter being provided
+         * If false, the DSS can run without it, but probably with reduced precision
+         * @return
+         */
+        public Boolean getIs_required() { return this.is_required == null ? Boolean.TRUE : this.is_required; }
+
+        public void setIs_required(Boolean is_required) { this.is_required = is_required; }
     }
 
     public static class InputSchemaCategories {

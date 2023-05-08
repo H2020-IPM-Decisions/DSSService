@@ -525,7 +525,8 @@
                                     [
                                         {
                                             "parameter_code": 1002,
-                                            "interval": 86400
+                                            "interval": 86400,
+                                            "is_required": true
                                         }
                                     ]
                                 ],
@@ -546,6 +547,13 @@
                                             "type": "integer",
                                             "title": "Interval (seconds)",
                                             "description": "3600 = Hourly weather data. 86400 = Daily weather data"
+                                        },
+                                        "is_required": {
+                                            "id": "#/properties/models/items/anyOf/0/properties/input/properties/weather_parameters/items/anyOf/0/properties/is_required",
+                                            "type": "boolean",
+                                            "title": "Required",
+                                            "default": true,
+                                            "description": "Default: is_required=true. If false, the DSS can run without it, but likely with reduced precision."
                                         }
                                     },
                                     "additionalProperties": true
