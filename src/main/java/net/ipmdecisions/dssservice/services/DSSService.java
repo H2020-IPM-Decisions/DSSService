@@ -850,6 +850,15 @@ public class DSSService {
                     {
                         ((ObjectNode)inputSchema.findParent("WeatherData")).remove("WeatherData");
                     }
+                    // Removing GeoJson part of any fieldObservation schema reference
+                    if(inputSchema.findParent("fieldObservations") != null)
+                    {
+                        for(JsonNode fieldObservation:inputSchema.findValues("fieldObservation"))
+                        {
+                            String  newRef = fieldObservation.findValue("$ref").asText() + "/nolocation";
+                            ((ObjectNode) fieldObservation).put("$ref", newRef);
+                        }
+                    }
                 	
                     return Response.ok().entity(inputSchema).build();
                 } else {

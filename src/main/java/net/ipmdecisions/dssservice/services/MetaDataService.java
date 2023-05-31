@@ -50,10 +50,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.ipmdecisions.dssservice.clients.EPPOClient;
-import net.ipmdecisions.dssservice.entity.DSS;
-import net.ipmdecisions.dssservice.entity.DSSModel;
-import net.ipmdecisions.dssservice.entity.FieldObservation;
-import net.ipmdecisions.dssservice.entity.ModelOutput;
+import net.ipmdecisions.dssservice.entity.*;
 import net.ipmdecisions.dssservice.util.SchemaProvider;
 import net.ipmdecisions.dssservice.util.SchemaUtils;
 import net.ipmdecisions.dssservice.util.SchemaValidationException;
@@ -175,6 +172,16 @@ public class MetaDataService {
     public Response getFieldObservationSchema()
     {
         JsonNode schema = schemaGen.generateJsonSchema(FieldObservation.class);
+        return Response.ok().entity(schema).build();
+    }
+
+    @GET
+    @Path("schema/fieldobservation/nolocation")
+    @GZIP
+    @Produces("application/json;charset=UTF-8")
+    public Response getFieldObservationNoLocationSchema()
+    {
+        JsonNode schema = schemaGen.generateJsonSchema(FieldObservationNoLocation.class);
         return Response.ok().entity(schema).build();
     }
     
