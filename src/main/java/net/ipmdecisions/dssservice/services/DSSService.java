@@ -112,7 +112,8 @@ public class DSSService {
     ) {
         try {
             List<DSS> allDSSs = this.DSSController.getDSSListObj(null,language, executionType);
-            String output = "Source name,DSS Model name, Crop(s), Pest(s), Purpose\n";
+            String delimiter = ";";
+            String output = String.join(delimiter,"Source name","DSS Model name", "ID", "Crop(s)", "Pest(s)", "Purpose", "Execution type", "Used in platform?") + "\n";
 
             // Collecting all EPPO Codes in one go
             Set<String> allEPPOCodesInDSSs = new HashSet<>();
@@ -143,9 +144,9 @@ public class DSSService {
                             .collect(Collectors.toList()))
                             : "";
 
-                    output += name + "," + model.getName() + "," +
-                            cropList + "," + pestList + "," +
-                            model.getPurpose() + "\n";
+                    output += String.join(delimiter, name, model.getName(), model.getId(),
+                            cropList, pestList,
+                            model.getPurpose(), model.getExecution().getType(), model.getPlatform_validated().toString()) + "\n";
                 }
             }
             return Response.ok().entity(output).build();
