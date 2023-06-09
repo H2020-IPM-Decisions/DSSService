@@ -38,7 +38,27 @@ import javax.validation.constraints.NotNull;
 )
 @JsonSchemaTitle("Field observation")
 @JsonSchemaExamples("TODO")
-@JsonSchemaDescription("Version 0.1. The schema describes the field observation format for the IPM Decisions platform. See an example here: TODO")
+@JsonSchemaDescription("Version 0.9. The schema describes the field observation format for the IPM Decisions platform. See an example here: " +
+        "\"fieldObservations\": [\n" +
+        "      {\n" +
+        "        \"fieldObservation\": {\n" +
+        "          \"location\": {\n" +
+        "            \"type\": \"Point\",\n" +
+        "            \"coordinates\": [\n" +
+        "              10.781989,\n" +
+        "              59.660468\n" +
+        "            ]\n" +
+        "          },\n" +
+        "          \"time\": \"2023-05-28T18:00:00+02:00\",\n" +
+        "          \"pestEPPOCode\": \"PSILRO\",\n" +
+        "          \"cropEPPOCode\": \"DAUCS\"\n" +
+        "        },\n" +
+        "        \"quantification\": {\n" +
+        "          \"trapCountCropEdge\": 2,\n" +
+        "          \"trapCountCropInside\": 55\n" +
+        "        }\n" +
+        "      }\n" +
+        "    ]")
 public class FieldObservationNoLocation {
 
     @NotNull
