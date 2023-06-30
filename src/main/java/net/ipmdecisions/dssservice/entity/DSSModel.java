@@ -409,7 +409,12 @@ public class DSSModel {
      * Meta data about how to run the model
      */
     public static class Execution {
-        private String type, endpoint, form_method, content_type, input_schema;
+        private String type;
+        private String endpoint;
+        private String form_method;
+        private String content_type;
+        private String input_schema;
+        private String authentication_type;
         private InputSchemaCategories input_schema_categories;
         
         /** Can be executed directly from the platform */
@@ -549,6 +554,18 @@ public class DSSModel {
 			this.input_schema_categories = input_schema_categories;
 		}
 
+        /**
+         * The Authentication type ['NONE', 'BASIC', 'BEARER_TOKEN']. The default is 'NONE'
+         * @return
+         */
+        @DocumentationExample("NONE")
+        public String getAuthentication_type() {
+            return authentication_type != null ? authentication_type : "NONE";
+        }
+
+        public void setAuthentication_type(String authentication_type) {
+            this.authentication_type = authentication_type;
+        }
     }
     
     /**

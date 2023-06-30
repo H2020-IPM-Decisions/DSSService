@@ -404,6 +404,7 @@
                                 "endpoint": "https://coremanager.vips.nibio.no/models/PSILARTEMP/run/ipmd",
                                 "form_method": "post",
                                 "content_type": "application/json",
+                                "authentication_type": "BASIC",
                                 "input_schema_hidden_properties": ["modelId"],
                                 "input_schema_categories": {
                                     "hidden": ["modelId"],
@@ -447,6 +448,14 @@
                                 "type": "string",
                                 "title": "Content type",
                                 "description": "The Content type, specified as a MIME type (https://www.iana.org/assignments/media-types/media-types.xhtml), of the data sent to the DSS web service endpoint. E.g. \"application/json\" tells that data should be sent as Json (https://en.wikipedia.org/wiki/JSON) and not e.g. XML (https://en.wikipedia.org/wiki/XML)"
+                            },
+                            "authentication_type": {
+                                "id": "#/properties/models/items/anyOf/0/properties/execution/properties/authentication_type",
+                                "type": "string",
+                                "enum": ["NONE","BASIC","BEARER_TOKEN"],
+                                "title": "Authentication type",
+                                "default": "NONE",
+                                "description": "The Authentication type ['NONE', 'BASIC', 'BEARER_TOKEN']. The default is 'NONE'"
                             },
                             "input_schema_categories": {
                                 "type": "object",
