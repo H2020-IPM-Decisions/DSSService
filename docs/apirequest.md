@@ -281,52 +281,88 @@ What is returned, is a set of result objects. It conforms to [the modeloutput sc
 ## Create a DSS model request with field observations
 Looking at the VIPS's observation based carrot rust fly model (PSILAROBSE), we have this input_schema:
 
-```
-      {
-        "type":"object",
-        "properties": {
-          "modelId": {"type": "string", "pattern":"^PSILAROBSE$", "title": "Model Id", "default":"PSILAROBSE", "description":"Must be PSILAROBSE"},
-          "configParameters": {
-            "title":"Configuration parameters",
-            "type": "object",
-            "properties": {
-              "timeZone": {"type": "string", "title": "Time zone (e.g. Europe/Oslo)", "default":"Europe/Oslo"},
-              "startDateCalculation": {"type":"string","format": "date", "title": "Start date of calculation (YYYY-MM-DD)"},
-              "endDateCalculation": {"type":"string","format": "date", "title": "End date of calculation (YYYY-MM-DD)"},
-              "fieldObservations": {
-                "title": "Field observations",
-                "type": "array",
-                "items": {
-                  "$ref": "https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation"
-                }
-              },
-              "fieldObservationQuantifications": {
-                "title": "Field observation quantifications",
-                "type": "array",
-                "items": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/definitions/fieldObs_PSILRO"
-                    }
-                  ]
-                }
-              }
-            },
-            "required": ["timeZone","startDateCalculation","endDateCalculation"]
-          }
+```json
+{
+  "type": "object",
+  "properties": {
+    "modelId": {
+      "type": "string",
+      "pattern": "^PSILAROBSE$",
+      "title": "Model Id",
+      "default": "PSILAROBSE",
+      "description": "Must be PSILAROBSE"
+    },
+    "configParameters": {
+      "title": "Configuration parameters",
+      "type": "object",
+      "properties": {
+        "timeZone": {
+          "type": "string",
+          "title": "Time zone (e.g. Europe/Oslo)",
+          "default": "Europe/Oslo"
         },
-        "required": ["modelId","configParameters"],
-        "definitions": {
-          "fieldObs_PSILRO": {
-            "title": "Psila rosae quantification", 
+        "startDateCalculation": {
+          "type": "string",
+          "format": "date",
+          "default": "{CURRENT_YEAR}-03-01",
+          "title": "Start date of calculation (YYYY-MM-DD)"
+        },
+        "endDateCalculation": {
+          "type": "string",
+          "format": "date",
+          "default": "{CURRENT_YEAR}-09-01",
+          "title": "End date of calculation (YYYY-MM-DD)"
+        },
+        "fieldObservations": {
+          "title": "Field observations",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Field observation",
             "properties": {
-              "trapCountCropEdge":{"title":"Insect trap count at the edge of the field","type":"integer"},
-              "trapCountCropInside":{"title":"Insect trap count inside the field","type":"integer"}
-            },
-            "required": ["trapCountCropEdge","trapCountCropInside"]
+              "fieldObservation": {
+                "title": "Generic field observation information",
+                "$ref": "https://platform.ipmdecisions.net/api/dss/rest/schema/fieldobservation"
+              },
+              "quantification": {
+                "$ref": "#/definitions/fieldObs_PSILRO"
+              }
+            }
           }
         }
-      }
+      },
+      "required": [
+        "timeZone",
+        "startDateCalculation",
+        "endDateCalculation"
+      ]
+    }
+  },
+  "required": [
+    "modelId",
+    "configParameters"
+  ],
+  "definitions": {
+    "fieldObs_PSILRO": {
+      "title": "Psila rosae quantification",
+      "properties": {
+        "trapCountCropEdge": {
+          "title": "Insect trap count at the edge of the field",
+          "type": "integer"
+        },
+        "trapCountCropInside": {
+          "title": "Insect trap count inside the field",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "trapCountCropEdge",
+        "trapCountCropInside"
+      ]
+    }
+  }
+}
+
 ```
 The field observations definition is a bit complicated, because it consists of some common, standard parts, but also parts that vary between pests. Common parts are:
 * Time - when was the observation made?
@@ -334,21 +370,17 @@ The field observations definition is a bit complicated, because it consists of s
 * What has been observed?
 * In which crop was it observed?
 
-Here's the [schema for the common parts](https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation):
+Here's the [schema for the common parts](https://platform.ipmdecisions.net/api/dss/rest/schema/fieldobservation):
 
-```
+```json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Field observation",
   "type": "object",
-  "additionalProperties": false,
-  "description": "Version 0.1. The schema describes the field observation format for the IPM Decisions platform. See an example here: TODO",
-  "$id": "https://ipmdecisions.nibio.no/api/dss/rest/schema/fieldobservation",
+  "additionalProperties": true,
+  "description": "Version 0.9. The schema describes the field observation format for the IPM Decisions platform. See an example here: \"fieldObservations\": [\n      {\n        \"fieldObservation\": {\n          \"location\": {\n            \"type\": \"Point\",\n            \"coordinates\": [\n              10.781989,\n              59.660468\n            ]\n          },\n          \"time\": \"2023-05-28T18:00:00+02:00\",\n          \"pestEPPOCode\": \"PSILRO\",\n          \"cropEPPOCode\": \"DAUCS\"\n        },\n        \"quantification\": {\n          \"trapCountCropEdge\": 2,\n          \"trapCountCropInside\": 55\n        }\n      }\n    ]",
+  "$id": "https://platform.ipmdecisions.net/api/dss/rest/schema/fieldobservation",
   "properties": {
-    "location": {
-      "title": "Location  of the observation. In GeoJson format.",
-      "$ref": "https://ipmdecisions.nibio.no/schemas/geojson.json"
-    },
     "time": {
       "type": "string",
       "format": "date-time",
@@ -363,48 +395,56 @@ Here's the [schema for the common parts](https://ipmdecisions.nibio.no/api/dss/r
     "cropEPPOCode": {
       "type": "string",
       "description": "The EPPO code for the crop in which the pest was observed. See https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes",
-      "title": "Pest"
+      "title": "Crop"
+    },
+    "location": {
+      "title": "Location  of the observation. In GeoJson format.",
+      "$ref": "https://geojson.org/schema/GeoJSON.json"
     }
   },
   "required": [
-    "location",
     "time",
     "pestEPPOCode",
-    "cropEPPOCode"
+    "cropEPPOCode",
+    "location"
   ]
 }
 ```
 Please note that the pests and crops are referred by [EPPO codes](https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes)
 
-In addition to this, most field observations carry some kind of quantification information: Number of leaves infected, number of eggs per plant, trap countings, etc. Since this is different for most pests, and also is expressed differently in different models, we have to include a wild card in the system. So we have added the property "fieldObservationQuantifications". These quantifications are given as an array, so that they correspond item-by-item with the array of fieldObservations. Each quantification has its own schema definition, given in the "definition" section. 
+In addition to this, most field observations carry some kind of quantification information: 
+Number of leaves infected, number of eggs per plant, trap countings, etc. Since this is 
+different for most pests, and also is expressed differently in different models, we have to 
+include a wild card in the system. So we have added the optional property "quantification" to the 
+"Field observation" property, which in turn may refer to a definition elsewhere.  
 
 Pasting the schema into the [online version of json-editor](https://json-editor.github.io/json-editor/) allows us to create a request like the one below:
 
-```
+```json
 {
-  "modelId": "SEPAPIICOL",
+  "modelId": "PSILAROBSE",
   "configParameters": {
     "timeZone": "Europe/Oslo",
-    "startDateCalculation": "2020-05-01",
-    "endDateCalculation": "2020-05-10",
+    "startDateCalculation": "2023-05-01",
+    "endDateCalculation": "2023-06-05",
     "fieldObservations": [
       {
-        "location": {
-          "type": "Point",
-          "coordinates": [
-            "11.025635",
-            "59.715791"
-          ]
+        "fieldObservation": {
+          "location": {
+            "type": "Point",
+            "coordinates": [
+              10.781989,
+              59.660468
+            ]
+          },
+          "time": "2023-05-28T18:00:00+02:00",
+          "pestEPPOCode": "PSILRO",
+          "cropEPPOCode": "DAUCS"
         },
-        "time": "2020-05-05T12:00:00Z",
-        "pestEPPOCode": "SEPTAP",
-        "cropEPPOCode": "APUGD"
-      }
-    ],
-    "fieldObservationQuantifications": [
-      {
-        "trapCountCropEdge": 22,
-        "trapCountCropInside": 2
+        "quantification": {
+          "trapCountCropEdge": 2,
+          "trapCountCropInside": 55
+        }
       }
     ]
   }
@@ -412,15 +452,14 @@ Pasting the schema into the [online version of json-editor](https://json-editor.
 ```
 Sending this request to the model endpoint returns the result below. You can test this using Postman, importing the collection at `../postman_tests/IPM Decisions DSS examples.postman_collection.json`
 
-```
+```json
 {
-    "timeStart": "2020-04-30T22:00:00Z",
-    "timeEnd": "2020-05-09T22:00:00Z",
+    "timeStart": "2023-04-30T22:00:00Z",
+    "timeEnd": "2023-06-04T22:00:00Z",
     "interval": 86400,
     "resultParameters": [
         "TRAP_COUNT_CROP_EDGE",
         "TRAP_COUNT_THRESHOLD",
-        "WARNING_STATUS",
         "TRAP_COUNT_CROP_INSIDE"
     ],
     "locationResult": [
@@ -432,66 +471,224 @@ Sending this request to the model endpoint returns the result below. You can tes
                 [
                     null,
                     1.0,
+                    null
+                ],
+                [
+                    null,
                     1.0,
                     null
                 ],
                 [
                     null,
                     1.0,
+                    null
+                ],
+                [
+                    null,
                     1.0,
                     null
                 ],
                 [
                     null,
                     1.0,
+                    null
+                ],
+                [
+                    null,
                     1.0,
                     null
                 ],
                 [
                     null,
                     1.0,
-                    1.0,
-                    null
-                ],
-                [
-                    22.0,
-                    1.0,
-                    4.0,
-                    2.0
-                ],
-                [
-                    null,
-                    1.0,
-                    4.0,
                     null
                 ],
                 [
                     null,
                     1.0,
-                    4.0,
                     null
                 ],
                 [
                     null,
                     1.0,
-                    4.0,
                     null
                 ],
                 [
                     null,
                     1.0,
-                    4.0,
                     null
                 ],
                 [
                     null,
                     1.0,
-                    4.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    2.0,
+                    1.0,
+                    55.0
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
+                    null
+                ],
+                [
+                    null,
+                    1.0,
                     null
                 ]
             ],
-            "length": 10,
-            "width": 4
+            "warningStatus": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4
+            ],
+            "length": 36,
+            "width": 3
         }
     ]
 }
