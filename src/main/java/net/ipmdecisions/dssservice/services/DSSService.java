@@ -499,21 +499,42 @@ public class DSSService {
             return Response.serverError().entity(ex.getMessage()).build();
         }
     }
-
+    
     /**
      * @return A list of <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a> for all crops
-     * that the DSS models in the platform
+     * that the validated DSS models cover in the platform
      *
+     * 
      * @responseExample application/json ["DAUCS","SOLTU","APUGD"]
      */
     @GET
     @Path("crop")
     @Produces("application/json;charset=UTF-8")
     @TypeHint(String[].class)
-    public Response getAllCrops() {
+    public Response getAllCrops(
+    ) {
+        return this.getAllCrops(Boolean.TRUE);
+        
+    }
+
+    /**
+     * @return A list of <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a> for all crops
+     * that the DSS models (validated or not validated) cover in the platform
+     *
+     * @param platformValidated set to true if you want to filter on DSSs that are validated
+     * 
+     * @responseExample application/json ["DAUCS","SOLTU","APUGD"]
+     */
+    @GET
+    @Path("crop/platform_validated/{platformValidated}")
+    @Produces("application/json;charset=UTF-8")
+    @TypeHint(String[].class)
+    public Response getAllCrops(
+            @PathParam("platformValidated") Boolean platformValidated
+    ) {
         try {
         	Set<String> retVal = new HashSet<>();
-            for (DSS dss : this.DSSController.getDSSListObj(true)) {
+            for (DSS dss : this.DSSController.getDSSListObj(platformValidated)) {
                 dss.getModels().stream()
             	.filter(model -> model.getCrops() != null)
             	.forEach(model -> retVal.addAll(model.getCrops()));
