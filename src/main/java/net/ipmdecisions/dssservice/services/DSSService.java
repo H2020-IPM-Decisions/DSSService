@@ -502,7 +502,7 @@ public class DSSService {
     
     /**
      * @return A list of <a href="https://www.eppo.int/RESOURCES/eppo_databases/eppo_codes">EPPO codes</a> for all crops
-     * that the validated DSS models cover in the platform
+     * that the DSS models (both validated and unvalidated) cover in the platform
      *
      * 
      * @responseExample application/json ["DAUCS","SOLTU","APUGD"]
@@ -513,7 +513,7 @@ public class DSSService {
     @TypeHint(String[].class)
     public Response getAllCrops(
     ) {
-        return this.getAllCrops(Boolean.TRUE);
+        return this.getAllCrops(null);
         
     }
 
