@@ -36,7 +36,7 @@ public class JAXActivator extends Application{
     @Override
     public Set<Class<?>> getClasses() {      
         Set<Class<?>> resources = new java.util.HashSet<>();
-        addRestResourceClasses(resources);
+        addRestResourceClassesManually(resources);
         return resources;
     }
     
@@ -50,7 +50,10 @@ public class JAXActivator extends Application{
         return singletons;
     }
 
-    private void addRestResourceClasses(Set<Class<?>> resources) {
+    /* This method was named without the "Manually", and autopopulated by NetBeans, 
+     * renamed it to keep in control
+     */ 
+    private void addRestResourceClassesManually(Set<Class<?>> resources) {
         resources.add(net.ipmdecisions.dssservice.services.AdminService.class);
         resources.add(net.ipmdecisions.dssservice.services.DSSService.class);
         resources.add(net.ipmdecisions.dssservice.services.MetaDataService.class);
