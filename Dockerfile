@@ -1,7 +1,7 @@
 # BUILD Command example
 # sudo docker build --build-arg IPMDSSADMIN_PWD=foobar --tag ipmdecisions/dss_api:BETA-08 .
-# the first stage of our build will use a maven 3.6 parent image
-FROM maven:3.6-openjdk-11 AS MAVEN_BUILD
+# the first stage of our build will use a maven 3.8 parent image
+FROM maven:3.8-openjdk-17 AS MAVEN_BUILD
  
 # copy the pom and src code to the container
 COPY ./ ./
@@ -14,12 +14,14 @@ RUN git clone --single-branch --branch master https://github.com/datasets/geo-co
 
 # Used this as a template: https://github.com/jboss-dockerfiles/wildfly/blob/master/Dockerfile 
 # Use latest jboss/base-jdk:11 image as the base
-FROM jboss/base-jdk:11
+FROM eclipse-temurin:17-jammy
 
+RUN groupadd -r jboss -g 1000 && useradd -u 1000 -r -g jboss -m -d /opt/jboss -s /sbin/nologin -c "JBoss user" jboss && \
+    chmod 755 /opt/jboss
 
 # Set the WILDFLY_VERSION env variable
-ENV WILDFLY_VERSION 25.0.0.Final
-ENV WILDFLY_SHA1 238e67f48f1bd1e79f2d845cba9194dcd54b4d89
+ENV WILDFLY_VERSION 26.1.3.Final
+ENV WILDFLY_SHA1 b9f52ba41df890e09bb141d72947d2510caf758c
 ENV JBOSS_HOME /opt/jboss/wildfly
 
 USER root
@@ -38,7 +40,7 @@ RUN cd $HOME \
 # Replace standalone.xml (the main WildFly config file)
 COPY ./wildfly_config/standalone.xml_${WILDFLY_VERSION} ${JBOSS_HOME}/standalone/configuration/standalone.xml  
 
-ENV APP_VERSION=1.0.1
+ENV APP_VERSION=1.1.0
 
 # copy only the artifacts we need from the first stage and discard the rest
 COPY --from=MAVEN_BUILD /target/IPMDecisionsDSSService-$APP_VERSION.war /IPMDecisionsDSSService-$APP_VERSION.war
