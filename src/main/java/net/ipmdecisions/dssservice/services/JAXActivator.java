@@ -57,5 +57,6 @@ public class JAXActivator extends Application{
         resources.add(net.ipmdecisions.dssservice.services.AdminService.class);
         resources.add(net.ipmdecisions.dssservice.services.DSSService.class);
         resources.add(net.ipmdecisions.dssservice.services.MetaDataService.class);
+        resources.add(net.ipmdecisions.dssservice.services.RiskMapService.class);
     }
 }
