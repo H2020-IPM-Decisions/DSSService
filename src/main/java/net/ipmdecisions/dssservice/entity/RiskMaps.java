@@ -21,18 +21,27 @@ package net.ipmdecisions.dssservice.entity;
 import java.util.List;
 
 /**
- *
+ * Data object structuring the list of risk maps available in the platform.
+ * 
+ * @copyright 2024 <a href="http://www.nibio.no/">NIBIO</a>
  * @author Tor-Einar Skog <tor-einar.skog@nibio.no>
  */
 public class RiskMaps {
     
     private List<RiskMapProvider> risk_map_providers;
     
-    
+    /**
+     * A risk map provider is an organization that has made one or more risk
+     * maps available in the platform
+     */
     public static class RiskMapProvider {
         private String id, name, country, address, postal_code, city, email, url;
         private RiskMap[] risk_maps;
         
+        /**
+         * A risk map is a WMS service that conforms to the VIPS risk maps
+         * standard: https://gitlab.nibio.no/VIPS/documentation/-/blob/master/grid_models.md
+         */
         public static class RiskMap {
             private String id, title, wms_url;
             private Boolean platform_validated;

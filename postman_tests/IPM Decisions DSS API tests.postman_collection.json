@@ -739,6 +739,56 @@
 					"response": []
 				},
 				{
+					"name": "Get one CPO model as Json, check that it is platform_validated == true",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response is Json, and the correct id is present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(\"CPO_TRZAX_SEPTTR\");",
+									"});",
+									"",
+									"pm.test(\"The model is platform validated\", function(){",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.platform_validated).to.be.true;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/model/dk.seges/CPO_TRZAX_SEPTTR/?language=de",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"model",
+								"dk.seges",
+								"CPO_TRZAX_SEPTTR",
+								""
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "de"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get VIPS DSS as Json translated to Slovenian",
 					"event": [
 						{
@@ -947,7 +997,7 @@
 					"response": []
 				},
 				{
-					"name": "Get input_schema for the HTML form (Json schema) for a SEGES CPO model",
+					"name": "Get input_schema for the HTML form (Json schema) for a SEGES CPO model in Dutch",
 					"event": [
 						{
 							"listen": "test",
@@ -956,9 +1006,9 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
-									"pm.test(\"Response is Json, and we find the data type of the timeZone\", function () {",
+									"pm.test(\"Response is Json, and we find the data type of the GrowthStage\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.properties.configParameters.properties.timeZone.type).to.eql(\"string\");",
+									"    pm.expect(jsonData.properties.GrowthStage.type).to.eql(\"integer\");",
 									"});",
 									"pm.test(\"Response is Json, and the weatherData property should not be present. \", function () {",
 									"    var jsonData = pm.response.json();",
@@ -974,17 +1024,23 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{dss_url}}/rest/model/no.nibio.vips/PSILARTEMP/input_schema/ui_form",
+							"raw": "{{dss_url}}/rest/model/dk.seges/CPO_TRZAX_SEPTTR/input_schema/ui_form?language=nl",
 							"host": [
 								"{{dss_url}}"
 							],
 							"path": [
 								"rest",
 								"model",
-								"no.nibio.vips",
-								"PSILARTEMP",
+								"dk.seges",
+								"CPO_TRZAX_SEPTTR",
 								"input_schema",
 								"ui_form"
+							],
+							"query": [
+								{
+									"key": "language",
+									"value": "nl"
+								}
 							]
 						}
 					},
@@ -1642,6 +1698,30 @@
 								"csv",
 								"platform_validated",
 								"true"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RiskMapsService",
+			"item": [
+				{
+					"name": "List risk maps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dss_url}}/rest/risk_maps/list",
+							"host": [
+								"{{dss_url}}"
+							],
+							"path": [
+								"rest",
+								"risk_maps",
+								"list"
 							]
 						}
 					},
