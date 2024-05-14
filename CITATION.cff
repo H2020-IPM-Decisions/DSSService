@@ -1,0 +1,16 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: IPM Decisions DSS API
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Tor-Einar
+    family-names: Skog
+    email: tor-einar.skog@nibio.no
+    name-particle: Tor-Einar
+repository-code: 'https://github.com/H2020-IPM-Decisions/DSSService'
+license: AGPL-3.0
