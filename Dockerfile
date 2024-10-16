@@ -2,15 +2,15 @@
 # sudo docker build --build-arg IPMDSSADMIN_PWD=foobar --tag ipmdecisions/dss_api:BETA-08 .
 # the first stage of our build will use a maven 3.8 parent image
 FROM maven:3.8-openjdk-17 AS MAVEN_BUILD
- 
+
 # copy the pom and src code to the container
 COPY ./ ./
- 
+
 # package our application code
 RUN mvn clean install
 
 RUN git clone --single-branch --branch master https://github.com/H2020-IPM-Decisions/DSS-Metadata.git
-RUN git clone --single-branch --branch master https://github.com/datasets/geo-countries.git
+RUN git clone --single-branch --branch main https://github.com/datasets/geo-countries.git
 
 # Used this as a template: https://github.com/jboss-dockerfiles/wildfly/blob/master/Dockerfile 
 # Use latest jboss/base-jdk:11 image as the base
@@ -36,7 +36,7 @@ RUN cd $HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
-    
+
 # Replace standalone.xml (the main WildFly config file)
 COPY ./wildfly_config/standalone.xml_${WILDFLY_VERSION} ${JBOSS_HOME}/standalone/configuration/standalone.xml  
 
