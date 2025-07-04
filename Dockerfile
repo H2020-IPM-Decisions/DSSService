@@ -1,7 +1,7 @@
 # BUILD Command example
 # sudo docker build --build-arg IPMDSSADMIN_PWD=foobar --tag ipmdecisions/dss_api:BETA-08 .
 # the first stage of our build will use a maven 3.8 parent image
-FROM maven:3.8-openjdk-17 AS MAVEN_BUILD
+FROM maven:3.8-openjdk-17 AS maven_build
 
 # copy the pom and src code to the container
 COPY ./ ./
@@ -20,9 +20,9 @@ RUN groupadd -r jboss -g 1000 && useradd -u 1000 -r -g jboss -m -d /opt/jboss -s
     chmod 755 /opt/jboss
 
 # Set the WILDFLY_VERSION env variable
-ENV WILDFLY_VERSION 26.1.3.Final
-ENV WILDFLY_SHA1 b9f52ba41df890e09bb141d72947d2510caf758c
-ENV JBOSS_HOME /opt/jboss/wildfly
+ENV WILDFLY_VERSION=26.1.3.Final
+ENV WILDFLY_SHA1=b9f52ba41df890e09bb141d72947d2510caf758c
+ENV JBOSS_HOME=/opt/jboss/wildfly
 
 USER root
 
@@ -43,16 +43,16 @@ COPY ./wildfly_config/standalone.xml_${WILDFLY_VERSION} ${JBOSS_HOME}/standalone
 ENV APP_VERSION=1.1.0
 
 # copy only the artifacts we need from the first stage and discard the rest
-COPY --from=MAVEN_BUILD /target/IPMDecisionsDSSService-$APP_VERSION.war /IPMDecisionsDSSService-$APP_VERSION.war
-COPY --from=MAVEN_BUILD /geo-countries/data/countries.geojson /countries.geojson
+COPY --from=maven_build /target/IPMDecisionsDSSService-$APP_VERSION.war /IPMDecisionsDSSService-$APP_VERSION.war
+COPY --from=maven_build /geo-countries/data/countries.geojson /countries.geojson
 # This requires you to have cloned the DSS-metadata repository from GitHub: https://github.com/H2020-IPM-Decisions/dss-metadata
 RUN mkdir /DSS-Metadata
-COPY  --from=MAVEN_BUILD /DSS-Metadata/ /DSS-Metadata/
+COPY  --from=maven_build /DSS-Metadata/ /DSS-Metadata/
 RUN chown -R jboss:jboss /DSS-Metadata
 RUN ln -s /IPMDecisionsDSSService-$APP_VERSION.war ${JBOSS_HOME}/standalone/deployments/IPMDecisionsDSSService.war
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
-ENV LAUNCH_JBOSS_IN_BACKGROUND true
+ENV LAUNCH_JBOSS_IN_BACKGROUND=true
 
 USER jboss
 
