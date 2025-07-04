@@ -4,3 +4,9 @@ target
 /.project
 /.idea
 .settings/org.eclipse.jdt.apt.core.prefs
+enunciate.xml.deployed
+.gitignore
+nbactions.xml.deployed
+nb-configuration.xml.deployed
+.gitignore
+pom.xml.deployed
