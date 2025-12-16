@@ -7,8 +7,8 @@ The service provides the system with sufficient information for a client to be a
 The source code for this service can be found here: <a href="https://github.com/H2020-IPM-Decisions/DSSService" target="new">https://github.com/H2020-IPM-Decisions/DSSService</a>
 
 ## 1. A catalogue of DSSs and their models available to the platform
-The catalogue is a list of DSSs available to the platform. Each DSS may contain one or more models. So even we are describing a standalone model, 
-in our data structure we have a DSS and one model.  
+The catalogue is a list of DSSs available to the platform. Each DSS may contain one or more models. So even we are describing a standalone model,
+in our data structure we have a DSS and one model.
 The catalogue is searchable, primarily using crops, pests and (TODO) geography as criteria.
 This is part of the DSSService
 
@@ -22,3 +22,16 @@ Field observations of pests and diseases are required as inputs in some DSS mode
 
 ## Documentation
 API documentation is auto generated with [Enunciate](https://enunciate.webcohesion.com/), and should be available from a deployed version at the url `[HOST]/[APP_PREFIX]/apidocs/`. If you are in fact at that place, keep on reading. In the source code, there is also more documentation in the `/docs` folder, which can be read on [GitHub](https://github.com/H2020-IPM-Decisions/DSSService/blob/develop/docs/index.md)
+
+## Deployment
+
+Create image using Docker. Change the date for the image tag. This will pull the metadata from the DSS Metadata repository, so please update the metadata first.
+```
+docker build . --rm --pull --no-cache  -f "Dockerfile" -t "ipmdecisions/dss_api:YYYY-MM-DD"
+```
+
+And then push into DockerHub
+
+```
+docker push ipmdecisions/dss_api:YYYY-MM-DD
+```
