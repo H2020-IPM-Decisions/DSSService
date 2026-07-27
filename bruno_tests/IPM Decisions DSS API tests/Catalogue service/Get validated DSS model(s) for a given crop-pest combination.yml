@@ -1,0 +1,27 @@
+info:
+  name: Get validated DSS model(s) for a given crop-pest combination
+  type: http
+  seq: 20
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/dss/crop/DAUCS/pest/PSILRO/platform_validated/true"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("Response is Json, and at least one model is present", function () {
+            var jsonData = res.getBody();
+            expect(jsonData[0].models.length).gte(1);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

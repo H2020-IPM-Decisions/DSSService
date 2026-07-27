@@ -1,0 +1,27 @@
+info:
+  name: Get model output schema
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/schema/modeloutput"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("The response is a Json Schema",function(){
+            var jsonData = res.getBody();
+            expect(jsonData["$schema"]).to.eql("http://json-schema.org/draft-04/schema#");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

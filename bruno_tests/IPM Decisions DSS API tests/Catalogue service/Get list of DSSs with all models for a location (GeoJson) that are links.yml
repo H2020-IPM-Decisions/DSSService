@@ -1,0 +1,65 @@
+info:
+  name: Get list of DSSs with all models for a location (GeoJson) that are links
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{dss_url}}/rest/dss/location?executionType=LINK&language=nb&platformValidated=true"
+  params:
+    - name: executionType
+      value: LINK
+      type: query
+    - name: latitude
+      value: "59.660468"
+      type: query
+      disabled: true
+    - name: longitude
+      value: "10.781989"
+      type: query
+      disabled: true
+    - name: language
+      value: nb
+      type: query
+    - name: platformValidated
+      value: "true"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                10.781989,
+                59.660468
+              ]
+            }
+          }
+        ]
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+
+        test("IPMWise is returned", function () {
+            var jsonData = res.getBody();
+            expect(jsonData[0].models[0].id).to.eql("ipmwiseNO");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

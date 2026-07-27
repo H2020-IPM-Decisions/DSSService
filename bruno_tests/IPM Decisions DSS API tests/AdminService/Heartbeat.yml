@@ -1,0 +1,19 @@
+info:
+  name: Heartbeat
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/admin/heartbeat"
+  auth:
+    type: apikey
+    key: ipmdss_admin_token
+    value: "{{ipmdss_admin_token}}"
+    placement: header
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

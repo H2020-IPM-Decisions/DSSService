@@ -1,0 +1,27 @@
+info:
+  name: Get ADAS/DEROAG input schema
+  type: http
+  seq: 14
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/model/adas.dss/DEROAG_Cereals/input_schema/ui_form"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("Response is Json, and we find the data type of the startDate property", function () {
+            var jsonData = res.getBody();
+            expect(jsonData.definitions.observations.properties.date.format).to.eql("date");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

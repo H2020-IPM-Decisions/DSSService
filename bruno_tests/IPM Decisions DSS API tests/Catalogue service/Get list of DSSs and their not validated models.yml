@@ -1,0 +1,23 @@
+info:
+  name: Get list of DSSs and their not validated models
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/dss/platform_validated/false"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

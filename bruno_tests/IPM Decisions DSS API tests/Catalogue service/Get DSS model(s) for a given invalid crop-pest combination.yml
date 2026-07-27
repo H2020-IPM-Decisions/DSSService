@@ -1,0 +1,27 @@
+info:
+  name: Get DSS model(s) for a given invalid crop-pest combination
+  type: http
+  seq: 21
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/dss/crop/FOO/pest/PSILRO"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("Response is Json, and zero DSSs are present", function () {
+            var jsonData = res.getBody();
+            expect(jsonData.length).to.eq(0)
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

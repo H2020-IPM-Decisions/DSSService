@@ -1,0 +1,27 @@
+info:
+  name: Get list of DSSs with all models translated to Norwegian Bokmål
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/dss?language=nb"
+  params:
+    - name: language
+      value: nb
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

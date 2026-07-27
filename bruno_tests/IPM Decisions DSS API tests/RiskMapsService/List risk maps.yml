@@ -1,0 +1,15 @@
+info:
+  name: List risk maps
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/risk_maps/list"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,36 @@
+info:
+  name: Get one CPO model as Json, check that it is platform_validated == true
+  type: http
+  seq: 10
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/model/dk.seges/CPO_TRZAX_SEPTTR/?language=de"
+  params:
+    - name: language
+      value: de
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("Response is Json, and the correct id is present", function () {
+            var jsonData = res.getBody();
+            expect(jsonData.id).to.eql("CPO_TRZAX_SEPTTR");
+        });
+
+        test("The model is platform validated", function(){
+            var jsonData = res.getBody();
+            expect(jsonData.platform_validated).to.be.true;
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

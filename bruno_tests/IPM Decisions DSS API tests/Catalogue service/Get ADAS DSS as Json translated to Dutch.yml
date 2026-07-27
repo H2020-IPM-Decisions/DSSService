@@ -1,0 +1,31 @@
+info:
+  name: Get ADAS DSS as Json translated to Dutch
+  type: http
+  seq: 12
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/dss/adas.dss?language=nl"
+  params:
+    - name: language
+      value: nl
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("Response is Json, and the correct id is present", function () {
+            var jsonData = res.getBody();
+            expect(jsonData.id).to.eql("adas.dss");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,30 @@
+info:
+  name: Get DSS logo
+  type: http
+  seq: 31
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/dss/logo/VIPSLogo.png"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("Content-Type is present", function () {
+            expect(res.getHeaders()).to.have.property("Content-Type".toLowerCase());
+        });
+
+        test("Content-type is image/png", function(){
+            expect(res.getHeader("Content-type")).to.equal("image/png");
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

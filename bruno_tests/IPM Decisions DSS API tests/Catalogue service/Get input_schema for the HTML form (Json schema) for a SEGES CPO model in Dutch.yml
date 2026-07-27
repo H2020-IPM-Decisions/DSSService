@@ -1,0 +1,35 @@
+info:
+  name: Get input_schema for the HTML form (Json schema) for a SEGES CPO model in Dutch
+  type: http
+  seq: 16
+
+http:
+  method: GET
+  url: "{{dss_url}}/rest/model/dk.seges/CPO_TRZAX_SEPTTR/input_schema/ui_form?language=nl"
+  params:
+    - name: language
+      value: nl
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+        test("Response is Json, and we find the data type of the GrowthStage", function () {
+            var jsonData = res.getBody();
+            expect(jsonData.properties.GrowthStage.type).to.eql("integer");
+        });
+        test("Response is Json, and the weatherData property should not be present. ", function () {
+            var jsonData = res.getBody();
+            expect(jsonData.properties.weatherData).to.be.undefined;
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
